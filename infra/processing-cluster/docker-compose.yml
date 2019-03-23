@@ -1,0 +1,74 @@
+ version: '3'
+ services:
+
+#  hadoop:
+#   image: harisekhon/hadoop:2.9
+#   container_name: hadoop
+#    restart: always
+#   ports:
+#     - "8020:8020"
+#     - "8042:8042"
+#     - "8088:8088"
+#     - "9000:9000"
+#     - "10020:10020"
+#     - "19888:19888"
+#     - "50010:50010"
+#     - "50020:50020"
+#     - "50070:50070"
+#     - "50075:50075"
+#     - "50090:50090"  
+#  environment:
+#     - INIT_DAEMON_STEP=setup_spark
+#   networks:
+#     spark-cluster:
+#   restart: unless-stopped
+
+
+  spark-master:
+   image: bde2020/spark-master
+   container_name: spark-master
+   restart: always
+   ports:
+     - "8080:8080"
+     - "7077:7077"
+   environment:
+     - INIT_DAEMON_STEP=setup_spark
+     - PYSPARK_PYTHON=python3
+   networks:
+     spark-cluster:
+   restart: unless-stopped
+
+  spark-worker-1:
+   image: bde2020/spark-worker
+   container_name: spark-worker-1
+   depends_on:
+     - spark-master
+   restart: always
+   ports:
+     - "8081:8081"
+   environment:
+     - SPARK_MASTER=spark://spark-master:7077
+     - PYSPARK_PYTHON=python3
+   networks:
+     spark-cluster:
+
+
+  spark-worker-2:
+   image: bde2020/spark-worker
+   container_name: spark-worker-2
+   depends_on:
+     - spark-master
+   restart: always
+   ports:
+     - "8082:8081"
+   environment:
+     - SPARK_MASTER=spark://spark-master:7077
+     - SPARK_MASTER_WEBUI_PORT=8082
+     - PYSPARK_PYTHON=python3
+   networks:
+     spark-cluster:
+
+
+ networks:
+    spark-cluster:
+               
