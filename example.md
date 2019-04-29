@@ -18,7 +18,7 @@ The Harena Manager executes the login of the user based in his/her email and pas
     * **response body:** 
       ```json
       { "token": "<session token>" }
-    ```
+      ```
       
 * Message Bus: `manager`
   * request 
