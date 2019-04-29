@@ -10,7 +10,8 @@ The Harena Manager executes the login of the user based in his/her email and pas
     * **request topic:** `user/login`
     * **request body:** 
                      ```json
-                      { "emailid" : "<user email>",  "password": "<password>" }
+                      { "emailid" : "<user email>",  
+                        "password": "<password>" }
                      ```
       
   * request 
