@@ -32,14 +32,32 @@ The Harena Manager executes the login of the user based in his/her email and pas
     * **response topic:** `user/login/token`
     * **response body:** 
       ```json
-      { "token": "<session token>" }
-    ```
+       { "token": "<session token>" }
+      ```
       
 
 
-* *Manager*: `user/login`
-  body: `{emailid: <user email>, password: <password>}`
-  returns: `{token: <session token>}`
+      
+* Message Bus: `manager`
+  * request 
+    * **request topics:** 
+      `authoring//`
+      `execution//`
+    * **request body:** 
+      ```json
+       { "emailid" : "<user email>",  
+         "password": "<password>" }
+      ```
+  * response 
+    * **response topic:** `user/login/token`
+    * **response body:** 
+      ```json
+       { "token": "<session token>" }
+      ```
+      
+
+
+
 
 * *Logger*: prefix:`auth//` or `exec//`
   sufix: `user/login`
