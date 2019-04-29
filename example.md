@@ -1,12 +1,13 @@
-* message bus: **internal**
-   * **request topic:** `user/login`
-   * **request body:** 
+**message bus**: internal
+  * request 
+    * **request topic:** `user/login`
+    * **request body:** 
       ```json
-         { "emailid" : "<user email>",          "password": "<password>" }
+      { "emailid" : "<user email>",          "password": "<password>" }
       ```
 
-   * **response topic:** `user/login/token`
-   * **response body:** 
+**response topic:** `user/login/token`
+**response body:** 
       ```json
          { "token": "<session token>" }
       ```
