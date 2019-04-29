@@ -43,5 +43,5 @@ The Harena Manager executes the login of the user based in his/her email and pas
     * **request topic:** `<prefix>/user/<suffix>`
     * **request body:** 
       ```json
-      {id: <user email>}
+      {"id": "<user email>"}
       ```
