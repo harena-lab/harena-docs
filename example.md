@@ -1,5 +1,5 @@
 * message bus: **internal**
-  **request topic:** `user/login`
+**request topic:** `user/login`
   **request body:** 
   ```json
    {"emailid" : "<user email>", 
