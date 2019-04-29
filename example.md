@@ -1,4 +1,11 @@
-### **message bus**: internal
+# Message Paths
+
+## Entity `user`
+
+### Login
+The Harena Manager executes the login of the user based in his/her email and password. It starts a session and produces a session token.
+
+> **message bus**: internal
   * request 
     * **request topic:** `user/login`
     * **request body:** 
