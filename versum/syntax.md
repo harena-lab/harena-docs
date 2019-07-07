@@ -1,6 +1,6 @@
 # Versum Syntax and Object Representation
 
-Versum is a narrative scripting language derived from [Markdown](https://daringfireball.net/projects/markdown/), having narrative structures inspired in [Ink](https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md).
+[Versum](/versum/README.md) is a narrative scripting language derived from [Markdown](https://daringfireball.net/projects/markdown/), having narrative structures inspired in [Ink](https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md).
 
 This document describes the Versum Syntax and the respective translation of each expression to the respective **Versum Object Representation**, which is a Javascript representation of a Versum document, produced by the [Harena Translator](https://github.com/datasci4health/harena-space/tree/master/src/adonisjs/public/translator).
 
