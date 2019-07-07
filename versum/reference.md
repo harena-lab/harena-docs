@@ -78,8 +78,8 @@ The new version proposal `[under debate]` uses `@`:
   Hey doctor, you must come here.
 ~~~
 
-## Questions
-User inputs, in the current version, are represented by the question mark between braces `{? }`. The following example represents an input for the variable `hypothesis`, which will be interpreted by the MeSH vocabulary. It is followed by a list of right options (separated by commas) and wrong options (after the semi-colon):
+## Question
+User inputs, in the current version, are represented by the question mark between braces `{? }`. The following example represents an input for the variable `hypothesis`, which will be interpreted by the [MeSH](https://www.nlm.nih.gov/mesh/meshhome.html) (Medical Subject Headings) vocabulary. It is followed by a list of right options (separated by commas) and wrong options (after the semi-colon):
 ~~~markdown
 {?1 hypothesis:mesh#pericarditis,myopericarditis,pericardial inflammation,pericardial infection,pericardial effusion;infarction,myocardial infarction,coronary syndrome,acute coronary syndrome,ischemia,myocardial ischemia,coronary insufficiency,angina,angina pectoris}
 ~~~
@@ -104,3 +104,23 @@ What is your diagnostics?
   * myocardial infarction...
 ~~~
 
+## Annotation
+
+Elements from the narrative and user inputs are annotated and connected to structured data and knowledge structures defined in the Data-driven Layer, like dictionaries and ontologies. These structures are connected with external knowledge bases, e.g., [MeSH](https://www.nlm.nih.gov/mesh/meshhome.html) - Medical Subject Headings. This layer is designed to be consumed by machines to support the automation of tasks as evaluation and feedback. 
+
+Segments between braces are annotated. Annotations connect terms and expressions to the Data-driven Layer. The following text has annotated terms, which are aligned to medical knowledge basis. 
+
+For example, the following narrative present symptoms of a patient:
+> Patient a man 55 years old; rather fat; subject to frequent attacks of winter cough, with asthmatic tendency.
+
+Some key characteristics and symptoms of the patient were annotated, so they can be interpreted by machines:
+> Patient a {man} {55 years old}; rather fat; subject to frequent attacks of winter {cough}, with {asthmatic} tendency.
+
+Some of the terms were not automatically recognized in the knowledge base. An equivalent term is presented between parenthesis beside the term (this second term is not presented to the case rendering):
+> Patient a {man(male)} {55 years old(aging=51)}; rather fat; subject to frequent attacks of winter {cough}, with {asthmatic(asthma)} tendency.
+
+## Annotation Context
+A block of annotation context can be defined between double braces. The block defines a semantic context for the narrative and the respective annotations. The context guides the interpretation of parts of the narrative. The following example presents a `symptoms` annotation context.
+> {{symptoms
+Patient a {man(male)} {55 years old(aging=51)}; rather fat; subject to frequent attacks of winter {cough}, with {asthmatic(asthma)} tendency.
+}}
