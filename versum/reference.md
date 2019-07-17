@@ -125,6 +125,7 @@ This version if hard to read, therefore, there is a new proposed version `[under
 What is the sum of internal angles in a triangle?
 ? sum of angles
   right answer: 180o -> Show Right
+  right answer -> Show Right
   wrong answer: 90o -> Show Wrong
   answer: -> Show Unknown
 
