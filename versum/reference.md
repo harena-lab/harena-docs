@@ -30,32 +30,52 @@ Knots are delimited by markdown headers:
 
 They can be hierarchically grouped by header levels, but only the lower hierarchical levels are rendered.
 
+In the following example, only nodes `Level 3a`, `Level 3b` and `Level 2b` are rendered. Node `Level 2a` aggregates the nodes `Level 3a` and `Level 3b`; node `Level 1` aggregates the remaining. Aggregator nodes are never rendered, they are responsible for the structural organization of the case.
+
 ~~~markdown
-# Emergency Room
+# Level 1
 
-## Start
+## Level 2a
 
-## Request Exams
+### Level 3a
+
+### Level 3b
+
+## Level 2b
 ~~~
 
 
 ## Divert
-Transitions among knots or in the state of the current knot are triggered by diverts.  There are three types of divert:
+Transitions among knots or in the state of the current knot are triggered by diverts.
+
+Diverts are transformed into a triggerable element in the presentation. Examples of triggerable elements are icons, buttons, and links. Each divert has three parts, as shows the example:
+~~~markdown
+Label -> Target
+~~~
+The left part (`Label`) is the label to be presented or related to the triggerable element. The middle that appears as an arrow ( `->`) or a variation (according to the type), defines the divert. The right element (` Target`) defines the target knot, to be addressed when the divert is triggered.
+
+There are three types of divert:
 
 ### Forward Divert
 ~~~markdown
-* Option 1 -> Scene 2
+* Label -> Target
 ~~~
+Deviates the course of the narrative to the target when triggered, i.e., the target knot is loaded and presented to the user.
 
 ### Round Divert `[under debate]`
 ~~~markdown
-* Option 1 <-> Scene 2
+* Label <-> Target
 ~~~
+Behaves similarly to the `Forward Divert`, but it returns to the origin (the knot where the divert was triggered) as soon as the user leaves the `Target` knot.
 
 ### Enclosed Divert `[under debate]`
 ~~~markdown
-* Option 1 (-) Scene 2
+* Label (-) Target Knot
+* Label (-) "Enclosed Text"
 ~~~
+Does not deviates the course of the narrative. It instead presents in the body of the current knot:
+- The content of the `Target Knot`.
+- An `Enclosed Text`. In this case, the text must be in quotes.
 
 ## Character
 Refers to a character in the scene.
