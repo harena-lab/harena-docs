@@ -44,6 +44,16 @@ In the following example, only nodes `Level 3a`, `Level 3b` and `Level 2b` are r
 ## Level 2b
 ~~~
 
+It is also possible to use the alternative Markdown format with underlines:
+
+~~~markdown
+Level 1
+=======
+
+Level 2
+-------
+~~~
+
 
 ## Divert
 Transitions among knots or in the state of the current knot are triggered by diverts.
