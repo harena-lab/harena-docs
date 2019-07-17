@@ -109,6 +109,11 @@ The new version proposal `[under debate]` uses `@`:
 ~~~
 
 ## Question
+
+There are two types of input:
+
+### Text Question
+
 User inputs, in the current version, are represented by the question mark between braces `{? }`. The following example represents an input for the variable `hypothesis`, which will be interpreted by the [MeSH](https://www.nlm.nih.gov/mesh/meshhome.html) (Medical Subject Headings) vocabulary. It is followed by a list of right options (separated by commas) and wrong options (after the semi-colon):
 ~~~markdown
 {?1 hypothesis:mesh#pericarditis,myopericarditis,pericardial inflammation,pericardial infection,pericardial effusion;infarction,myocardial infarction,coronary syndrome,acute coronary syndrome,ischemia,myocardial ischemia,coronary insufficiency,angina,angina pectoris}
@@ -118,20 +123,25 @@ This version if hard to read, therefore, there is a new proposed version `[under
 
 ~~~markdown
 What is the sum of internal angles in a triangle?
-? Sum of Angles
-  right: 180o -> Right Answer
-  wrong: -> Wrong Answer
+? sum of angles
+  right answer: 180o -> Show Right
+  wrong answer: 90o -> Show Wrong
+  answer: -> Show Unknown
 
 What is your diagnostics?
-? hypothesis(mesh)
-  1 line / n lines
-  mesh dictionary
-  right:
-  * pericarditis
-  * myopericarditis...
-  wrong:
-  * infarction
-  * myocardial infarction...
+? diagnostics
+  size: 3 lines
+  ontology: mesh
+  right answer: pericarditis, myopericarditis -> Show Right
+  wrong answer: infarction, myocardial infarction -> Show Wrong
+~~~
+
+## Selector Question
+
+~~~markdown
+? relevant symptoms
+  states: +(contributes),-(against),*(key), (indiferent)
+  Patient ... :chest pain:+: ... :pain in the chest(chest pain):+:
 ~~~
 
 ## Annotation
