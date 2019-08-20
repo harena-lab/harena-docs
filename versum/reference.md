@@ -108,33 +108,48 @@ The new version proposal `[under debate]` uses `@`:
   Hey doctor, you must come here.
 ~~~
 
-## Question
+## Input
+
+~~~makdown
+? <variable>
+  * type: [input subtype]
+  * rows: [rows]
+  * vocabularies: [vocabulary], ..., [vocabulary]
+  * [qualifier] answers: [answer], ..., [answer] -> [target]
+  * right answers: [right answer], ..., [right answer] -> [target]
+  * wrong answers: [wrong answer], ..., [wrong answer] -> [target]
+  * answers: [answer], ..., [answer] -> [target]
+~~~
+
+Optional fields:
+* type: input type (default is short)
+  * short, text, selector
+* variable: the variable that will receive the input
+* rows: number of rows for the input (if it is type text)
+* vocabularies: set of vocabularies to interpret the input
+* answers: possible answers
+  * <qualifier>: answer qualifier (optional)
+    * right, wrong, incomplete
+  * <target>: target to divert if the answer is inputed (optional)
 
 There are two types of input:
 
 ### Text Question
 
-User inputs, in the current version, are represented by the question mark between braces `{? }`. The following example represents an input for the variable `hypothesis`, which will be interpreted by the [MeSH](https://www.nlm.nih.gov/mesh/meshhome.html) (Medical Subject Headings) vocabulary. It is followed by a list of right options (separated by commas) and wrong options (after the semi-colon):
+The following example represents an input for the variable `hypothesis`, which will be interpreted by the [MeSH](https://www.nlm.nih.gov/mesh/meshhome.html) (Medical Subject Headings) vocabulary. It is followed by a list of right options (separated by commas) and wrong options:
 ~~~markdown
-{?1 hypothesis:mesh#pericarditis,myopericarditis,pericardial inflammation,pericardial infection,pericardial effusion;infarction,myocardial infarction,coronary syndrome,acute coronary syndrome,ischemia,myocardial ischemia,coronary insufficiency,angina,angina pectoris}
+? hypothesis
+  * vocabularies: mesh
+  * right answers: pericarditis, myopericarditis -> Show Right
+  * wrong answers: infarction, myocardial infarction -> Show Wrong
 ~~~
-
-This version if hard to read, therefore, there is a new proposed version `[under debate]`:
 
 ~~~markdown
 What is the sum of internal angles in a triangle?
 ? sum of angles
-  right answer: 180o -> Show Right
-  right answer -> Show Right
-  wrong answer: 90o -> Show Wrong
-  answer: -> Show Unknown
-
-What is your diagnostics?
-? diagnostics
-  size: 3 lines
-  ontology: mesh
-  right answer: pericarditis, myopericarditis -> Show Right
-  wrong answer: infarction, myocardial infarction -> Show Wrong
+  right answers: 180o -> Show Right
+  wrong answers: 90o -> Show Wrong
+  answers: -> Show Unknown
 ~~~
 
 ## Selector Question

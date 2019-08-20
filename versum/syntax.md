@@ -168,7 +168,7 @@ This content is further converted to HTML by the compiler.
 `<resolved target>` - target after resolving relative links.
 ### Object to HTML
 ```
-<dcc-trigger id='dcc[seq]' type='[subtype]' link='[link].html' label='[display]' [image][location]></dcc-trigger>
+<dcc-trigger id='dcc[seq]' type='[subtype]' action='[target]' label='[display]' [image][location]></dcc-trigger>
 ```
 
 ## Field
@@ -210,7 +210,7 @@ This content is further converted to HTML by the compiler.
 `<resolved target>` - target after resolving relative links.
 ### Object to HTML
 ```
-<dcc-trigger link='[link].html' label='[display]'></dcc-trigger>
+<dcc-trigger action='[target]' label='[display]'></dcc-trigger>
 ```
 
 ## Talk
@@ -283,28 +283,40 @@ Speech is implicitly considered between `<dcc-talk>[speech]</dcc-talk>`.
 
 ## Input
 ### Markdown to Object
-* Sentence: `{?[rows] [variable] : [vocabulary] # [write answer], ..., [write answer]; [wrong answer], ..., [wrong answer]}`
-* Expression: `\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]+))?(?:#([\w \t\+\-\*"=\%\/,]+)(?:;([\w \t\+\-\*"=\%\/,]+))?)?\}`
-  * Group #1: rows
-  * Group #2: variable
-  * Group #3: vocabulary
-  * Group #4: set of right answers
-  * Group #5: set of wrong answers
+* Sentence set:
+  * first line: `? [variable]`
+  * subordinated: `* type: [input subtype]`
+  *               `* rows: [rows]`
+  *               `* vocabularies: [vocabulary], ..., [vocabulary]`
+  *               `* right answers: [right answer], ..., [right answer] -> [target]`
+  *               `* wrong answers: [wrong answer], ..., [wrong answer] -> [target]`
+  *               `* [type] answers: [answer], ..., [answer] -> [target]`
+  *               `* answers: [answer], ..., [answer] -> [target]`
+* Expression: `^\?[ \t]+([\w \t]+)$`
+  * Group #1: variable
 ![Input Expression](expressions/input.png)
 * Object:
 ```
 {
    type: "input"
+   subtype: <input subtype>
    variable: <variable that will receive the input>
    rows: <number of rows for the input>
-   vocabulary: <the vocabulary to interpret the input>
-   right: [<set of right answers>]
-   wrong: [<set of wrong answers>]
+   vocabularies: [<set of vocabularies to interpret the input>]
+   answers: {
+     <type>: {
+       answers: [<set of answers>],
+       target: <target to divert for the answer>
+     },
+     right: {...},
+     wrong: {...},
+     untyped: {...}
+   }
 }
 ```
 ### Object to HTML
 ```
-<dcc-input id='dcc[seq]' variable='[variable]'[rows][vocabulary]> 
+<dcc-input id='dcc[seq]' variable='[variable]'[rows][vocabularies]> 
 </dcc-input>
 ```
 
