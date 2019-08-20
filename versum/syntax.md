@@ -285,15 +285,19 @@ Speech is implicitly considered between `<dcc-talk>[speech]</dcc-talk>`.
 ### Markdown to Object
 * Sentence set:
   * first line: `? [variable]`
-  * subordinated: `* type: [input subtype]`
-  *               `* rows: [rows]`
-  *               `* vocabularies: [vocabulary], ..., [vocabulary]`
-  *               `* right answers: [right answer], ..., [right answer] -> [target]`
-  *               `* wrong answers: [wrong answer], ..., [wrong answer] -> [target]`
-  *               `* [type] answers: [answer], ..., [answer] -> [target]`
-  *               `* answers: [answer], ..., [answer] -> [target]`
+  * subordinated:
+    ~~~
+                  * type: [input subtype]
+                  * rows: [rows]
+                  * vocabularies: [vocabulary], ..., [vocabulary]
+                  * right answers: [right answer], ..., [right answer] -> [target]
+                  * wrong answers: [wrong answer], ..., [wrong answer] -> [target]
+                  * [type] answers: [answer], ..., [answer] -> [target]
+                  * answers: [answer], ..., [answer] -> [target]
+    ~~~
 * Expression: `^\?[ \t]+([\w \t]+)$`
   * Group #1: variable
+
 ![Input Expression](expressions/input.png)
 * Object:
 ```
