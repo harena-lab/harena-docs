@@ -50,12 +50,10 @@ or
 # Annotations
 
 ## Context
-* Sentence context open: `{{ [context] #[evaluation]: [option-1], ..., [option-n]; [color-1], ... [color-n]`
-* Expression context open: `/\{\{([\w \t\+\-\*"=\:%\/]+)(?:#([\w \t\+\-\*"=\%\/]+):([\w \t\+\-\*"=\%\/,]+)(?:;([\w \t#,]+))?)?[\f\n\r]`
+* Sentence context open: `{{ [context] / [related input] /`
+* Expression context open: `\{\{([\w \t\+\-\*\."=\:%]+)?(?:\/([\w \t\.]+)\/)?[\f\n\r]`
   * Group #1: context
-  * Group #2: evaluation
-  * Group #3: list of options
-  * Group #4: list of colors
+  * Group #2: related input
 ![Context Open](expressions/context-open.png)
 * Sentence context close: `}}`
 * Expression context close: `\}\}` 
@@ -65,25 +63,24 @@ or
 {
    type: "context"
    context: <identification of the context>
-   evaluation: <characteristic being evaluated in the context - for selector>
-   options: <set of options>
+   input: <variable of a related input>
    annotations: [<set of annotations in this context>]
 }
 ```
 
 ## Annotation
-* Sentence outside: `{ [natural] ([formal]) #[context value] }`
-* Expression outside: `\{([\w \t\+\-\*"=\:%\/]+)(?:\(([\w \t\+\-\*"=\:%\/]+)\)[ \t]*)?(?:#([\w \t\+\-\*"=\:%\/]+))?\}`
+* Sentence outside: `{ [natural] ([formal]) } / [context value] /`
+* Expression outside: `\{([^\(\{\}\/]+)\}(?:\(([^\)]+)\))?(?:\/([^\/]+)\/)?`
   * Group #1: natural
   * Group #2: formal
-  * Group #3: context value (intended for evaluations based on selectors)
-![Domain Outside](expressions/domain-outside.png)
+  * Group #3: context value (intended for evaluations based on selects)
+![Annotation Outside](expressions/annotation-outside.png)
 * Sentence inside: `[expression] =|: [specification] / [rate]`
 * Expression inside: `([\w \t\+\-\*"]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?`
   * Group #1: expression
   * Group #2: specification
   * Group #3: rate
-![Domain Inside](expressions/domain-inside.png)
+![Annotation Inside](expressions/annotation-inside.png)
 * Object:
 ```
 {
@@ -107,12 +104,14 @@ or
 # Items
 
 ## Text
-Markdown text that does not match to any expression.
+* Sentence: `([ \t]*)([^\f\n\r]+)$`
+            or
+            `<markdown text that does not match to any expression>`
 * Object:
 ```
 {
    type: "text"
-   id: 
+   subordinate: <subordination according to spaces preceeding>
    content: <unprocessed content in markdown>
 }
 ```
@@ -125,15 +124,17 @@ This content is further converted to HTML by the compiler.
 ## Image
 ### Markdown to Object
 * Sentence: `!\[alt-text\]([path] "[title]")`
-* Expression: `!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\)`
-  * Group #1: alt text
-  * Group #2: image path
-  * Group #3: image title
+* Expression: `([ \t]*)!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\)`
+  * Group #1: subordinate 
+  * Group #2: alt text
+  * Group #3: image path
+  * Group #4: image title
 ![Image Expression](expressions/image.png)
 * Object:
 ```
 {
     type:  "image"
+    subordinate: <subordination according to spaces preceeding>
     alternative:   <alt text>
     path:  <image path>
     title: <image title>
@@ -141,7 +142,7 @@ This content is further converted to HTML by the compiler.
 ```
 ### Object to HTML
 ```
-<img src="[server][path]" alt="[title]">
+<img src="[path]" alt="[title]">
 ```
 
 ## Option
@@ -173,18 +174,22 @@ This content is further converted to HTML by the compiler.
 
 ## Field
 ### Markdown to Object
-* Sentence: `+ [field]: [value]` or `* [field]: [value]`
-* Expression: `^[ \t]*(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^\n\r\f]+)$`
-  * Group #1: field
-  * Group #2: value
+* Sentence: `+ [field]: [value] -> [target]` or `* [field]: [value] -> [target]`
+* Expression: `^([ \t]*)(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f]+)(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$`
+  * Group #1: subordinate
+  * Group #2: field
+  * Group #3: value
+  * Group #4: target
 ![Option Expression](expressions/field.png)
 * Object:
 ```
 {
    type: "field"
    presentation: <unprocessed content in markdown>
+   subordinate: <subordination according to spaces preceeding>
    field: <label of the field>
    value: <value of the field>
+   target: <target triggered when the state/value is achieved>
 }
 ```
 ### Object to HTML
@@ -210,13 +215,18 @@ This content is further converted to HTML by the compiler.
 `<resolved target>` - target after resolving relative links.
 ### Object to HTML
 ```
-<dcc-trigger action='[target]' label='[display]'></dcc-trigger>
+<dcc-trigger id='dcc[seq]' action='[target]' label='[display]'></dcc-trigger>
 ```
 
 ## Talk
 ### Markdown to Object
-* Sentence: `:[character]: [talk]`
-* Expression: `^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*([^\n\r\f]+)$`
+* Sentence: `@[character]: [speech]`
+  * subordinated:
+    ~~~
+    !\[alt-text\]([image path] "[title]")
+    [speech]
+    ~~~
+* Expression: `@(\w[\w \t]*)(?::[ \t]*([^\n\r\f]+))?`
   * Group #1: character
   * Group #2: speech
 ![talk Expression](expressions/talk.png)
@@ -226,32 +236,6 @@ This content is further converted to HTML by the compiler.
    type: "talk"
    character: <identification of the character>
    speech: <character's speech>
-}
-```
-### Object to HTML
-```
-<dcc-talk character='[character]' speech='[speech]'>
-</dcc-talk>
-```
-
-## Talk Open
-### Markdown to Object
-* Sentence:
-```
-:[character]:
-!\[alt-text\]([path] "[title]")
-```
-* Expression: `^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*(?:[\f\n\r][\n\r]?!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\))?[ \t]*$`
-  * Group #1: character
-  * Group #1: character image - alt text
-  * Group #2: character image - path
-  * Group #3: character image - title
-![talk Expression](expressions/talk-open.png)
-* Object:
-```
-{
-   type: "talk-open"
-   character: <identification of the character>
    image: {
       alternative: <alt text>
       path:  <image path>
@@ -261,23 +245,8 @@ This content is further converted to HTML by the compiler.
 ```
 ### Object to HTML
 ```
-<dcc-talk character='[character]'>
-```
-Speech is implicitly considered between `<dcc-talk>[speech]</dcc-talk>`.
-
-## Talk Close
-### Markdown to Object
-* Sentence: `::`
-* Expression: `/[ \t]*:[ \t]*:[ \t]*$/im`
-![talk Expression](expressions/talk-close.png)
-* Object:
-```
-{
-   type: "talk-close"
-}
-```
-### Object to HTML
-```
+<dcc-talk id='dcc[seq]' character='[character]'>
+  [speech]
 </dcc-talk>
 ```
 
@@ -287,17 +256,16 @@ Speech is implicitly considered between `<dcc-talk>[speech]</dcc-talk>`.
   * first line: `? [variable]`
   * subordinated:
     ~~~
-                  * type: [input subtype]
-                  * rows: [rows]
-                  * vocabularies: [vocabulary], ..., [vocabulary]
-                  * right answers: [right answer], ..., [right answer] -> [target]
-                  * wrong answers: [wrong answer], ..., [wrong answer] -> [target]
-                  * [type] answers: [answer], ..., [answer] -> [target]
-                  * answers: [answer], ..., [answer] -> [target]
+    * type: [input subtype]
+    * rows: [rows]
+    * vocabularies: [vocabulary], ..., [vocabulary]
+    * right answers: [right answer], ..., [right answer] -> [target]
+    * wrong answers: [wrong answer], ..., [wrong answer] -> [target]
+    * [type] answers: [answer], ..., [answer] -> [target]
+    * answers: [answer], ..., [answer] -> [target]
     ~~~
 * Expression: `^\?[ \t]+([\w \t]+)$`
   * Group #1: variable
-
 ![Input Expression](expressions/input.png)
 * Object:
 ```
@@ -319,23 +287,51 @@ Speech is implicitly considered between `<dcc-talk>[speech]</dcc-talk>`.
 }
 ```
 ### Object to HTML
+**Standard**
 ```
 <dcc-input id='dcc[seq]' variable='[variable]'[rows][vocabularies]> 
 </dcc-input>
 ```
+**Group Select subtype**
+```
+<dcc-group-select id='dcc[seq]' [author] context='[context]' input='[input]''>
+<dcc-group-select id='dcc[seq]' [author] variable='[variable]' states='[state],...,[state]' labels='[label],...,[label]'>
+</dcc-group-select>
+```
 
-## Expression
+## Output
+### Markdown to Object
+* Sentence: `^[variable]([variant])^`
+* Expression: `\^([\w \t\.]+)(?:\(([\w \t]+)\))?\^`
+  * Group #1: variable
+  * Group #2: variant
+![Output Expression](expressions/output.png)
+* Object:
+```
+{
+   type: "output"
+   variable: <variable name>
+   variant: <variant of the variable>
+}
+```
+The existing `variant` is "`right`", meaning that the output will be the right value attributed to the variable, instead of the value imputed by the player.
+### Object to HTML
+```
+<dcc-expression expression='[variable]'></dcc-expression>
+```
+
+## Compute
 ### Markdown to Object
 * Sentence: `~ [variable] +|-|*|/|= [number]`
 * Expression: `~[ \t]*(\w+)?[ \t]*([\+-=])[ \t]*(\d+(?:\.\d+)?)`
   * Group #1: variable
   * Group #2: operator
   * Group #3: value
-![Expression Expression](expressions/expression.png)
+![Compute Expression](expressions/compute.png)
 * Object:
 ```
 {
-   type: "expression"
+   type: "compute"
    variable: <variable name>
    operator: +|-|*|/|=
    value: <value>
@@ -343,32 +339,28 @@ Speech is implicitly considered between `<dcc-talk>[speech]</dcc-talk>`.
 ```
 ### Object to HTML
 ```
-<dcc-compute expression='[expression]'></dcc-compute>
+<dcc-compute sentence='[sentence]'></dcc-compute>
 ```
 
-## Selector Context
+## Select Context
 ### -- Open
 ### Markdown to Object
-* Sentence context open: `{{ [context] #[evaluation]: [option-1], ..., [option-n]; [color-1], ... [color-n]`
-* Expression context open: `\{\{([\w \t\+\-\*"=\:%\/]+)(?:#([\w \t\+\-\*"=\%\/]+):([\w \t\+\-\*"=\%\/,]+);([\w \t#,]+)?)?[\f\n\r]`
+* Sentence context open: `{{ [context] / [related input] /`
+* Expression context open: `\{\{([\w \t\+\-\*\."=\:%]+)?(?:\/([\w \t\.]+)\/)?[\f\n\r]`
   * Group #1: context
-  * Group #2: evaluation
-  * Group #3: list of options
-  * Group #4: list of colors
+  * Group #2: related input
 ![Context Open](expressions/context-open.png)
 * Object:
 ```
 {
    type: "context-open"
    context: <identification of the context> #1
-   evaluation: <characteristic being evaluated in the context> #2
-   options: <set of options> #3
-   colors: <set of colors> #4
+   input: <variable of a related input> #2
 }
 ```
 ### Object to HTML
 ```
-<dcc-group-selector states='[options]' colors='[colors]'>
+no HTML
 ```
 ### -- Close
 ### Markdown to Object
@@ -383,26 +375,39 @@ Speech is implicitly considered between `<dcc-talk>[speech]</dcc-talk>`.
 ```
 ### Object to HTML
 ```
-</dcc-group-selector>
+no HTML
 ```
 
-## Selector
-* Sentence: `{ [natural] ([formal]) #[context value])`
-* Expression: <equivalent to an annotation>
+## Select
+* Sentence: `{ [natural] ([formal]) } / [context value] /`
+* Expression: `\{([^\(\{\}\/]+)\}(?:\(([^\)]+)\))?(?:\/([^\/]+)\/)`
   * Group #1: natural
   * Group #2: formal (extracted in an annotation)
   * Group #3: context value
-![Selector Expression](expressions/selector.png)
+![Select Expression](expressions/select.png)
 * Object:
 ```
 {
-   type: "selector"
+   type: "select"
    expression: <expression to be evaluated (natural)>
    value: <right value of the expression according to the evaluated context>
 }
 ```
 ### Object to HTML
 ```
-<dcc-state-selector>[expression]</dcc-state-selector>
+<dcc-state-select id='dcc[seq]'>[expression]</dcc-state-select>
 ```
 
+## Line feed
+* Sentence: `\f` or `\r` or `\n`
+* Expression: `[\f\n\r]+`
+![Line feed Expression](expressions/linefeed.png)
+* Object:
+```
+{
+   type: "linefeed"
+   content: <line feeds>
+}
+```
+### Object to HTML
+Each line feed is converted to `<br>`

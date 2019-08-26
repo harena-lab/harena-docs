@@ -112,25 +112,25 @@ The new version proposal `[under debate]` uses `@`:
 
 ~~~makdown
 ? <variable>
-  * type: [input subtype]
-  * rows: [rows]
-  * vocabularies: [vocabulary], ..., [vocabulary]
-  * [qualifier] answers: [answer], ..., [answer] -> [target]
+  * type: <input subtype>
+  * rows: <rows>
+  * vocabularies: <vocabulary>, ..., <vocabulary>
+  * <qualifier> answers: <answer>, ..., [answer] -> <target>
   * right answers: [right answer], ..., [right answer] -> [target]
   * wrong answers: [wrong answer], ..., [wrong answer] -> [target]
   * answers: [answer], ..., [answer] -> [target]
 ~~~
 
 Optional fields:
-* type: input type (default is short)
-  * short, text, selector
-* variable: the variable that will receive the input
-* rows: number of rows for the input (if it is type text)
-* vocabularies: set of vocabularies to interpret the input
-* answers: possible answers
-  * <qualifier>: answer qualifier (optional)
-    * right, wrong, incomplete
-  * <target>: target to divert if the answer is inputed (optional)
+* `type`: input type (default is short)
+  * `short`, `text`, `selector`
+* `variable`: the variable that will receive the input
+* `rows`: number of rows for the input (if it is type text)
+* `vocabularies`: set of vocabularies to interpret the input
+* `answers`: possible answers
+  * `<qualifier>`: answer qualifier (optional)
+    * `right`, `wrong`, `incomplete`
+  * `<target>`: target to divert if the answer is inputed (optional)
 
 There are two types of input:
 
@@ -156,8 +156,11 @@ What is the sum of internal angles in a triangle?
 
 ~~~markdown
 ? relevant symptoms
-  states: +(contributes),-(against),*(key), (indiferent)
-  Patient ... :chest pain:+: ... :pain in the chest(chest pain):+:
+  * type: group select
+  * states: +,-,*,_
+  * labels: contibutes, against, key, indiferent
+
+Patient ... :chest pain:+: ... :pain in the chest(chest pain):+:
 ~~~
 
 ## Annotation
