@@ -55,7 +55,7 @@ Level 2
 ~~~
 
 
-## Divert
+## Diverts and Options
 Transitions among knots or in the state of the current knot are triggered by diverts.
 
 Diverts are transformed into a triggerable element in the presentation. Examples of triggerable elements are icons, buttons, and links. Each divert has three parts, as shows the example:
@@ -87,21 +87,12 @@ Does not deviates the course of the narrative. It instead presents in the body o
 - The content of the `Target Knot`.
 - An `Enclosed Text`. In this case, the text must be in quotes.
 
-## Character
-Refers to a character in the scene.
+## Entity
+Refers to a entity in the scene.
 
-The current version uses `: :` indicate the character.
+The current version uses `@` indicate the entity.
 ~~~markdown
-:Lucinda: Hey doctor, you must come here.
-
-:Lucinda:
-![nurse concerned]
-Hey doctor, you must come here.
-::
-~~~
-The new version proposal `[under debate]` uses `@`:
-~~~markdown
-@Lucinda Hey doctor, you must come here.
+@Lucinda: Hey doctor, you must come here.
 
 @Lucinda
   ![nurse concerned]
@@ -114,7 +105,7 @@ The new version proposal `[under debate]` uses `@`:
 ? <variable>
   * type: <input subtype>
   * rows: <rows>
-  * vocabularies: <vocabulary>, ..., <vocabulary>
+  * vocabulary: <vocabulary>, ..., <vocabulary>
   * <qualifier> answers: <answer>, ..., [answer] -> <target>
   * right answers: [right answer], ..., [right answer] -> [target]
   * wrong answers: [wrong answer], ..., [wrong answer] -> [target]
@@ -123,10 +114,10 @@ The new version proposal `[under debate]` uses `@`:
 
 Optional fields:
 * `type`: input type (default is short)
-  * `short`, `text`, `selector`
+  * `short`, `text`, `group select`
 * `variable`: the variable that will receive the input
 * `rows`: number of rows for the input (if it is type text)
-* `vocabularies`: set of vocabularies to interpret the input
+* `vocabulary`: set of vocabularies to interpret the input
 * `answers`: possible answers
   * `<qualifier>`: answer qualifier (optional)
     * `right`, `wrong`, `incomplete`
@@ -136,13 +127,24 @@ There are two types of input:
 
 ### Text Question
 
-The following example represents an input for the variable `hypothesis`, which will be interpreted by the [MeSH](https://www.nlm.nih.gov/mesh/meshhome.html) (Medical Subject Headings) vocabulary. It is followed by a list of right options (separated by commas) and wrong options:
+The following example represents an input for the variable `hypothesis`, which will be interpreted by the [MeSH](https://www.nlm.nih.gov/mesh/meshhome.html) (Medical Subject Headings) vocabulary. It is followed by a list of right answers (separated by commas) and wrong answers:
+~~~markdown
+? hypothesis
+  * vocabularies: mesh
+  * right answers: pericarditis, myopericarditis
+  * wrong answers: infarction, myocardial infarction
+~~~
+
+The next example shows how to add a divert in each option, i.e., if a player chooses the right answer, the respective divert deviates the flow to the knot `Show Right`, if she chooses the wrong answer, the flow is deviated to `Show Wrong`.
+
 ~~~markdown
 ? hypothesis
   * vocabularies: mesh
   * right answers: pericarditis, myopericarditis -> Show Right
   * wrong answers: infarction, myocardial infarction -> Show Wrong
 ~~~
+
+A math example:
 
 ~~~markdown
 What is the sum of internal angles in a triangle?
@@ -152,7 +154,7 @@ What is the sum of internal angles in a triangle?
   answers: -> Show Unknown
 ~~~
 
-## Selector Question
+## Group Select
 
 ~~~markdown
 ? relevant symptoms

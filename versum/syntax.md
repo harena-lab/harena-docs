@@ -169,7 +169,7 @@ This content is further converted to HTML by the compiler.
 `<resolved target>` - target after resolving relative links.
 ### Object to HTML
 ```
-<dcc-trigger id='dcc[seq]' type='[subtype]' action='[target]' label='[display]' [image][location]></dcc-trigger>
+<dcc-trigger id='dcc[seq]' type='[subtype]' action='knot/[target]/navigate' label='[display]' [image][location]></dcc-trigger>
 ```
 
 ## Field
@@ -200,54 +200,77 @@ This content is further converted to HTML by the compiler.
 
 ## Divert
 ### Markdown to Object
-* Sentence: `-> [target]`
-* Expression: `-(?:(?:&gt;)|>) *(\w[\w. ]*)`
-  * Group #1: target
+* Sentence: `[label] -> [target]`
+* Expression: `(?:(\w+)|"([^"]+)")(?:[ \t])*-(?:(?:&gt;)|>)[ \t]*(?:(\w[\w.]*)|"([^"]*)")`
+  * Group #1: label (without quotes)
+  * Group #2: label (with quotes)
+  * Group #3: target (without quotes)
+  * Group #4: target (with quotes)
 ![Divert Expression](expressions/divert.png)
 * Object:
 ```
 {
    type: "divert",
-   label: <target>
+   label: <label>
    target: <resolved target>
 }
 ```
 `<resolved target>` - target after resolving relative links.
 ### Object to HTML
 ```
-<dcc-trigger id='dcc[seq]' action='[target]' label='[display]'></dcc-trigger>
+<dcc-trigger id='dcc[seq]' action='knot/[target]/navigate' label='[display]'></dcc-trigger>
 ```
 
-## Talk
+## Entity
 ### Markdown to Object
-* Sentence: `@[character]: [speech]`
+* Sentence: `@[entity]: [speech]`
   * subordinated:
     ~~~
     !\[alt-text\]([image path] "[title]")
     [speech]
     ~~~
-* Expression: `@(\w[\w \t]*)(?::[ \t]*([^\n\r\f]+))?`
-  * Group #1: character
-  * Group #2: speech
-![talk Expression](expressions/talk.png)
+* Expression: `@(?:(\w[\w \t]*)|"([\w \t]*)")(?:$|:[ \t]*([^\n\r\f]+))`
+  * Group #1: entity (without quotes)
+  * Group #2: entity (with quotes)
+  * Group #3: speech
+![talk Expression](expressions/entity.png)
 * Object:
 ```
 {
-   type: "talk"
-   character: <identification of the character>
+   type: "entity"
+   entity: <identification of the entity>
    speech: <character's speech>
    image: {
-      alternative: <alt text>
       path:  <image path>
+      alternative: <alt text>
       title: <image title>
    }
 }
 ```
 ### Object to HTML
 ```
-<dcc-talk id='dcc[seq]' character='[character]'>
+<dcc-entity id='dcc[seq]' entity='[entity]' image='[path]' alternative='[alternative]' title='[title]'>
   [speech]
-</dcc-talk>
+</dcc-entity>
+```
+
+## Mention
+### Markdown to Object
+* Sentence: `@[entity]`
+* Expression: `@(?:(\w+)|"([\w \t]*)")`
+  * Group #1: character (without quotes)
+  * Group #2: character (with quotes)
+ [talk Expression](expressions/mention.png)
+* Object:
+```
+{
+   type: "mention"
+   character: <identification of the character>
+}
+```
+### Object to HTML
+```
+<b>[character]</b>
 ```
 
 ## Input
@@ -267,6 +290,7 @@ This content is further converted to HTML by the compiler.
 * Expression: `^\?[ \t]+([\w \t]+)$`
   * Group #1: variable
 ![Input Expression](expressions/input.png)
+* Subtypes: short, text, group select
 * Object:
 ```
 {
