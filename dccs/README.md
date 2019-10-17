@@ -17,7 +17,7 @@ A visual element that triggers an action. Its standard shape is a button, but it
              label="label"
              image="image"
              action="action"
-             parameter="parameter">
+             value="value">
 </dcc-trigger>
 ~~~
 
@@ -27,7 +27,7 @@ A visual element that triggers an action. Its standard shape is a button, but it
   * image trigger - the title of the image;
 * `image` (optional) - when the trigger is an image, it is the path of the image file;
 * `action` (optional) - the topic of the message sent by the trigger to activate an action; when the action is not specified, the topic is built from the label ("trigger/<label>/clicked");
-* `parameter` (optional) - the message body the accompanies the topic.
+* `value` (optional) - the message body the accompanies the topic.
 
 ### Examples
 
@@ -38,7 +38,7 @@ Textual button trigger that sends the following message when clicked:
 ~~~html
 <dcc-trigger label="On"
              action="button/on/clicked"
-             parameter="message to you">
+             value="message to you">
 </dcc-trigger>
 ~~~
 
@@ -138,17 +138,30 @@ For each subscribed message a DCC declares a `<subscribe-dcc>` inside its elemen
 
 * message - specifies the subscribed message
 
-The following example shows the message `I am a doctor.` when the button with label `Talk` is triggered.
+The following example shows the message `I am a doctor.` when the button with the label `Talk` is triggered.
 
 ~~~html
-<dcc-trigger label="Talk" action="send/message" parameter="I am a doctor.">
+<dcc-trigger label="Talk" action="send/message" value="I am a doctor.">
 </dcc-trigger>
 
 <dcc-lively-talk id="doctor"
                  duration="0s"
                  character="doctor"
-                 speech="...">
+                 speech="Hello, ">
   <subscribe-dcc message="send/message"></subscribe>
+</dcc-lively-talk>
+~~~
+
+The following example shows a character that you tall "Hello *your name*" when you type your name.
+
+~~~html
+<dcc-input variable="name">Type your name:</dcc-input>
+
+<dcc-lively-talk id="doctor"
+                 duration="0s"
+                 character="doctor"
+                 speech="Hello ">
+  <subscribe-dcc message="var/name/changed"></subscribe>
 </dcc-lively-talk>
 ~~~
 
@@ -177,29 +190,29 @@ The following example show messages selectively displayed.
 ~~~html
 <dcc-trigger label="Disease"
              action="news/disease"
-             parameter="New Disease">
+             value="new disease">
 </dcc-trigger>
 
 <dcc-trigger label="Medication"
              action="news/medication"
-             parameter="New Medication">
+             value="new medication">
 </dcc-trigger>
 
 <dcc-lively-talk duration="0s"
                  character="doctor"
-                 speech="...">
+                 speech="I heard about a ">
   <subscribe-dcc message="news/#"></subscribe>
 </dcc-lively-talk>
 
 <dcc-lively-talk duration="0s"
                  character="nurse"
-                 speech="...">
+                 speech="I heard about a ">
   <subscribe-dcc message="news/disease"></subscribe>
 </dcc-lively-talk>
 
 <dcc-lively-talk duration="0s"
                  character="patient"
-                 speech="...">
+                 speech="I heard about a ">
   <subscribe-dcc message="news/soccer"></subscribe>
 </dcc-lively-talk>
 ~~~

@@ -147,13 +147,13 @@ This content is further converted to HTML by the compiler.
 
 ## Option
 ### Markdown to Object
-* Sentence: `+ [label] ([rule]) -> [target]` or `* [label] ([rule]) -> [target]([parameter])`
+* Sentence: `+ [label] ([rule]) -> [target]` or `* [label] ([rule]) -> [target]([value])`
 * Expression: `^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+)(?:\(([^\)\n\r\f]+)\))?)$`
   * Group #1: subtype
   * Group #2: label
   * Group #3: rule
   * Group #4: target
-  * Group #5: parameter
+  * Group #5: value
 ![Option Expression](expressions/option.png)
 * Object:
 ```
@@ -163,13 +163,13 @@ This content is further converted to HTML by the compiler.
    label: <label to be displayed -- if there is no explicit label, the target is the label>
    rule:  <rule of the trigger -- determine its position in the knot>
    target: <resolved target -- if there is not an explicit target, the label is the target>
-   parameter: <parameter for the target knot>
+   value: <value for the target knot>
 }
 ```
 `<resolved target>` - target after resolving relative links.
 ### Object to HTML
 ```
-<dcc-trigger id='dcc[seq]' type='[subtype]' action='knot/[target]/navigate' label='[display]' [image][location]></dcc-trigger>
+<dcc-trigger id='dcc[seq]'[author] type='[subtype]' action='knot/[target]/navigate' label='[display]'[value][image][location]></dcc-trigger>
 ```
 
 ## Field
