@@ -186,7 +186,7 @@ This content is further converted to HTML by the compiler.
 ## Field
 ### Markdown to Object
 * Sentence: `+ [field]: [value] -> [target]` or `* [field]: [value] -> [target]`
-* Expression: `^([ \t]*)(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f]+)(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$`
+* Expression: `^([ \t]*)(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f]+)?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$`
   * Group #1: subordinate
   * Group #2: field
   * Group #3: value
@@ -198,11 +198,15 @@ This content is further converted to HTML by the compiler.
    type: "field"
    presentation: <unprocessed content in markdown>
    subordinate: <subordination according to spaces preceeding>
+   level: <level of subordination (if subordinate)>
    field: <label of the field>
    value: <value of the field>
    target: <target triggered when the state/value is achieved>
 }
 ```
+The level of subordination is calculated as follows: for each tab or two spaces preceding the field, it counts one.
+
+Fields are grouped according to the subordination, i.e., if one field B succeeds another field B and B has a level of subordination greater than A, B becomes a field of the value of A.
 ### Object to HTML
 ```
 <unprocessed content in markdown>
@@ -240,7 +244,7 @@ This content is further converted to HTML by the compiler.
     !\[alt-text\]([image path] "[title]")
     [speech]
     ~~~
-* Expression: `@(?:(\w[\w \t]*)|"([\w \t]*)")(?:$|:[ \t]*([^\n\r\f]+))`
+* Expression: `@(?:(\w[\w \t]*)|"([\w \t]*)")(?:$|:[ \t]*)`
   * Group #1: entity (without quotes)
   * Group #2: entity (with quotes)
   * Group #3: speech

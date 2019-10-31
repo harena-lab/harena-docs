@@ -152,7 +152,7 @@ The following example shows the message `I am a doctor.` when the button with th
 </dcc-lively-talk>
 ~~~
 
-The following example shows a character that you tall "Hello *your name*" when you type your name.
+The following example shows a character that tells you "Hello *your name*" when you type your name.
 
 ~~~html
 <dcc-input variable="name">Type your name:</dcc-input>
@@ -162,6 +162,19 @@ The following example shows a character that you tall "Hello *your name*" when y
                  character="doctor"
                  speech="Hello ">
   <subscribe-dcc message="var/name/changed"></subscribe>
+</dcc-lively-talk>
+~~~
+
+Or how a character tells you "Your age is *your age*" when you define your age in the slider.
+
+~~~html
+<dcc-slider variable="age" index>Select your age:</dcc-slider>
+
+<dcc-lively-talk id="doctor"
+                 duration="0s"
+                 character="doctor"
+                 speech="Your age is  ">
+  <subscribe-dcc message="var/age/changed"></subscribe>
 </dcc-lively-talk>
 ~~~
 
