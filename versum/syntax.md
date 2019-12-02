@@ -34,17 +34,18 @@ __ [title] __
 ### Markdown to Object
 * Sentence:
 ```
-## [title] ([category],..,[category]) ##
+## [title] ([category],..,[category]): [inheritance] ##
 ```
 or
 ```
-[title] ([category],..,[category])
+[title] ([category],..,[category]): [inheritance]
 =====
 ```             
-* Expression: `(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f][^\(\n\r\f]*)(?:\((\w[\w \t,]*)\))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f][^\(\n\r\f]*)(?:\((\w[\w \t,]*)\))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)`
-  * Group #1 or Group #6: level of the knot (acordding to the number of # or the underline type === or ---)
-  * Group #2 or Group #4: title
-  * Group #3 or Group #5: [categories]
+* Expression: `(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)`
+  * Group #1 or Group #8: level of the knot (acordding to the number of # or the underline type === or ---)
+  * Group #2 or Group #5: title
+  * Group #3 or Group #6: [categories]
+  * Group #4 or Group #7: inheritance
 ![Knot Expression](expressions/knot.png)
 * Object:
 ```
@@ -52,6 +53,7 @@ or
    type: "knot"
    title: <title of the knot>
    categories: [<set of categories>]
+   inheritance: <inherited knot>
    level: <level of the knot>
    content: [<elements subordinated to this knot>]
    annotations: [<set of annotations]
@@ -158,13 +160,12 @@ This content is further converted to HTML by the compiler.
 
 ## Option
 ### Markdown to Object
-* Sentence: `+ [label] ([rule]) -> [target]` or `* [label] ([rule]) -> [target]([value])`
-* Expression: `^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+)(?:\(([^\)\n\r\f]+)\))?)$`
+* Sentence: `+ [label] -> [target] "[parameter]"` or `* [label] -> [target] "[parameter]"`
+* Expression: `^[ \t]*([\+\*])[ \t]*([^\(&> \t\n\r\f][^\(&>\n\r\f]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$`
   * Group #1: subtype
   * Group #2: label
-  * Group #3: rule
-  * Group #4: target
-  * Group #5: value
+  * Group #3: target
+  * Group #4: parameter
 ![Option Expression](expressions/option.png)
 * Object:
 ```
@@ -172,15 +173,14 @@ This content is further converted to HTML by the compiler.
    type: "option"
    subtype: "+" or "*"
    label: <label to be displayed -- if there is no explicit label, the target is the label>
-   rule:  <rule of the trigger -- determine its position in the knot>
    target: <resolved target -- if there is not an explicit target, the label is the target>
-   value: <value for the target knot>
+   parameter: <parameter for the target knot>
 }
 ```
 `<resolved target>` - target after resolving relative links.
 ### Object to HTML
 ```
-<dcc-trigger id='dcc[seq]'[author] type='[subtype]' action='knot/[target]/navigate' label='[display]'[value][image][location]></dcc-trigger>
+<dcc-trigger id='dcc[seq]'[author] type='[subtype]' action='knot/[target]/navigate' label='[display]'[value][image]></dcc-trigger>
 ```
 
 ## Field
@@ -215,7 +215,7 @@ This content is further converted to HTML by the compiler.
 
 ## Divert
 ### Markdown to Object
-* Sentence: `[label] -> [target]`
+* Sentence: `[label] -> [target] "[parameter]"`
 * Expression: `(?:(\w+)|"([^"]+)")(?:[ \t])*-(?:(?:&gt;)|>)[ \t]*(?:(\w[\w.]*)|"([^"]*)")`
   * Group #1: label (without quotes)
   * Group #2: label (with quotes)
@@ -234,6 +234,27 @@ This content is further converted to HTML by the compiler.
 ### Object to HTML
 ```
 <dcc-trigger id='dcc[seq]' action='knot/[target]/navigate' label='[display]'></dcc-trigger>
+```
+
+## Divert Script
+### Markdown to Object
+* Sentence: `-> [target] "[parameter]"`
+* Expression: `^[ \t]*-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$`
+  * Group #1: target
+  * Group #2: parameter
+![Option Expression](expressions/divert-script.png)
+* Object:
+```
+{
+   type: "divert-script"
+   target: <resolved target>
+   parameter: <parameter for the target knot>
+}
+```
+`<resolved target>` - target after resolving relative links.
+### Object to HTML
+```
+-> [target] "[parameter]"
 ```
 
 ## Entity

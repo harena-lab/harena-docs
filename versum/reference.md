@@ -62,30 +62,47 @@ Diverts are transformed into a triggerable element in the presentation. Examples
 ~~~markdown
 Label -> Target
 ~~~
-The left part (`Label`) is the label to be presented or related to the triggerable element. The middle that appears as an arrow ( `->`) or a variation (according to the type), defines the divert. The right element (` Target`) defines the target knot, to be addressed when the divert is triggered.
+The left part is either a `Label` or a Logical `Expression`. `Label` is the label to be presented or related to the triggerable element; `Expression` is the logical expression to be evaluated. The middle that appears as an arrow ( `->`) or a variation (according to the type), defines the divert. The right element (` Target`) defines the target knot, to be addressed when the divert is triggered.
 
 There are three types of divert:
 
 ### Forward Divert
 ~~~markdown
-* Label -> Target
+* Label|Expression -> Target
 ~~~
 Deviates the course of the narrative to the target when triggered, i.e., the target knot is loaded and presented to the user.
 
 ### Round Divert `[under debate]`
 ~~~markdown
-* Label <-> Target
+* Label|Expression <-> Target
 ~~~
 Behaves similarly to the `Forward Divert`, but it returns to the origin (the knot where the divert was triggered) as soon as the user leaves the `Target` knot.
 
 ### Enclosed Divert `[under debate]`
 ~~~markdown
-* Label (-) Target Knot
-* Label (-) "Enclosed Text"
+* Label|Expression (-) Target Knot
+* Label|Expression (-) "Enclosed Text"
 ~~~
 Does not deviates the course of the narrative. It instead presents in the body of the current knot:
 - The content of the `Target Knot`.
 - An `Enclosed Text`. In this case, the text must be in quotes.
+
+### Using Expressions
+A logical expression can be written and, when the condition is met inside the node, it triggers the divert.
+
+Example:
+~~~markdown
+* Case.parameter == "description-ekg" -> Description
+* Case.parameter == "ekg-description" -> EKG
+~~~
+
+### Informing Parameters
+It is possible to inform a parameter after the target knot name. This parameter is a value or set of values that can be informed to the target knot when the divert is triggered.
+
+The simplest parameter format is a value between quotation marks:
+~~~markdown
+* Submit -> Notice Board "very good!"
+~~~
 
 ## Entity
 Refers to a entity in the scene.
@@ -101,7 +118,7 @@ The current version uses `@` indicate the entity.
 
 ## Input
 
-~~~makdown
+~~~markdown
 ? <variable>
   * type: <input subtype>
   * rows: <rows>
@@ -142,6 +159,9 @@ The next example shows how to add a divert in each option, i.e., if a player cho
   * vocabularies: mesh
   * right answers: pericarditis, myopericarditis -> Show Right
   * wrong answers: infarction, myocardial infarction -> Show Wrong
+
+* hypothesis is right -> Show Right
+* hypothesis is wrong -> Show Wrong
 ~~~
 
 A math example:
@@ -167,23 +187,31 @@ Patient ... :chest pain:+: ... :pain in the chest(chest pain):+:
 
 ## Annotation
 
-Elements from the narrative and user inputs are annotated and connected to structured data and knowledge structures defined in the Data-driven Layer, like dictionaries and ontologies. These structures are connected with external knowledge bases, e.g., [MeSH](https://www.nlm.nih.gov/mesh/meshhome.html) - Medical Subject Headings. This layer is designed to be consumed by machines to support the automation of tasks as evaluation and feedback. 
+Elements from the narrative and user inputs are annotated and connected to structured data and knowledge representation systems. We will use this term to refer generically to controlled vocabularies, taxonomies, thesaurus, ontologies, etc. An example of a knowledge representation system is [MeSH](https://www.nlm.nih.gov/mesh/meshhome.html) - Medical Subject Headings.
 
-Segments between braces are annotated. Annotations connect terms and expressions to the Data-driven Layer. The following text has annotated terms, which are aligned to medical knowledge basis. 
+Segments between braces are annotated. 
 
 For example, the following narrative present symptoms of a patient:
 > Patient a man 55 years old; rather fat; subject to frequent attacks of winter cough, with asthmatic tendency.
 
-Some key characteristics and symptoms of the patient were annotated, so they can be interpreted by machines:
-> Patient a {man} {55 years old}; rather fat; subject to frequent attacks of winter {cough}, with {asthmatic} tendency.
+Some key characteristics and symptoms of the patient were annotated:
+> Patient a {man} {55 years old}; rather fat; subject to frequent attacks of {winter cough}, with {asthmatic} tendency.
 
-Some of the terms were not automatically recognized in the knowledge base. An equivalent term is presented between parenthesis beside the term (this second term is not presented to the case rendering):
-> Patient a {man(male)} {55 years old(aging=51)}; rather fat; subject to frequent attacks of winter {cough}, with {asthmatic(asthma)} tendency.
+Whenever a segment is annotated, the translator tries to automatically relate it to a knowledge representation system.
+
+It is possible to attach literal or formal annotations to the annotated terms. They come between parenthesis after the annotated term and are not presented when the text is rendered. Literal annotations are written in quotes, as follows:
+> Patient a {man} {55 years old}("the age is important in this case"); rather fat; subject to frequent attacks of {winter cough}("it was winter when he came"), with {asthmatic} tendency.
+
+Formal annotations do not come in quotes. They are meant to be interpreted by machines, therefore, they must be connected to a knowledge representation system. A usual application is when an annotated term cannot be automatically related to a knowledge representation system. In this case, an equivalent formal term is presented between parenthesis beside the term. The following text has annotated terms, which are aligned to a medical knowledge basis.
+
+> Patient a {man}(male) {55 years old}(aging=51); rather fat; subject to frequent attacks of winter {cough}, with {asthmatic}(asthma) tendency.
+
+Annotations can be seen as the connection of segments to the Data-driven Layer. This layer is designed to be consumed by machines to support the automation of tasks as evaluation and feedback. This Data-driven Layer also defines how segments are associated with external knowledge representation systems as MeSH. It can define global associations or they can be guided by an annotation context, detailed in the next section.
 
 ## Annotation Context
 A block of annotation context can be defined between double braces. The block defines a semantic context for the narrative and the respective annotations. The context guides the interpretation of parts of the narrative. The following example presents a `symptoms` annotation context.
 > {{symptoms
 
-> Patient a {man(male)} {55 years old(aging=51)}; rather fat; subject to frequent attacks of winter {cough}, with {asthmatic(asthma)} tendency.
+> Patient a {man}(male) {55 years old}(aging=51); rather fat; subject to frequent attacks of winter {cough}, with {asthmatic}(asthma) tendency.
 
 > }}
