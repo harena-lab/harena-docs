@@ -82,14 +82,14 @@ or
 ```
 
 ## Annotation
-* Sentence outside: `{ [natural] ([formal]) } / [context value] /`
-* Expression outside: `\{([^\(\{\}\/]+)\}(?:\(([^\)]+)\))?(?:\/([^\/]+)\/)?`
+* Sentence outside: `{ [natural] } ([formal])`
+* Expression outside: `\{([^\}\n\r\f]+)\}(?:\(([^\)\n\r\f]+)\))?`
   * Group #1: natural
   * Group #2: formal
   * Group #3: context value (intended for evaluations based on selects)
 ![Annotation Outside](expressions/annotation-outside.png)
 * Sentence inside: `[expression] =|: [specification] / [rate]`
-* Expression inside: `([\w \t\+\-\*"]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?`
+* Expression inside: `([^=\:\n\r\f]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?`
   * Group #1: expression
   * Group #2: specification
   * Group #3: rate
@@ -441,8 +441,8 @@ no HTML
 ```
 
 ## Select
-* Sentence: `{ [natural] ([formal]) } / [context value] /`
-* Expression: `\{([^\(\{\}\/]+)\}(?:\(([^\)]+)\))?(?:\/([^\/]+)\/)`
+* Sentence: `{ [natural] } ([formal]) / [context value] /`
+* Expression: `\{([^\}\n\r\f]+)\}(?:\(([^\)\n\r\f]+)\))?(?:\/([^\/\n\r\f]+)\/)`
   * Group #1: natural
   * Group #2: formal (extracted in an annotation)
   * Group #3: context value
