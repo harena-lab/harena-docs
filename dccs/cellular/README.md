@@ -817,6 +817,17 @@ _______________w
 <subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
 ~~~
 
+## Flow Policy
+
+* `-+` - the origin decreases its value and the target increases its value;
+* `+-` - the origin increases its value and the target decreases its value;
+* `=` - the origin transfers its value to the target;
+* `-` - the origin transfers its value to the destination and decreasing it in the process;
+* `+` - the origin transfers its value to the destination and increasing it in the process;
+* `==` - the origin copies its value to the destination;
+* `1` - the origin changes its class if the value is one;
+* `0`- the origin changes its class if the value is zero.
+
 ~~~html
 <dcc-space-cellular id="cellular-space" rows="30" cols="30" cell-width="10" cell-height="10" grid>
 _
@@ -846,12 +857,12 @@ _____________########
   <property-dcc name="value" initial="500"></property-dcc>
 </dcc-cell-color>
 <dcc-cell-color type="#" label="wall" color="#aaaaaa"></dcc-cell-color>
-<rule-dcc-cell-flow label="spread random 1" probability="100" transition="w_>ww">
+<rule-dcc-cell-flow label="spread random 1" probability="100" transition="w_>ww" flow="-1">
    ***
    *_*
    ***
 </rule-dcc-cell-flow>
-<rule-dcc-cell-flow label="spread random 2" probability="100" transition="ww>ww">
+<rule-dcc-cell-flow label="spread random 2" probability="100" transition="ww>ww" flow="-+">
    ***
    *_*
    ***
@@ -870,61 +881,292 @@ _____________########
 ~~~
 
 ~~~html
-<dcc-space-cellular id="cellular-space" rows="30" cols="30" cell-width="7" cell-height="7" grid>
-_______________w
-_
-_
-_
-_
-_
-_
-_
-_
-_
-_
-_
-_
-___####__#############__#####__#########
+<dcc-space-cellular id="cellular-space" cell-width="10" cell-height="10">
+swwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 </dcc-space-cellular>
-
-<dcc-cell-color type="w" label="water" color="#0000ff" opacity="10">
-  <property-dcc name="value" initial="500"></property-dcc>
+<dcc-cell-color type="w" label="wire type 1" color="#00ff00"></dcc-cell-color>
+<dcc-cell-color type="s" label="energy source" color="#808000">
+  <property-dcc name="value" initial="45"></property-dcc>
 </dcc-cell-color>
-<dcc-cell-color type="#" label="wall" color="#aaaaaa"></dcc-cell-color>
-<rule-dcc-cell-flow label="spread down" probability="100" transition="w_>ww">
-   ___
-   ___
-   _*_
+<dcc-cell-color type="e" label="eletron" color="#0000ff" opacity="45"></dcc-cell-color>
+
+<rule-dcc-cell-flow label="create energy" probability="100" transition="sw>se" flow="==">
+***
+*_*
+***
 </rule-dcc-cell-flow>
-<rule-dcc-cell-flow label="spread oblique" probability="90" transition="w_>ww">
-   ___
-   ___
-   *_*
+<rule-dcc-cell-flow label="follow wire" probability="100" transition="ew>we" flow="-">
+***
+*_*
+***
 </rule-dcc-cell-flow>
-<rule-dcc-cell-flow label="spread lateral" probability="80" transition="w_>ww">
-   ___
-   *_*
-   ___
-</rule-dcc-cell-flow>
-<rule-dcc-cell-flow label="balance down" probability="100" transition="ww>ww">
-   ___
-   ___
-   _*_
-</rule-dcc-cell-flow>
-<rule-dcc-cell-flow label="balance oblique" probability="80" transition="ww>ww">
-   ___
-   ___
-   *_*
-</rule-dcc-cell-flow>
-<rule-dcc-cell-flow label="balance lateral" probability="40" transition="ww>ww">
-   ___
-   *_*
-   ___
+<rule-dcc-cell-flow label="dies" probability="100" transition="ew>ww" flow="1">
+***
+*_*
+***
 </rule-dcc-cell-flow>
 
 <dcc-trigger label="Next" action="state/next"></dcc-trigger>
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
 <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
+
+<dcc-timer cycles="10000" interval="100" publish="state/next">
+   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+</dcc-timer>
+
+<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+~~~
+
+
+
+~~~html
+<dcc-space-cellular-editor id="cellular-space" cell-width="50" cell-height="50" grid>
+r__r_r
+__r_r_
+______
+______
+t_t__t
+</dcc-space-cellular-editor>
+
+<dcc-cell-image type="r" label="rock" image="images/cell/rock01.svg">
+</dcc-cell-image>
+<dcc-cell-image type="t" label="tree" image="images/cell/tree01.svg"></dcc-cell-image>
+
+<rule-dcc-cell-pair label="fall" probability="100" transition="r_>_r">
+___
+___
+_*_
+</rule-dcc-cell-pair>
+
+<dcc-trigger label="Next" action="state/next"></dcc-trigger>
+<dcc-trigger label="Play" action="timer/start"></dcc-trigger>
+
+<dcc-trigger label="Empty" action="type/empty"></dcc-trigger>
+<dcc-trigger label="Rock" action="type/rock"></dcc-trigger>
+<dcc-trigger label="Tree" action="type/tree"></dcc-trigger>
+
+<dcc-timer cycles="10" interval="1000" publish="state/next">
+   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+</dcc-timer>
+
+<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
+~~~
+
+~~~html
+<dcc-space-cellular-editor id="cellular-space" label="sand clock" cell-width="6" cell-height="6">
+#############################################
+#...........................................#
+#...........................................#
+#...........................................#
+#...........................................#
+##.........................................##
+_#.........................................#_
+_##.......................................##_
+__#.......................................#__
+__##.....................................##__
+___#.....................................#___
+___##...................................##___
+____#...................................#____
+____##.................................##____
+_____##...............................##_____
+______##.............................##______
+_______##...........................##_______
+________##.........................##________
+_________##.......................##_________
+__________##.....................##__________
+___________###.................###___________
+_____________###.............###_____________
+_______________###.........###_______________
+_________________###.....###_________________
+___________________##___##___________________
+___________________##___##___________________
+_________________###_____###_________________
+_______________###_________###_______________
+_____________###_____________###_____________
+___________###_________________###___________
+__________##_____________________##__________
+_________##_______________________##_________
+________##_________________________##________
+_______##___________________________##_______
+______##_____________________________##______
+_____##_______________________________##_____
+____##_________________________________##____
+____#___________________________________#____
+___##___________________________________##___
+___#_____________________________________#___
+__##_____________________________________##__
+__#_______________________________________#__
+_##_______________________________________##_
+_#_________________________________________#_
+##_________________________________________##
+#___________________________________________#
+#___________________________________________#
+#___________________________________________#
+#___________________________________________#
+#############################################
+</dcc-space-cellular-editor>
+
+<dcc-cell-color type="#" label="glass" color="#0000ff"></dcc-cell-color>
+
+<dcc-cell-color type="." label="sand" color="#ff0000"></dcc-cell-color>
+<rule-dcc-cell-pair label="fall vertical" probability="100" transition="._>_.">
+___
+___
+_*_
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="fall oblique" probability="90" transition="._>_.">
+___
+___
+*_*
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="roll" probability="40" transition="._>_.">
+___
+*_*
+___
+</rule-dcc-cell-pair>
+
+<dcc-trigger label="Next" action="state/next"></dcc-trigger>
+<dcc-trigger label="Play" action="timer/start"></dcc-trigger>
+<dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
+
+<dcc-trigger label="Empty" action="type/empty"></dcc-trigger>
+<dcc-trigger label="Glass" action="type/glass"></dcc-trigger>
+<dcc-trigger label="Sand" action="type/sand"></dcc-trigger>
+
+<dcc-timer cycles="800" interval="50" publish="state/next">
+   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+</dcc-timer>
+
+<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
+~~~
+
+
+~~~html
+<dcc-space-cellular-editor id="cellular-space" cell-width="32" cell-height="32" background-color="#aaffaa">
+__c_____h___hhc____h
+_____t____t____r____
+________w________h__
+h__c_twwwww___t_____
+___t_wwwwwww______c_
+____h__wwwwwtt__t___
+c_t______wwr_____r__
+_____c______t_______
+_h_____r______hc____
+</dcc-space-cellular-editor>
+
+<dcc-cell-color type="w" label="water" color="#0000ff"></dcc-cell-color>
+<dcc-cell-image type="r" label="rock" image="images/cell/rock01.svg"></dcc-cell-image>
+<dcc-cell-image type="t" label="tree"image="images/cell/tree01.svg"></dcc-cell-image>
+
+<dcc-cell-image type="c" label="carnivore" image="images/cell/carnivorous-dinosaur.svg">
+</dcc-cell-image>
+
+<dcc-cell-image type="h" label="herbivore" image="images/cell/brontosaurus.svg">
+</dcc-cell-image>
+
+<rule-dcc-cell-pair label="carnivore eat and replicates" probability="30" transition="ch>cc">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="herbivore replicates" probability="50" transition="h_>hh">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="herbivore moves" probability="50" transition="h_>_h">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="carnivore moves" probability="50" transition="c_>_c">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="herbivore dies" probability="10" transition="h?>_?">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="carnivore dies" probability="10" transition="c?>_?">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+
+<dcc-trigger label="Next" action="state/next"></dcc-trigger>
+<dcc-trigger label="Play" action="timer/start"></dcc-trigger>
+<dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
+
+<dcc-trigger label="Empty" action="type/empty"></dcc-trigger>
+<dcc-trigger label="Water" action="type/water"></dcc-trigger>
+<dcc-trigger label="Rock" action="type/rock"></dcc-trigger>
+<dcc-trigger label="Tree" action="type/tree"></dcc-trigger>
+<dcc-trigger label="Carnivore" action="type/carnivore"></dcc-trigger>
+<dcc-trigger label="Herbivore" action="type/herbivore"></dcc-trigger>
+
+<dcc-timer cycles="1000" interval="500" publish="state/next">
+   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+</dcc-timer>
+
+<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
+~~~
+
+~~~html
+<dcc-space-cellular-editor id="cellular-space" rows="30" cols="30" cell-width="10" cell-height="10" grid>
+_
+_
+____________####
+__________###__###
+_________##______##
+______####___w____###
+_____##_____________######
+__####___________________##
+_###############__________##
+_#_________________________#
+##_________________________##
+#___________________________#
+##_________________________##
+_#_________________________#
+_##########__________#######
+__________##________##
+_______####__________####
+_______#________________##
+_______###_____________##
+_________#####______####
+_____________########
+</dcc-space-cellular-editor>
+
+<dcc-cell-color type="w" label="water" color="#0000ff" opacity="10">
+  <property-dcc name="value" initial="500"></property-dcc>
+</dcc-cell-color>
+<dcc-cell-color type="#" label="wall" color="#aaaaaa"></dcc-cell-color>
+
+<rule-dcc-cell-flow label="spread random 1" probability="100" transition="w_>ww">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-flow>
+<rule-dcc-cell-flow label="spread random 2" probability="100" transition="ww>ww">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-flow>
+
+<dcc-trigger label="Next" action="state/next"></dcc-trigger>
+<dcc-trigger label="Play" action="timer/start"></dcc-trigger>
+<dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
+
+<dcc-trigger label="Empty" action="type/empty"></dcc-trigger>
+<dcc-trigger label="Water" action="type/water"></dcc-trigger>
+<dcc-trigger label="Wall" action="type/wall"></dcc-trigger>
 
 <dcc-timer cycles="500" interval="100" publish="state/next">
    <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
@@ -932,4 +1174,5 @@ ___####__#############__#####__#########
 </dcc-timer>
 
 <subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
 ~~~
