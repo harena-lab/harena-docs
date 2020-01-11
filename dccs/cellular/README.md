@@ -824,47 +824,66 @@ In the following sentences, all items listed as "conditions" must be true to tri
   * conditions:
     * the origin's value is greater than 1
     * the origin's value is greater than the target's value
-  * action:  
+  * action:
     * the origin decreases its value and the target increases its value
 * `+-`
-  * the target's value is greater than 1
-  * the origin has a value field
-  * the origin increases its value and the target decreases its value
+  * conditions:
+    * the target's value is greater than 1
+    * the origin has a value field
+  * action:
+    * the origin increases its value and the target decreases its value
 * `-1`
-  * the origin's value is greater than 1
-  * the origin's value is greater than the target's value or the target has no value
-  * the origin sets value 1 to the target and decreases its value;
+  * conditions:
+    * the origin's value is greater than 1
+    * the origin's value is greater than the target's value or the target has no value
+  * action:
+    * the origin sets value 1 to the target and decreases its value;
 * `_=`
-  * the origin's value is greater than 0
-  * the origin's value is greater than the target's value or the target has no value
-  * the origin transfers its value to the target
+  * conditions:
+    * the origin's value is greater than 0
+    * the origin's value is greater than the target's value or the target has no value
+  * action:
+    * the origin transfers its value to the target
 * `_-`
-  * the origin's value is greater than 1
-  * the value of the origin is greater than the value of the target or the target has no value
-  * the origin transfers its value to the destination, decreasing it in the process;
+  * conditions:
+    * the origin's value is greater than 1
+    * the value of the origin is greater than the value of the target or the target has no value
+  * action:
+    * the origin transfers its value to the destination, decreasing it in the process;
 * `_+`
-  * the origin has a value
-  * the origin's value+1 is greater than the target's value
-  * the origin transfers its value to the destination, increasing it in the process;
+  * conditions:
+    * the origin has a value
+    * the origin's value+1 is greater than the target's value
+  * action:
+    * the origin transfers its value to the destination, increasing it in the process;
 * `==`
-  * the origin's value is greater than 0
-  * the origin's value is greater than the target's value or the target has no value
-  * the origin copies its value to the target
+  * conditions:
+    * the origin's value is greater than 0
+    * the origin's value is greater than the target's value or the target has no value
+  * action:
+    * the origin copies its value to the target
 * `=-`
-  * the origin's value is greater than 1
-  * the origin's value is greater than the target's value or the target has no value
-  * the origin copies its value to the target, decreasing it in the process
+  * conditions:
+    * the origin's value is greater than 1
+    * the origin's value is greater than the target's value or the target has no value
+  * action:
+    * the origin copies its value to the target, decreasing it in the process
 * `=+`
-   * the origin has a value
-  * the origin's value+1 is greater than the target's value
-  * the origin copies its value to the target, increasing it in the process
+  * conditions:
+    * the origin has a value
+    * the origin's value+1 is greater than the target's value
+  * action:
+    * the origin copies its value to the target, increasing it in the process
 * `1` 
-  * the origin's value is 1
-  * the rule is applied
+  * condition:
+    * the origin's value is 1
+  * action:
+    * the rule is applied
 * `0` 
-  * the origin's value is 0
-  * the rule is applied
-
+  * condition:
+    * the origin's value is 0
+  * action:
+    * the rule is applied
 
 ~~~html
 <dcc-space-cellular id="cellular-space" rows="30" cols="30" cell-width="10" cell-height="10" grid>
