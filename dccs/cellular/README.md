@@ -496,12 +496,22 @@ _h_____r______hc____
 <dcc-cell-image type="h" label="herbivore" image="images/cell/brontosaurus.svg">
 </dcc-cell-image>
 
+<rule-dcc-cell-pair label="herbivore dies" probability="15" transition="hh>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="carnivore dies" probability="10" transition="cc>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
 <rule-dcc-cell-pair label="carnivore eat and replicates" probability="30" transition="ch>cc">
    ***
    *_*
    ***
 </rule-dcc-cell-pair>
-<rule-dcc-cell-pair label="herbivore replicates" probability="50" transition="h_>hh">
+<rule-dcc-cell-pair label="herbivore replicates" probability="30" transition="h_>hh">
    ***
    *_*
    ***
@@ -515,16 +525,6 @@ _h_____r______hc____
    ***
    *_*
    ***
-</rule-dcc-cell-pair>
-<rule-dcc-cell-pair label="herbivore dies" probability="10" transition="h?>_?">
-   ___
-   _*_
-   ___
-</rule-dcc-cell-pair>
-<rule-dcc-cell-pair label="carnivore dies" probability="10" transition="c?>_?">
-   ___
-   _*_
-   ___
 </rule-dcc-cell-pair>
 
 <dcc-trigger label="Next" action="state/next"></dcc-trigger>
@@ -849,13 +849,20 @@ In the following sentences, all items listed as "conditions" must be true to tri
     * the origin's value is greater than 1
     * the value of the origin is greater than the value of the target or the target has no value
   * action:
-    * the origin transfers its value to the destination, decreasing it in the process;
+    * the origin transfers its value to the destination, decreasing it in the process
 * `_+`
   * conditions:
     * the origin has a value
     * the origin's value+1 is greater than the target's value
   * action:
-    * the origin transfers its value to the destination, increasing it in the process;
+    * the origin transfers its value to the destination, increasing it in the process
+* `_/`
+  * calculates a share rate, which is the value origin equally divided by the neighbors
+  * conditions:
+    * the share rate is greater than 1
+    * the share rate is greater than the value of the target or the target has no value
+  * action:
+    * the origin transfers a share rate to the destination, decreasing it from the origin;
 * `==`
   * conditions:
     * the origin's value is greater than 0
@@ -874,6 +881,13 @@ In the following sentences, all items listed as "conditions" must be true to tri
     * the origin's value+1 is greater than the target's value
   * action:
     * the origin copies its value to the target, increasing it in the process
+* `=/`
+  * calculates a share rate, which is the value origin equally divided by the neighbors
+  * conditions:
+    * the share rate is greater than 1
+    * the share rate is greater than the value of the target or the target has no value
+  * action:
+    * the origin copies the share rate to the destination
 * `1` 
   * condition:
     * the origin's value is 1
@@ -952,7 +966,7 @@ swwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 *_*
 ***
 </rule-dcc-cell-flow>
-<rule-dcc-cell-flow label="follow wire" probability="100" transition="ew>we" flow="-">
+<rule-dcc-cell-flow label="follow wire" probability="100" transition="ew>we" flow="_-">
 ***
 *_*
 ***
@@ -1125,6 +1139,16 @@ _h_____r______hc____
 <dcc-cell-image type="h" label="herbivore" image="images/cell/brontosaurus.svg">
 </dcc-cell-image>
 
+<rule-dcc-cell-pair label="herbivore dies" probability="10" transition="hh>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="carnivore dies" probability="10" transition="cc>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
 <rule-dcc-cell-pair label="carnivore eat and replicates" probability="30" transition="ch>cc">
    ***
    *_*
@@ -1144,16 +1168,6 @@ _h_____r______hc____
    ***
    *_*
    ***
-</rule-dcc-cell-pair>
-<rule-dcc-cell-pair label="herbivore dies" probability="10" transition="h?>_?">
-   ___
-   _*_
-   ___
-</rule-dcc-cell-pair>
-<rule-dcc-cell-pair label="carnivore dies" probability="10" transition="c?>_?">
-   ___
-   _*_
-   ___
 </rule-dcc-cell-pair>
 
 <dcc-trigger label="Next" action="state/next"></dcc-trigger>
@@ -1232,4 +1246,522 @@ _____________########
 
 <subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
 <subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
+~~~
+
+
+# Ecosystem
+
+~~~html
+<dcc-space-cellular id="cellular-space" cell-width="32" cell-height="32" background-color="#aaffaa">
+________________r___
+_____p____p_________
+__r_________________
+_____pwwwww___p_____
+___p_wwwwwww________
+_______wwwwwpp__p___
+__p______wwr________
+____________p_______
+_______r____________
+</dcc-space-cellular>
+
+<dcc-cell-color type="w" label="water" color="#0000ff"></dcc-cell-color>
+<dcc-cell-image type="r" label="rock" image="images/cell/rock01.svg"></dcc-cell-image>
+<dcc-cell-image type="p" label="plant" image="images/cell/plant01.svg"></dcc-cell-image>
+
+<rule-dcc-cell-pair id="plant-dies" label="plant dies" probability="15" transition="pp>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="plant-replicates" label="plant replicates" probability="30" transition="p_>pp">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+
+<dcc-trigger label="Next" action="state/next"></dcc-trigger>
+<dcc-trigger label="Play" action="timer/start"></dcc-trigger>
+<dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
+
+<dcc-slider variable="replicate" value="30" index>Chance de se multiplicar</dcc-slider>
+<dcc-slider variable="die" value="15" index>Chance de morrer</dcc-slider>
+
+<dcc-timer cycles="1000" interval="500" publish="state/next">
+   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+</dcc-timer>
+
+<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="plant-replicates" message="var/replicate/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="plant-dies" message="var/die/changed" role="probability"></subscribe-dcc>
+~~~
+
+~~~html
+<dcc-space-cellular id="cellular-space" cell-width="32" cell-height="32" background-color="#aaffaa">
+________h_____p____h
+_____p____p____r____
+________w________h__
+h____pwwwww___p_____
+___p_wwwwwww________
+____h__wwwwwpp__p___
+__p______wwr_____r__
+____________p_______
+_h_____r______h_____
+</dcc-space-cellular>
+
+<dcc-cell-color type="w" label="water" color="#0000ff"></dcc-cell-color>
+<dcc-cell-image type="r" label="rock" image="images/cell/rock01.svg"></dcc-cell-image>
+<dcc-cell-image type="p" label="plant" image="images/cell/plant01.svg"></dcc-cell-image>
+<dcc-cell-image type="h" label="herbivore" image="images/cell/brontosaurus.svg">
+</dcc-cell-image>
+
+<rule-dcc-cell-pair id="plant-dies" label="plant dies" probability="15" transition="pp>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="plant-replicates" label="plant replicates" probability="70" transition="p_>pp">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="herbivore-dies" label="herbivore dies" probability="10" transition="hh>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="herbivore-replicates" label="herbivore eat and replicates"
+                    probability="25" transition="hp>hh">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="herbivore moves" probability="50" transition="h_>_h">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+
+<dcc-trigger label="Next" action="state/next"></dcc-trigger>
+<dcc-trigger label="Play" action="timer/start"></dcc-trigger>
+<dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
+
+<dcc-slider variable="plant_replicates" value="70" index>Chance da planta se multiplicar</dcc-slider>
+<dcc-slider variable="plant_dies" value="15" index>Chance da planta morrer</dcc-slider>
+<dcc-slider variable="herbivore_replicates" value="25" index>Chance do herbívoro se multiplicar</dcc-slider>
+<dcc-slider variable="herbivore_dies" value="10" index>Chance do herbívoro morrer</dcc-slider>
+
+<dcc-timer cycles="1000" interval="500" publish="state/next">
+   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+</dcc-timer>
+
+<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="plant-replicates" message="var/plant_replicates/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="plant-dies" message="var/plant_dies/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="herbivore-replicates" message="var/herbivore_replicates/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="herbivore-dies" message="var/herbivore_dies/changed" role="probability">
+</subscribe-dcc>
+~~~
+
+~~~html
+<dcc-space-cellular id="cellular-space" cell-width="32" cell-height="32" background-color="#aaffaa">
+________h_____p____h
+___c_p____p____r____
+_____c__w________h__
+h____pwwwww___p_____
+___p_wwwwwww____c___
+____h__wwwwwpp__p___
+__p__c___wwr_____r__
+____________p_______
+_h_____r___c__h_____
+</dcc-space-cellular>
+
+<dcc-cell-color type="w" label="water" color="#0000ff"></dcc-cell-color>
+<dcc-cell-image type="r" label="rock" image="images/cell/rock01.svg"></dcc-cell-image>
+<dcc-cell-image type="p" label="plant" image="images/cell/plant01.svg"></dcc-cell-image>
+<dcc-cell-image type="h" label="herbivore" image="images/cell/brontosaurus.svg">
+</dcc-cell-image>
+<dcc-cell-image type="c" label="carnivore" image="images/cell/carnivorous-dinosaur.svg">
+</dcc-cell-image>
+
+<rule-dcc-cell-pair id="plant-dies" label="plant dies" probability="15" transition="pp>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="plant-replicates" label="plant replicates" probability="70" transition="p_>pp">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="herbivore-dies" label="herbivore dies" probability="10" transition="hh>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="herbivore-replicates" label="herbivore eat and replicates"
+                    probability="25" transition="hp>hh">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="herbivore moves" probability="50" transition="h_>_h">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="carnivore-dies" label="carnivore dies" probability="10" transition="cc>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="carnivore-replicates" label="carnivore eat and replicates"
+                    probability="25" transition="ch>cc">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="carnivore moves" probability="50" transition="c_>_c">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="carnivore moves" probability="50" transition="cp>pc">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+
+<dcc-trigger label="Next" action="state/next"></dcc-trigger>
+<dcc-trigger label="Play" action="timer/start"></dcc-trigger>
+<dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
+
+<dcc-slider variable="plant_replicates" value="70" index>Chance da planta se multiplicar</dcc-slider>
+<dcc-slider variable="plant_dies" value="15" index>Chance da planta morrer</dcc-slider>
+<dcc-slider variable="herbivore_replicates" value="25" index>Chance do herbívoro se multiplicar</dcc-slider>
+<dcc-slider variable="herbivore_dies" value="10" index>Chance do herbívoro morrer</dcc-slider>
+<dcc-slider variable="carnivore_replicates" value="25" index>Chance do carnívoro se multiplicar</dcc-slider>
+<dcc-slider variable="carnivore_dies" value="10" index>Chance do carnívoro morrer</dcc-slider>
+
+<dcc-timer cycles="1000" interval="500" publish="state/next">
+   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+</dcc-timer>
+
+<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="plant-replicates" message="var/plant_replicates/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="plant-dies" message="var/plant_dies/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="herbivore-replicates" message="var/herbivore_replicates/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="herbivore-dies" message="var/herbivore_dies/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="carnivore-replicates" message="var/carnivore_replicates/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="carnivore-dies" message="var/carnivore_dies/changed" role="probability">
+</subscribe-dcc>
+~~~
+
+~~~html
+<dcc-space-cellular-editor id="cellular-space" cell-width="32" cell-height="32" background-color="#aaffaa">
+________h_____p____h
+___c_p____p____r____
+_____c__w________h__
+h____pwwwww___p_____
+___p_wwwwwww____c___
+____h__wwwwwpp__p___
+__p__c___wwr_____r__
+____________p_______
+_h_____r___c__h_____
+</dcc-space-cellular-editor>
+
+<dcc-cell-color type="w" label="water" color="#0000ff"></dcc-cell-color>
+<dcc-cell-image type="r" label="rock" image="images/cell/rock01.svg"></dcc-cell-image>
+<dcc-cell-image type="p" label="plant" image="images/cell/plant01.svg"></dcc-cell-image>
+<dcc-cell-image type="h" label="herbivore" image="images/cell/brontosaurus.svg">
+</dcc-cell-image>
+<dcc-cell-image type="c" label="carnivore" image="images/cell/carnivorous-dinosaur.svg">
+</dcc-cell-image>
+
+<rule-dcc-cell-pair id="plant-dies" label="plant dies" probability="15" transition="pp>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="plant-replicates" label="plant replicates" probability="70" transition="p_>pp">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="herbivore-dies" label="herbivore dies" probability="10" transition="hh>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="herbivore-replicates" label="herbivore eat and replicates"
+                    probability="25" transition="hp>hh">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="herbivore moves" probability="50" transition="h_>_h">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="carnivore-dies" label="carnivore dies" probability="10" transition="cc>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="carnivore-replicates" label="carnivore eat and replicates"
+                    probability="25" transition="ch>cc">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="carnivore moves" probability="50" transition="c_>_c">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="carnivore moves" probability="50" transition="cp>pc">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+
+<dcc-trigger label="Next" action="state/next"></dcc-trigger>
+<dcc-trigger label="Play" action="timer/start"></dcc-trigger>
+<dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
+
+<dcc-trigger label="Nada" action="type/empty"></dcc-trigger>
+<dcc-trigger label="Água" action="type/water"></dcc-trigger>
+<dcc-trigger label="Pedra" action="type/rock"></dcc-trigger>
+<dcc-trigger label="Planta" action="type/plant"></dcc-trigger>
+<dcc-trigger label="Carnívoro" action="type/carnivore"></dcc-trigger>
+<dcc-trigger label="Herbívoro" action="type/herbivore"></dcc-trigger>
+
+<dcc-slider variable="plant_replicates" value="70" index>Chance da planta se multiplicar</dcc-slider>
+<dcc-slider variable="plant_dies" value="15" index>Chance da planta morrer</dcc-slider>
+<dcc-slider variable="herbivore_replicates" value="25" index>Chance do herbívoro se multiplicar</dcc-slider>
+<dcc-slider variable="herbivore_dies" value="10" index>Chance do herbívoro morrer</dcc-slider>
+<dcc-slider variable="carnivore_replicates" value="25" index>Chance do carnívoro se multiplicar</dcc-slider>
+<dcc-slider variable="carnivore_dies" value="10" index>Chance do carnívoro morrer</dcc-slider>
+
+<dcc-timer cycles="1000" interval="500" publish="state/next">
+   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+</dcc-timer>
+
+<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="plant-replicates" message="var/plant_replicates/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="plant-dies" message="var/plant_dies/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="herbivore-replicates" message="var/herbivore_replicates/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="herbivore-dies" message="var/herbivore_dies/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="carnivore-replicates" message="var/carnivore_replicates/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="carnivore-dies" message="var/carnivore_dies/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
+~~~
+
+~~~html
+<div style="width: 100%; display:flex; flex-direction:row">
+
+<div style="flex:50%">
+<dcc-space-cellular-editor id="cellular-space" cell-width="32" cell-height="32" background-color="#aaffaa">
+________h________c__
+____p_______p_______
+________h_____p____h
+___c_p____p____r____
+_____c__w________h__
+h____pwwwww___p_____
+___p_wwwwwww____c___
+____h__wwwwwpp__p___
+__p__c___wwr_____r__
+____________p_______
+_h_____r___c__h_____
+___ppp___________r__
+___________p________
+_____h______________
+</dcc-space-cellular-editor>
+
+<dcc-cell-color type="w" label="water" color="#0000ff"></dcc-cell-color>
+<dcc-cell-image type="r" label="rock" image="images/cell/rock01.svg"></dcc-cell-image>
+<dcc-cell-image type="p" label="plant" image="images/cell/plant01.svg"></dcc-cell-image>
+<dcc-cell-image type="h" label="herbivore" image="images/cell/brontosaurus.svg">
+</dcc-cell-image>
+<dcc-cell-image type="c" label="carnivore" image="images/cell/carnivorous-dinosaur.svg">
+</dcc-cell-image>
+
+<rule-dcc-cell-pair id="plant-dies" label="plant dies" probability="15" transition="pp>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="plant-replicates" label="plant replicates" probability="70" transition="p_>pp">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="herbivore-dies" label="herbivore dies" probability="10" transition="hh>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="herbivore-replicates" label="herbivore eat and replicates"
+                    probability="25" transition="hp>hh">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="herbivore moves" probability="50" transition="h_>_h">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="carnivore-dies" label="carnivore dies" probability="10" transition="cc>__">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="carnivore-replicates" label="carnivore eat and replicates"
+                    probability="25" transition="ch>cc">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="carnivore moves" probability="50" transition="c_>_c">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="carnivore moves" probability="50" transition="cp>pc">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+
+<div>
+   <dcc-trigger label="Próximo" action="state/next"></dcc-trigger>
+   <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
+   <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
+   <dcc-trigger label="Gravar" action="state/save"></dcc-trigger>
+</div>
+</div>
+
+<div style="flex:50%">
+Selecione um dos ícones abaixo para editar o ambiente:
+<div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
+   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
+      <dcc-trigger label="Água" action="type/water"
+                   image="images/cell/waves.svg">
+      </dcc-trigger>
+   </div>
+   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
+      <dcc-trigger label="Rocha" action="type/rock"
+                   image="images/cell/rock01.svg">
+      </dcc-trigger>
+   </div>
+   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
+      <dcc-trigger label="Planta" action="type/plant"
+                   image="images/cell/plant01.svg">
+      </dcc-trigger>
+   </div>
+   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
+      <dcc-trigger label="Herbívoro" action="type/herbivore"
+                   image="images/cell/brontosaurus.svg">
+      </dcc-trigger>
+   </div>
+   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
+      <dcc-trigger label="Carnívoro" action="type/carnivore"
+                   image="images/cell/carnivorous-dinosaur.svg">
+      </dcc-trigger>
+   </div>
+   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
+      <dcc-trigger label="Nada" action="type/empty"
+                   image="images/cell/cell-green.svg">
+      </dcc-trigger>
+   </div>
+</div>
+
+Selecione abaixo a chance de cada um dos eventos:
+<div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
+   <img src="images/cell/plant01.svg" style="flex:10%; max-width:48px; max-height:48px">
+   <img src="images/cell/plant01.svg" style="flex:10%; max-width:48px; max-height:48px">
+   <div style="flex:50%; max-height:48px; margin-right:10px">
+      <dcc-slider variable="plant_replicates" value="70" index></dcc-slider>
+   </div>
+</div>
+<div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
+   <div style="flex:20%; max-width:96px; max-height:48px">
+      <img style="max-width:96px; max-height:48px; margin-left:24px; margin-right:24px"
+           src="images/cell/plant-dies.svg">
+   </div>
+   <div style="flex:50%; max-height:48px; margin-right:10px">
+      <dcc-slider variable="plant_dies" value="15" index></dcc-slider>
+   </div>
+</div>
+<div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
+   <img src="images/cell/brontosaurus.svg" style="flex:10%; max-width:48px; max-height:48px">
+   <img src="images/cell/brontosaurus.svg" style="flex:10%; max-width:48px; max-height:48px">
+   <div style="flex:50%; max-height:48px; margin-right:10px">
+      <dcc-slider variable="herbivore_replicates" value="25" index></dcc-slider>
+   </div>
+</div>
+<div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
+   <div style="flex:20%; max-width:96px; max-height:48px">
+      <img style="max-width:96px; max-height:48px; margin-left:24px; margin-right:24px"
+           src="images/cell/brontosaurus-dies.svg" style="flex:10%; max-width:48px; max-height:48px">
+   </div>
+   <div style="flex:50%; max-height:48px; margin-right:10px">
+      <dcc-slider variable="herbivore_dies" value="10" index></dcc-slider>
+   </div>
+</div>
+<div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
+   <img src="images/cell/carnivorous-dinosaur.svg" style="flex:10%; max-width:48px; max-height:48px">
+   <img src="images/cell/carnivorous-dinosaur.svg" style="flex:10%; max-width:48px; max-height:48px">
+   <div style="flex:50%; max-height:48px; margin-right:10px">
+      <dcc-slider variable="carnivore_replicates" value="25" index></dcc-slider>
+   </div>
+</div>
+<div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
+   <div style="flex:20%; max-width:96px; max-height:48px">
+      <img style="max-width:96px; max-height:48px; margin-left:24px; margin-right:24px"
+           src="images/cell/carnivorous-dinosaur-dies.svg" style="flex:10%; max-width:48px; max-height:48px">
+   </div>
+   <div style="flex:50%; max-height:48px; margin-right:10px">
+      <dcc-slider variable="carnivore_dies" value="10" index></dcc-slider>
+   </div>
+</div>
+
+<dcc-timer cycles="1000" interval="500" publish="state/next">
+   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+</dcc-timer>
+
+<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="plant-replicates" message="var/plant_replicates/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="plant-dies" message="var/plant_dies/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="herbivore-replicates" message="var/herbivore_replicates/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="herbivore-dies" message="var/herbivore_dies/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="carnivore-replicates" message="var/carnivore_replicates/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="carnivore-dies" message="var/carnivore_dies/changed" role="probability">
+</subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/save" role="serialize"></subscribe-dcc>
+
+</div>
+</div>
 ~~~
