@@ -838,6 +838,13 @@ In the following sentences, all items listed as "conditions" must be true to tri
     * the origin's value is greater than the target's value or the target has no value
   * action:
     * the origin sets value 1 to the target and decreases its value;
+* `-/`
+  * calculates a share rate, which is the value origin equally divided by the neighbors
+  * conditions:
+    * the share rate is greater than 1
+   * the source minus the share rate is equal or greater than the value of the target or the target has no value
+  * action:
+    * the origin transfers a share rate to the destination, decreasing it from the origin;
 * `_=`
   * conditions:
     * the origin's value is greater than 0
@@ -856,13 +863,6 @@ In the following sentences, all items listed as "conditions" must be true to tri
     * the origin's value+1 is greater than the target's value
   * action:
     * the origin transfers its value to the destination, increasing it in the process
-* `_/`
-  * calculates a share rate, which is the value origin equally divided by the neighbors
-  * conditions:
-    * the share rate is greater than 1
-    * the share rate is greater than the value of the target or the target has no value
-  * action:
-    * the origin transfers a share rate to the destination, decreasing it from the origin;
 * `==`
   * conditions:
     * the origin's value is greater than 0
@@ -885,7 +885,7 @@ In the following sentences, all items listed as "conditions" must be true to tri
   * calculates a share rate, which is the value origin equally divided by the neighbors
   * conditions:
     * the share rate is greater than 1
-    * the share rate is greater than the value of the target or the target has no value
+    * the source minus the share rate is equal or greater than the value of the target or the target has no value
   * action:
     * the origin copies the share rate to the destination
 * `1` 
