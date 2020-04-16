@@ -1636,6 +1636,155 @@ _h_____r___c__h_____
 <div style="width: 100%; display:flex; flex-direction:row">
 
 <div style="flex:50%">
+<dcc-space-cellular-editor id="cellular-space" label="sand clock" cell-width="6" cell-height="6">
+#############################################
+#...........................................#
+#...........................................#
+#...........................................#
+#...........................................#
+##.........................................##
+_#.........................................#_
+_##.......................................##_
+__#.......................................#__
+__##.....................................##__
+___#.....................................#___
+___##...................................##___
+____#...................................#____
+____##.................................##____
+_____##...............................##_____
+______##.............................##______
+_______##...........................##_______
+________##.........................##________
+_________##.......................##_________
+__________##.....................##__________
+___________###.................###___________
+_____________###.............###_____________
+_______________###.........###_______________
+_________________###.....###_________________
+___________________##___##___________________
+___________________##___##___________________
+_________________###_____###_________________
+_______________###_________###_______________
+_____________###_____________###_____________
+___________###_________________###___________
+__________##_____________________##__________
+_________##_______________________##_________
+________##_________________________##________
+_______##___________________________##_______
+______##_____________________________##______
+_____##_______________________________##_____
+____##_________________________________##____
+____#___________________________________#____
+___##___________________________________##___
+___#_____________________________________#___
+__##_____________________________________##__
+__#_______________________________________#__
+_##_______________________________________##_
+_#_________________________________________#_
+##_________________________________________##
+#___________________________________________#
+#___________________________________________#
+#___________________________________________#
+#___________________________________________#
+#############################################
+</dcc-space-cellular-editor>
+
+<dcc-cell-color type="#" label="glass" color="#57c86e"></dcc-cell-color>
+
+<dcc-cell-color type="." label="sand" color="#7f8395"></dcc-cell-color>
+<rule-dcc-cell-pair id="fall-vertical" label="fall vertical" probability="100" transition="._>_.">
+___
+___
+_*_
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="fall-oblique" label="fall oblique" probability="90" transition="._>_.">
+___
+___
+*_*
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair id="roll" label="roll" probability="40" transition="._>_.">
+___
+*_*
+___
+</rule-dcc-cell-pair>
+
+<div>
+   <dcc-trigger label="Próximo" action="state/next"></dcc-trigger>
+   <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
+   <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
+   <dcc-trigger label="Gravar" action="state/save"></dcc-trigger>
+   <dcc-trigger label="Ler" action="state/load"></dcc-trigger>
+   <dcc-trigger label="Baixar" action="state/download"></dcc-trigger>
+</div>
+</div>
+
+<div style="flex:50%">
+Selecione um dos ícones abaixo para editar o ambiente:
+<div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
+   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
+      <dcc-trigger label="Vidro" action="type/glass"
+                   image="images/cell/glass.svg">
+      </dcc-trigger>
+   </div>
+   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
+      <dcc-trigger label="Areia" action="type/sand"
+                   image="images/cell/sand.svg">
+      </dcc-trigger>
+   </div>
+   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
+      <dcc-trigger label="Nada" action="type/empty"
+                   image="images/cell/cell-yellow.svg">
+      </dcc-trigger>
+   </div>
+</div>
+
+Selecione abaixo a chance de cada um dos eventos:
+<div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
+   <div style="flex:20%; max-width:96px; max-height:48px">
+      <img style="max-width:96px; max-height:48px; margin-left:40px; margin-right:40px"
+           src="images/cell/arrow-down.svg">
+   </div>
+   <div style="flex:50%; max-height:48px; margin-right:10px">
+      <dcc-slider variable="fall_vertical" value="100" index></dcc-slider>
+   </div>
+</div>
+<div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
+   <img src="images/cell/arrow-left-oblique.svg" style="flex:10%; max-width:48px; max-height:48px">
+   <img src="images/cell/arrow-right-oblique.svg" style="flex:10%; max-width:48px; max-height:48px">
+   <div style="flex:50%; max-height:48px; margin-right:10px">
+      <dcc-slider variable="fall_oblique" value="90" index></dcc-slider>
+   </div>
+</div>
+<div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
+   <img src="images/cell/arrow-left.svg" style="flex:10%; max-width:48px; max-height:48px">
+   <img src="images/cell/arrow-right.svg" style="flex:10%; max-width:48px; max-height:48px">
+   <div style="flex:50%; max-height:48px; margin-right:10px">
+      <dcc-slider variable="roll" value="40" index></dcc-slider>
+   </div>
+</div>
+
+<dcc-timer cycles="800" interval="50" publish="state/next">
+   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+</dcc-timer>
+
+<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/save" role="save"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/load" role="load"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/download" role="download"></subscribe-dcc>
+<subscribe-dcc target="fall-vertical" message="var/fall_vertical/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="fall-oblique" message="var/fall_oblique/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="roll" message="var/roll/changed" role="probability"></subscribe-dcc>
+
+</div>
+</div>
+~~~
+
+~~~html
+<div style="width: 100%; display:flex; flex-direction:row">
+
+<div style="flex:50%">
 <dcc-space-cellular-editor id="cellular-space" cell-width="32" cell-height="32" background-color="#aaffaa">
 ________h________c__
 ____p_______p_______
@@ -1714,6 +1863,8 @@ _____h______________
    <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
    <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
    <dcc-trigger label="Gravar" action="state/save"></dcc-trigger>
+   <dcc-trigger label="Ler" action="state/load"></dcc-trigger>
+   <dcc-trigger label="Baixar" action="state/download"></dcc-trigger>
 </div>
 </div>
 
@@ -1802,7 +1953,7 @@ Selecione abaixo a chance de cada um dos eventos:
    </div>
 </div>
 
-<dcc-timer cycles="1000" interval="500" publish="state/next">
+<dcc-timer cycles="100000" interval="500" publish="state/next">
    <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
    <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
@@ -1820,7 +1971,98 @@ Selecione abaixo a chance de cada um dos eventos:
 <subscribe-dcc target="carnivore-dies" message="var/carnivore_dies/changed" role="probability">
 </subscribe-dcc>
 <subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/save" role="serialize"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/save" role="save"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/load" role="load"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/download" role="download"></subscribe-dcc>
+
+</div>
+</div>
+~~~
+
+~~~html
+<div style="width: 100%; display:flex; flex-direction:row">
+
+<div style="flex:50%">
+
+<dcc-space-cellular-editor id="cellular-space" rows="30" cols="30" cell-width="10" cell-height="10" grid>
+_
+_
+____________####
+__________###__###
+_________##______##
+______####___w____###
+_____##_____________######
+__####___________________##
+_###############__________##
+_#_________________________#
+##_________________________##
+#___________________________#
+##_________________________##
+_#_________________________#
+_##########__________#######
+__________##________##
+_______####__________####
+_______#________________##
+_______###_____________##
+_________#####______####
+_____________########
+</dcc-space-cellular-editor>
+
+<dcc-cell-color type="w" label="water" color="#0000ff" opacity="10">
+  <property-dcc name="value" initial="500"></property-dcc>
+</dcc-cell-color>
+<dcc-cell-color type="#" label="wall" color="#9b3234"></dcc-cell-color>
+<rule-dcc-cell-flow label="spread random 1" probability="100" transition="w_>ww" flow="-1">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-flow>
+<rule-dcc-cell-flow label="spread random 2" probability="100" transition="ww>ww" flow="-+">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-flow>
+
+<div>
+   <dcc-trigger label="Próximo" action="state/next"></dcc-trigger>
+   <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
+   <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
+   <dcc-trigger label="Gravar" action="state/save"></dcc-trigger>
+   <dcc-trigger label="Ler" action="state/load"></dcc-trigger>
+   <dcc-trigger label="Baixar" action="state/download"></dcc-trigger>
+</div>
+</div>
+
+<div style="flex:50%">
+Selecione um dos ícones abaixo para editar o ambiente:
+<div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
+   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
+      <dcc-trigger label="Água" action="type/water"
+                   image="images/cell/waves.svg">
+      </dcc-trigger>
+   </div>
+   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
+      <dcc-trigger label="Parede" action="type/wall"
+                   image="images/cell/wall.svg">
+      </dcc-trigger>
+   </div>
+   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
+      <dcc-trigger label="Nada" action="type/empty"
+                   image="images/cell/cell-yellow.svg">
+      </dcc-trigger>
+   </div>
+</div>
+
+<dcc-timer cycles="500" interval="100" publish="state/next">
+   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+</dcc-timer>
+
+<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/save" role="save"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/load" role="load"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/download" role="download"></subscribe-dcc>
 
 </div>
 </div>

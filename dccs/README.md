@@ -177,6 +177,82 @@ Or how a character tells you "Your age is *your age*" when you define your age i
 </dcc-lively-talk>
 ~~~
 
+To present a multiple-choice input:
+
+For `<dcc-input-option>`:
+* `parent` - parent of the option explicitly declared (otherwise will be inferred by the hierarchy);
+* `variable` - variable of the option explicitly declared, otherwise will assume the parent's variable (which is the expected scenario);
+* `exclusive` - exclusivity of the option explicitly declared, defines if the value will be exclusive (radio button) or not (checkbox), otherwise will assume the parent's exclusivity (which is the expected scenario);
+
+
+~~~html
+<dcc-input-choice variable="role" statement="What is your role?" exclusive>
+   <dcc-input-option>patient</dcc-input-option>
+   <dcc-input-option>doctor</dcc-input-option>
+   <dcc-input-option>nurse</dcc-input-option>
+</dcc-input-choice>
+~~~
+
+~~~html
+<dcc-input-choice variable="role" statement="What is your role?" exclusive>
+   <dcc-input-option value="patient">I am a patient</dcc-input-option>
+   <dcc-input-option value="doctor">I am a doctor</dcc-input-option>
+   <dcc-input-option value="nurse">I am a nurse</dcc-input-option>
+</dcc-input-choice>
+~~~
+
+~~~html
+<dcc-unfold><dcc-unfold-short>I am a patient</dcc-unfold-short></dcc-unfold>
+~~~
+
+~~~html
+<dcc-input-choice variable="role" exclusive>
+   What is your role?
+   <dcc-input-option value="patient">I am a patient</dcc-input-option>
+   <dcc-input-option value="doctor">I am a doctor</dcc-input-option>
+   <dcc-input-option value="nurse">I am a nurse</dcc-input-option>
+</dcc-input-choice>
+~~~
+
+~~~html
+<dcc-input-choice variable="role" statement="What is your role?" exclusive>
+   <dcc-input-option value="patient">I am a patient</dcc-input-option>
+   <dcc-input-option value="doctor">I am a doctor</dcc-input-option>
+   <dcc-input-option value="nurse">I am a nurse</dcc-input-option>
+</dcc-input-choice>
+
+<dcc-lively-talk id="doctor"
+                 duration="0s"
+                 character="doctor"
+                 speech="I am a ">
+  <subscribe-dcc message="var/role/changed"></subscribe-dcc>
+</dcc-lively-talk>
+~~~
+
+~~~html
+<dcc-input-choice variable="role" statement="What is your role?" exclusive>
+   <dcc-input-option value="patient">I am a patient</dcc-input-option>
+   <dcc-input-option value="doctor">I am a doctor</dcc-input-option>
+   <dcc-input-option value="nurse">I am a nurse</dcc-input-option>
+</dcc-input-choice>
+
+<dcc-unfold message="var/role/changed" value="patient">You must wait here.</dcc-unfold>
+
+<dcc-lively-talk id="doctor"
+                 duration="0s"
+                 character="doctor"
+                 speech="I am a ">
+  <subscribe-dcc message="var/role/changed"></subscribe-dcc>
+</dcc-lively-talk>
+~~~
+
+This is a multi-entry input presented as a table.
+
+~~~html
+<dcc-input-table id="person_list" variable="person" rows="3" schema="name, age, height">
+</dcc-input-table>
+~~~
+
 ### Selective Publish/Subscribe
 
 #### Topic Filters and Wildcards
@@ -258,4 +334,20 @@ The following example show messages selectively displayed.
                  speech="Counting: ">
   <subscribe-dcc message="send/cycle"></subscribe-dcc>
 </dcc-lively-talk>
+~~~
+
+## Select a State
+
+~~~html
+Doctor, I am feeling chest pain since yesterday. The <dcc-state-select id="dcc1" states=" ,k,+,=,-" answer="=">pain is continuous</dcc-state-select> and {is located just in the middle of my chest}/=/, {worsening when I breathe}/+/ and {when I lay down on my bed}/+/. I have {arterial hypertension}/-/ and {I smoke 20 cigarettes}(smoking=20/day)/-/ every day.
+
+Doctor, I am feeling chest pain since yesterday. The <dcc-state-select id="dcc1" states=" ,k,+,=,-">pain is continuous</dcc-state-select> and <dcc-state-select id="dcc2" states=" ,k,+,=,-">is located just in the middle of my chest</dcc-state-select> <dcc-state-select id="dcc3" states=" ,k,+,=,-">worsening when I breathe</dcc-state-select> and <dcc-state-select id="dcc4" states=" ,k,+,=,-">when I lay down on my bed</dcc-state-select>. I have <dcc-state-select id="dcc5" states=" ,k,+,=,-">arterial hypertension</dcc-state-select> and <dcc-state-select id="dcc6" states=" ,k,+,=,-">I smoke 20 cigarettes</dcc-state-select> every day.
+
+Doctor, I am feeling chest pain since yesterday. The <dcc-state-select id="dcc1" states=" ,k,+,=,-" answer="=">pain is continuous</dcc-state-select> and <dcc-state-select id="dcc2" states=" ,k,+,=,-" answer="=">is located just in the middle of my chest</dcc-state-select> <dcc-state-select id="dcc3" states=" ,k,+,=,-" answer="+">worsening when I breathe</dcc-state-select> and <dcc-state-select id="dcc4" states=" ,k,+,=,-" answer="+">when I lay down on my bed</dcc-state-select>. I have <dcc-state-select id="dcc5" states=" ,k,+,=,-" answer="-">arterial hypertension</dcc-state-select> and <dcc-state-select id="dcc6" states=" ,k,+,=,-" answer="-">I smoke 20 cigarettes</dcc-state-select> every day.
+~~~
+
+~~~html
+<dcc-group-select states=" ,k,+,=,-">
+Doctor, I am feeling chest pain since yesterday. The <dcc-state-select id="dcc1">pain is continuous</dcc-state-select> and <dcc-state-select id="dcc2">is located just in the middle of my chest</dcc-state-select> <dcc-state-select id="dcc3">worsening when I breathe</dcc-state-select> and <dcc-state-select id="dcc4">when I lay down on my bed</dcc-state-select>. I have <dcc-state-select id="dcc5">arterial hypertension</dcc-state-select> and <dcc-state-select id="dcc6">I smoke 20 cigarettes</dcc-state-select> every day.
+</dcc-group-select>
 ~~~

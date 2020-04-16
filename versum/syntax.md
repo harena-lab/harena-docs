@@ -64,7 +64,7 @@ or
 
 ## Context
 * Sentence context open: `{{ [context] / [related input] /`
-* Expression context open: `\{\{([\w \t\+\-\*\."=\:%]+)?(?:\/([\w \t\.]+)\/)?[\f\n\r]`
+* Expression context open: `\{\{([\w \t\+\-\*\."=\:%]+)?(?:\/([\w \t\.\:]+)\/)?[\f\n\r]`
   * Group #1: context
   * Group #2: related input
 ![Context Open](expressions/context-open.png)
@@ -363,16 +363,18 @@ This content is further converted to HTML by the compiler.
 
 ## Output
 ### Markdown to Object
-* Sentence: `^[variable]([variant])^`
-* Expression: `\^([\w \t\.]+)(?:\(([\w \t]+)\))?\^`
+* Sentence: `^[variable]([index])([variant])^`
+* Expression: `\^([\w \t\.]+)(?:\[([\w \t]+)\])?(?:\(([\w \t]+)\))?\^`
   * Group #1: variable
-  * Group #2: variant
+  * Group #2: index
+  * Group #3: variant
 ![Output Expression](expressions/output.png)
 * Object:
 ```
 {
    type: "output"
    variable: <variable name>
+   index: <variable index - when array> starting in 1
    variant: <variant of the variable>
 }
 ```
