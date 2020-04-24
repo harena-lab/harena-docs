@@ -132,7 +132,7 @@ A DCC can subscribe to message in such a way that whenever the message appears o
 For each subscribed message a DCC declares a `<subscribe-dcc>` inside its element. With the following syntax:
 
 ~~~html
-<subscribe-dcc message="message"></subscribe-dcc>
+<subscribe-dcc topic="message"></subscribe-dcc>
 ~~~
 
 * message - specifies the subscribed message
@@ -147,7 +147,7 @@ The following example shows the message `I am a doctor.` when the button with th
                  duration="0s"
                  character="doctor"
                  speech="Hello, ">
-  <subscribe-dcc message="send/message"></subscribe-dcc>
+  <subscribe-dcc topic="send/message"></subscribe-dcc>
 </dcc-lively-talk>
 ~~~
 
@@ -160,7 +160,7 @@ The following example shows a character that tells you "Hello *your name*" when 
                  duration="0s"
                  character="doctor"
                  speech="Hello ">
-  <subscribe-dcc message="var/name/changed"></subscribe-dcc>
+  <subscribe-dcc topic="var/name/changed"></subscribe-dcc>
 </dcc-lively-talk>
 ~~~
 
@@ -173,7 +173,7 @@ Or how a character tells you "Your age is *your age*" when you define your age i
                  duration="0s"
                  character="doctor"
                  speech="Your age is  ">
-  <subscribe-dcc message="var/age/changed"></subscribe-dcc>
+  <subscribe-dcc topic="var/age/changed"></subscribe-dcc>
 </dcc-lively-talk>
 ~~~
 
@@ -225,7 +225,7 @@ For `<dcc-input-option>`:
                  duration="0s"
                  character="doctor"
                  speech="I am a ">
-  <subscribe-dcc message="var/role/changed"></subscribe-dcc>
+  <subscribe-dcc topic="var/role/changed"></subscribe-dcc>
 </dcc-lively-talk>
 ~~~
 
@@ -242,7 +242,7 @@ For `<dcc-input-option>`:
                  duration="0s"
                  character="doctor"
                  speech="I am a ">
-  <subscribe-dcc message="var/role/changed"></subscribe-dcc>
+  <subscribe-dcc topic="var/role/changed"></subscribe-dcc>
 </dcc-lively-talk>
 ~~~
 
@@ -251,6 +251,29 @@ This is a multi-entry input presented as a table.
 ~~~html
 <dcc-input-table id="person_list" variable="person" rows="3" schema="name, age, height">
 </dcc-input-table>
+~~~
+
+## State DCC (`<dcc-state>`)
+
+~~~html
+<dcc-state value="first" rotate>
+  <dcc-image role="first" image="images/doctor-icon.png"></dcc-image>
+  <dcc-image role="second" image="images/nurse-icon.png"></dcc-image>
+  <dcc-image role="third" image="images/patient-icon.png"></dcc-image>
+  <subscribe-dcc topic="state/next" role="next"></subscribe-dcc>
+</dcc-state>
+
+<dcc-trigger label="Next" action="state/next">
+</dcc-trigger>
+~~~
+
+~~~html
+<dcc-state value="first" variable="state" rotate>
+  <dcc-image role="first" image="images/doctor-icon.png"></dcc-image>
+  <dcc-image role="second" image="images/nurse-icon.png"></dcc-image>
+  <dcc-image role="third" image="images/patient-icon.png"></dcc-image>
+  <trigger-dcc event="click" role="next"></trigger-dcc>
+</dcc-state>
 ~~~
 
 ### Selective Publish/Subscribe
@@ -289,19 +312,19 @@ The following example show messages selectively displayed.
 <dcc-lively-talk duration="0s"
                  character="doctor"
                  speech="I heard about a ">
-  <subscribe-dcc message="news/#"></subscribe-dcc>
+  <subscribe-dcc topic="news/#"></subscribe-dcc>
 </dcc-lively-talk>
 
 <dcc-lively-talk duration="0s"
                  character="nurse"
                  speech="I heard about a ">
-  <subscribe-dcc message="news/disease"></subscribe-dcc>
+  <subscribe-dcc topic="news/disease"></subscribe-dcc>
 </dcc-lively-talk>
 
 <dcc-lively-talk duration="0s"
                  character="patient"
                  speech="I heard about a ">
-  <subscribe-dcc message="news/soccer"></subscribe-dcc>
+  <subscribe-dcc topic="news/soccer"></subscribe-dcc>
 </dcc-lively-talk>
 ~~~
 
@@ -325,14 +348,14 @@ The following example show messages selectively displayed.
 </dcc-trigger>
 
 <dcc-timer cycles="10" interval="1000" publish="send/cycle">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
 </dcc-timer>
 
 <dcc-lively-talk id="doctor"
                  duration="0s"
                  character="doctor"
                  speech="Counting: ">
-  <subscribe-dcc message="send/cycle"></subscribe-dcc>
+  <subscribe-dcc topic="send/cycle"></subscribe-dcc>
 </dcc-lively-talk>
 ~~~
 

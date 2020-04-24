@@ -19,7 +19,7 @@
                  duration="0s"
                  character="doctor"
                  speech="Hello, ">
-  <subscribe-dcc message="send/message"></subscribe>
+  <subscribe-dcc topic="send/message"></subscribe>
 </dcc-lively-talk>
 ~~~
 

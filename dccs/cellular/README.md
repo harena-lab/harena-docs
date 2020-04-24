@@ -73,7 +73,7 @@ _*_
 </rule-dcc-cell-pair>
 
 <dcc-trigger label="Next" action="state/next"></dcc-trigger>
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ~~~html
@@ -94,10 +94,10 @@ _*_
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
 
 <dcc-timer cycles="10" interval="1000" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ~~~html
@@ -123,10 +123,10 @@ _*_
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
 
 <dcc-timer cycles="10" interval="1000" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ~~~html
@@ -162,10 +162,10 @@ ___
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
 
 <dcc-timer cycles="10" interval="1000" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ~~~html
@@ -246,11 +246,11 @@ ___
 <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
 
 <dcc-timer cycles="800" interval="50" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ## Replication
@@ -282,11 +282,11 @@ __________
 <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
 
 <dcc-timer cycles="100" interval="500" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ### Production
@@ -313,10 +313,10 @@ _*_
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
 
 <dcc-timer cycles="10" interval="1000" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 One drop per cloud.
@@ -345,10 +345,10 @@ _*_
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
 
 <dcc-timer cycles="10" interval="1000" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ## Vanish
@@ -381,11 +381,11 @@ ___
 <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
 
 <dcc-timer cycles="100" interval="500" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ### Predation
@@ -416,11 +416,11 @@ ______c___
 <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
 
 <dcc-timer cycles="100" interval="500" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ## Combining Replication and Predation
@@ -463,11 +463,11 @@ ______c___
 <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
 
 <dcc-timer cycles="100" interval="500" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ## Combining Movement, Replication, and Vanish
@@ -532,11 +532,11 @@ _h_____r______hc____
 <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
 
 <dcc-timer cycles="1000" interval="500" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ## Random Walk
@@ -569,10 +569,10 @@ _#_____________________
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
 
 <dcc-timer cycles="100" interval="100" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ~~~html
@@ -621,10 +621,10 @@ _r_____________________
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
 
 <dcc-timer cycles="100" interval="100" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 
@@ -697,11 +697,11 @@ ___r___l___d__d__l_____u____ll__rr__uu__dd__l__r__l__d___d__l_
 <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
 
 <dcc-timer cycles="10000" interval="100" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ~~~html
@@ -732,10 +732,10 @@ _______________________
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
 
 <dcc-timer cycles="100" interval="100" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 Water flow
@@ -768,10 +768,10 @@ _#_____________________
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
 
 <dcc-timer cycles="100" interval="100" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ~~~html
@@ -810,11 +810,11 @@ _______________w
 <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
 
 <dcc-timer cycles="500" interval="100" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ## Flow Policy
@@ -944,11 +944,11 @@ _____________########
 <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
 
 <dcc-timer cycles="500" interval="100" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ~~~html
@@ -1004,11 +1004,11 @@ _____________########
 <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
 
 <dcc-timer cycles="500" interval="100" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 ~~~html
@@ -1042,11 +1042,11 @@ swwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
 
 <dcc-timer cycles="10000" interval="100" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 ~~~
 
 
@@ -1078,11 +1078,11 @@ _*_
 <dcc-trigger label="Tree" action="type/tree"></dcc-trigger>
 
 <dcc-timer cycles="10" interval="1000" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
 ~~~
 
 ~~~html
@@ -1167,12 +1167,12 @@ ___
 <dcc-trigger label="Sand" action="type/sand"></dcc-trigger>
 
 <dcc-timer cycles="800" interval="50" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
 ~~~
 
 
@@ -1242,12 +1242,12 @@ _h_____r______hc____
 <dcc-trigger label="Herbivore" action="type/herbivore"></dcc-trigger>
 
 <dcc-timer cycles="1000" interval="500" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
 ~~~
 
 ~~~html
@@ -1300,12 +1300,12 @@ _____________########
 <dcc-trigger label="Wall" action="type/wall"></dcc-trigger>
 
 <dcc-timer cycles="500" interval="100" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
 ~~~
 
 
@@ -1347,13 +1347,13 @@ _______r____________
 <dcc-slider variable="die" value="15" index>Chance de morrer</dcc-slider>
 
 <dcc-timer cycles="1000" interval="500" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="plant-replicates" message="var/replicate/changed" role="probability"></subscribe-dcc>
-<subscribe-dcc target="plant-dies" message="var/die/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="plant-replicates" topic="var/replicate/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="plant-dies" topic="var/die/changed" role="probability"></subscribe-dcc>
 ~~~
 
 ~~~html
@@ -1412,17 +1412,17 @@ _h_____r______h_____
 <dcc-slider variable="herbivore_dies" value="10" index>Chance do herbívoro morrer</dcc-slider>
 
 <dcc-timer cycles="1000" interval="500" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="plant-replicates" message="var/plant_replicates/changed" role="probability">
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="plant-replicates" topic="var/plant_replicates/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="plant-dies" message="var/plant_dies/changed" role="probability"></subscribe-dcc>
-<subscribe-dcc target="herbivore-replicates" message="var/herbivore_replicates/changed" role="probability">
+<subscribe-dcc target="plant-dies" topic="var/plant_dies/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="herbivore-replicates" topic="var/herbivore_replicates/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="herbivore-dies" message="var/herbivore_dies/changed" role="probability">
+<subscribe-dcc target="herbivore-dies" topic="var/herbivore_dies/changed" role="probability">
 </subscribe-dcc>
 ~~~
 
@@ -1507,21 +1507,21 @@ _h_____r___c__h_____
 <dcc-slider variable="carnivore_dies" value="10" index>Chance do carnívoro morrer</dcc-slider>
 
 <dcc-timer cycles="1000" interval="500" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="plant-replicates" message="var/plant_replicates/changed" role="probability">
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="plant-replicates" topic="var/plant_replicates/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="plant-dies" message="var/plant_dies/changed" role="probability"></subscribe-dcc>
-<subscribe-dcc target="herbivore-replicates" message="var/herbivore_replicates/changed" role="probability">
+<subscribe-dcc target="plant-dies" topic="var/plant_dies/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="herbivore-replicates" topic="var/herbivore_replicates/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="herbivore-dies" message="var/herbivore_dies/changed" role="probability">
+<subscribe-dcc target="herbivore-dies" topic="var/herbivore_dies/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="carnivore-replicates" message="var/carnivore_replicates/changed" role="probability">
+<subscribe-dcc target="carnivore-replicates" topic="var/carnivore_replicates/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="carnivore-dies" message="var/carnivore_dies/changed" role="probability">
+<subscribe-dcc target="carnivore-dies" topic="var/carnivore_dies/changed" role="probability">
 </subscribe-dcc>
 ~~~
 
@@ -1613,23 +1613,23 @@ _h_____r___c__h_____
 <dcc-slider variable="carnivore_dies" value="10" index>Chance do carnívoro morrer</dcc-slider>
 
 <dcc-timer cycles="1000" interval="500" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="plant-replicates" message="var/plant_replicates/changed" role="probability">
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="plant-replicates" topic="var/plant_replicates/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="plant-dies" message="var/plant_dies/changed" role="probability"></subscribe-dcc>
-<subscribe-dcc target="herbivore-replicates" message="var/herbivore_replicates/changed" role="probability">
+<subscribe-dcc target="plant-dies" topic="var/plant_dies/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="herbivore-replicates" topic="var/herbivore_replicates/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="herbivore-dies" message="var/herbivore_dies/changed" role="probability">
+<subscribe-dcc target="herbivore-dies" topic="var/herbivore_dies/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="carnivore-replicates" message="var/carnivore_replicates/changed" role="probability">
+<subscribe-dcc target="carnivore-replicates" topic="var/carnivore_replicates/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="carnivore-dies" message="var/carnivore_dies/changed" role="probability">
+<subscribe-dcc target="carnivore-dies" topic="var/carnivore_dies/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
 ~~~
 
 ~~~html
@@ -1764,18 +1764,18 @@ Selecione abaixo a chance de cada um dos eventos:
 </div>
 
 <dcc-timer cycles="800" interval="50" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/save" role="save"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/load" role="load"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/download" role="download"></subscribe-dcc>
-<subscribe-dcc target="fall-vertical" message="var/fall_vertical/changed" role="probability"></subscribe-dcc>
-<subscribe-dcc target="fall-oblique" message="var/fall_oblique/changed" role="probability"></subscribe-dcc>
-<subscribe-dcc target="roll" message="var/roll/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/save" role="save"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/load" role="load"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/download" role="download"></subscribe-dcc>
+<subscribe-dcc target="fall-vertical" topic="var/fall_vertical/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="fall-oblique" topic="var/fall_oblique/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="roll" topic="var/roll/changed" role="probability"></subscribe-dcc>
 
 </div>
 </div>
@@ -1954,26 +1954,26 @@ Selecione abaixo a chance de cada um dos eventos:
 </div>
 
 <dcc-timer cycles="100000" interval="500" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="plant-replicates" message="var/plant_replicates/changed" role="probability">
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="plant-replicates" topic="var/plant_replicates/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="plant-dies" message="var/plant_dies/changed" role="probability"></subscribe-dcc>
-<subscribe-dcc target="herbivore-replicates" message="var/herbivore_replicates/changed" role="probability">
+<subscribe-dcc target="plant-dies" topic="var/plant_dies/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="herbivore-replicates" topic="var/herbivore_replicates/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="herbivore-dies" message="var/herbivore_dies/changed" role="probability">
+<subscribe-dcc target="herbivore-dies" topic="var/herbivore_dies/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="carnivore-replicates" message="var/carnivore_replicates/changed" role="probability">
+<subscribe-dcc target="carnivore-replicates" topic="var/carnivore_replicates/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="carnivore-dies" message="var/carnivore_dies/changed" role="probability">
+<subscribe-dcc target="carnivore-dies" topic="var/carnivore_dies/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/save" role="save"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/load" role="load"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/download" role="download"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/save" role="save"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/load" role="load"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/download" role="download"></subscribe-dcc>
 
 </div>
 </div>
@@ -2054,15 +2054,15 @@ Selecione um dos ícones abaixo para editar o ambiente:
 </div>
 
 <dcc-timer cycles="500" interval="100" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/save" role="save"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/load" role="load"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/download" role="download"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/save" role="save"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/load" role="load"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/download" role="download"></subscribe-dcc>
 
 </div>
 </div>
