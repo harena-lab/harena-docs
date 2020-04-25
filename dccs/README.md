@@ -276,6 +276,16 @@ This is a multi-entry input presented as a table.
 </dcc-state>
 ~~~
 
+## Web DCC `<dcc-web>`
+
+~~~html
+<img id="mv-front" src="images/mv/mv01.svg" style="width:200px">
+<img id="mv-back" src="images/mv/mv02.svg" style="width:200px">
+<dcc-web location="mv-back">
+   <trigger-dcc event="click" publish="clicked"></trigger-dcc>
+</dcc-web>
+~~~
+
 ### Selective Publish/Subscribe
 
 #### Topic Filters and Wildcards
