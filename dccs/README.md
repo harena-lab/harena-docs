@@ -253,6 +253,33 @@ This is a multi-entry input presented as a table.
 </dcc-input-table>
 ~~~
 
+## Image DCC (`<dcc-image>`)
+
+* `style` - replicated attribute
+
+~~~html
+<dcc-image image="images/mv/mv-front-base.svg" style="width:300px"></dcc-image>
+<dcc-image image="images/mv/mv-back-base.svg" style="width:300px"></dcc-image>
+<dcc-state id="screen" value="off" rotate>
+   <dcc-image role="off" image="images/mv/mv-screen-off.svg"
+              style="position:absolute;left:36px;top:28px;width:193px;">
+   </dcc-image>
+   <dcc-group role="start">
+      <dcc-image image="images/mv/mv-screen-start.svg"
+                 style="position:absolute;left:36px;top:28px;width:193px;">
+      </dcc-image>
+      <dcc-image image="images/mv/mv-ventilation-mode.svg"
+                 style="position:absolute;left:48px;top:30px;width:40px;">
+         <trigger-dcc event="click" publish="vmode"></trigger-dcc>
+      </dcc-image>
+   </dcc-group>
+</dcc-state>
+<dcc-image image="images/mv/mv-power.svg"
+           style="position:absolute;left:190px;top:113px;width:20px;">
+   <trigger-dcc event="click" target="screen" role="next"></trigger-dcc>
+</dcc-image>
+~~~
+
 ## State DCC (`<dcc-state>`)
 
 ~~~html
@@ -279,12 +306,20 @@ This is a multi-entry input presented as a table.
 ## Web DCC `<dcc-web>`
 
 ~~~html
-<img id="mv-front" src="images/mv/mv01.svg" style="width:200px">
-<img id="mv-back" src="images/mv/mv02.svg" style="width:200px">
+<dcc-image id="mv-front" image="images/mv/mv-front.svg" style="width:200px"></dcc-image>
+<dcc-image id="mv-back" image="images/mv/mv-back.svg" style="width:200px">
+   <trigger-dcc event="click" publish="clicked"></trigger-dcc>
+</dcc-image>
+~~~
+
+~~~html
+<img id="mv-front" src="images/mv/mv-front.svg" style="width:200px">
+<img id="mv-back" src="images/mv/mv-back.svg" style="width:200px">
 <dcc-web location="mv-back">
    <trigger-dcc event="click" publish="clicked"></trigger-dcc>
 </dcc-web>
 ~~~
+
 
 ### Selective Publish/Subscribe
 
