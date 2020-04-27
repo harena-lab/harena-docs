@@ -262,23 +262,44 @@ This is a multi-entry input presented as a table.
 <dcc-image image="images/mv/mv-back-base.svg" style="width:300px"></dcc-image>
 <dcc-state id="screen" value="off" rotate>
    <dcc-image role="off" image="images/mv/mv-screen-off.svg"
-              style="position:absolute;left:36px;top:28px;width:193px;">
+              style="position:absolute;left:36px;top:28px;width:193px">
    </dcc-image>
    <dcc-group role="start">
       <dcc-image image="images/mv/mv-screen-start.svg"
-                 style="position:absolute;left:36px;top:28px;width:193px;">
+                 style="position:absolute;left:36px;top:28px;width:193px">
       </dcc-image>
       <dcc-image image="images/mv/mv-ventilation-mode.svg"
-                 style="position:absolute;left:48px;top:30px;width:40px;">
-         <trigger-dcc event="click" publish="vmode"></trigger-dcc>
+                 style="position:absolute;left:48px;top:30px;width:40px">
+         <trigger-dcc event="click" target="screen" role="state" value="mode"></trigger-dcc>
       </dcc-image>
    </dcc-group>
+   <dcc-image role="mode" image="images/mv/mv-mode-options.svg"
+              style="position:absolute;left:36px;top:28px;width:193px">
+   </dcc-image>
 </dcc-state>
-<dcc-image image="images/mv/mv-power.svg"
-           style="position:absolute;left:190px;top:113px;width:20px;">
-   <trigger-dcc event="click" target="screen" role="next"></trigger-dcc>
-</dcc-image>
+<dcc-state id="power-button" value="on" rotate>
+   <dcc-image role="on" image="images/mv/mv-power.svg"
+              style="position:absolute;left:190px;top:113px;width:20px">
+      <trigger-dcc event="click" target="screen" role="state" value="start"></trigger-dcc>
+      <trigger-dcc event="click" target="power-button" role="next"></trigger-dcc>
+   </dcc-image>
+   <dcc-image role="off" image="images/mv/mv-power-pressed.svg"
+              style="position:absolute;left:190px;top:113px;width:20px">
+      <trigger-dcc event="click" target="screen" role="state" value="off"></trigger-dcc>
+      <trigger-dcc event="click" target="power-button" role="next"></trigger-dcc>
+   </dcc-image>
+</dcc-state>
 ~~~
+
+## Trigger (`<trigger-dcc>`)
+
+* `source` - explicitly indicates the source when the `<trigger-dcc>` element is not subordinated to another DCC;
+* `event` - a monitored event which triggers the notification;
+* `target` - target of the notification;
+* `role` - the role of the notification - related to the action that will be taken by the target when receives the notification;
+* `publish` - message to be published in the bus;
+* `property` - property of the source DCC whose value will be sent to the target;
+* `value` - value to be sent to the target (named as "value" property).
 
 ## State DCC (`<dcc-state>`)
 
