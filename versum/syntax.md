@@ -1,3 +1,7 @@
+<!-- Jekyll directive to avoid Liquid filters
+{% raw %}
+-->
+
 # Versum Syntax and Object Representation
 
 [Versum](/versum/README.md) is a narrative scripting language derived from [Markdown](https://daringfireball.net/projects/markdown/), having narrative structures inspired in [Ink](https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md).
@@ -475,3 +479,7 @@ no HTML
 ```
 ### Object to HTML
 Each line feed is converted to `<br>`
+
+<!-- Jekyll directive to avoid Liquid filters
+{% endraw %}
+-->

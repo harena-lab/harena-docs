@@ -1,3 +1,6 @@
+<!-- Jekyll directive to avoid Liquid filters
+{% raw %}
+-->
 # Versum Reference
 
 [Versum](/versum/README.md) is a narrative scripting language derived from Markdown, having narrative structures inspired in [Ink](https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md). Besides the [Standard Markdown](https://daringfireball.net/projects/markdown/), Versum adopts the [GitHub Flavored Markdown](https://help.github.com/en/articles/basic-writing-and-formatting-syntax).
@@ -212,14 +215,13 @@ One can intentionally associate a specific annotation to a KOS, preceding the an
 
 ## Annotation Context
 A block of annotation context can be defined between double braces. The block defines a semantic context for the narrative and the respective annotations. The context guides the interpretation of parts of the narrative. The following example presents a `symptoms` annotation context.
-<!--
-{% raw %}
--->
+
 > {{symptoms
 
 > Patient a {man}(male) {55 years old}(aging=51); rather fat; subject to frequent attacks of winter {cough}, with {asthmatic}(asthma) tendency.
 
 > }}
-<!--
+
+<!-- Jekyll directive to avoid Liquid filters
 {% endraw %}
 -->
