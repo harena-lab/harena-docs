@@ -54,6 +54,42 @@ When clicked, the trigger will send a message with the topic: `trigger/Check/cli
 </div>
 ~~~
 
+## Slider DCC (`<dcc-slider>`)
+
+An input component presented as a slider.
+
+### Syntax
+
+~~~html
+<dcc-slider id="id"
+            statement="statement"
+            variable="variable"
+            value="current value"
+            mandatory
+            min="minimal value"
+            max="maximal value"
+            index>
+</dcc-slider>
+~~~
+
+* `id` - unique id of the slider;
+* `statement` - statement presented before the slider;
+* `variable` - name of the variable related to the input value;
+* `value` - current value of the slider;
+* `mandatory` - defines if the user must select some value - i.e., the slide must be moved;
+* `min` - minimal value accepted;
+* `max` - maximal value accepted;
+* `index` - defines if the index is presented besides the slider.
+
+### Examples
+
+A simple example:
+
+~~~html
+<dcc-slider variable="age" value="1" min="1" max="130" index>Select your age:</dcc-slider>
+~~~
+
+
 ## Lively Talk DCC (`<dcc-lively-talk>`)
 
 An animated image that also displays a text inside a ballon. Usually adopted for animated dialogs.
@@ -154,7 +190,7 @@ The following example shows the message `I am a doctor.` when the button with th
 The following example shows a character that tells you "Hello *your name*" when you type your name.
 
 ~~~html
-<dcc-input variable="name">Type your name:</dcc-input>
+<dcc-input-typed variable="name">Type your name:</dcc-input-typed>
 
 <dcc-lively-talk id="doctor"
                  duration="0s"
@@ -167,11 +203,11 @@ The following example shows a character that tells you "Hello *your name*" when 
 Or how a character tells you "Your age is *your age*" when you define your age in the slider.
 
 ~~~html
-<dcc-slider variable="age" index>Select your age:</dcc-slider>
+<dcc-slider variable="age" min="1" max="130" index>
+Select your age:
+</dcc-slider>
 
-<dcc-lively-talk id="doctor"
-                 duration="0s"
-                 character="doctor"
+<dcc-lively-talk character="doctor"
                  speech="Your age is  ">
   <subscribe-dcc topic="var/age/changed"></subscribe-dcc>
 </dcc-lively-talk>
