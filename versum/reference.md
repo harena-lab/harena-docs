@@ -1,6 +1,7 @@
 <!-- Jekyll directive to avoid Liquid filters
 {% raw %}
 -->
+
 # Versum Reference
 
 [Versum](/versum/README.md) is a narrative scripting language derived from Markdown, having narrative structures inspired in [Ink](https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md). Besides the [Standard Markdown](https://daringfireball.net/projects/markdown/), Versum adopts the [GitHub Flavored Markdown](https://help.github.com/en/articles/basic-writing-and-formatting-syntax).

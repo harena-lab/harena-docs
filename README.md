@@ -5,5 +5,5 @@ Harena is a platform for authoring and playing narrative-based cases. Cases are 
 * Zombie Health - health case games for kids.
 
 Here you will find the Harena documentation organized as follows:
-* [Versum Narrative Scripting Language](/versum)
-* [Digital Content Components](/dccs)
+* [Versum Narrative Scripting Language](versum/)
+* [Digital Content Components](dccs/)
