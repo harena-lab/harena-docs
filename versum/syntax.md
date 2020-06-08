@@ -138,6 +138,21 @@ or
 ```
 This content is further converted to HTML by the compiler.
 
+## Blockquote
+### Markdown to Object
+* Sentence: `> `
+* Expression: `^[ \t]*>[ \t]*`
+![Blockquote Expression](expressions/blockquote.png)
+* Object:
+```
+{
+   type: "blockquote"
+   content: blockquote
+}
+```
+### Object to HTML
+If it is not subordinated, it is transformed into an HTML blockquote.
+
 ## Image
 ### Markdown to Object
 * Sentence: `!\[alt-text\]([path] "[title]")`
