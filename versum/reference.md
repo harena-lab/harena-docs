@@ -126,6 +126,10 @@ The current version uses `@` indicate the entity.
 ? <variable>
   * type: <input subtype>
   * rows: <rows>
+  * options:
+    * option1: value
+    * option2: value
+  * scramble
   * vocabulary: <vocabulary>, ..., <vocabulary>
   * <qualifier> answers: <answer>, ..., [answer] -> <target>
   * right answers: [right answer], ..., [right answer] -> [target]
@@ -187,6 +191,12 @@ What is the sum of internal angles in a triangle?
   * labels: contibutes, against, key, indiferent
 
 Patient ... :chest pain:+: ... :pain in the chest(chest pain):+:
+~~~
+
+
+~~~
+? hypothesis
+  * Answer-key -> 
 ~~~
 
 ## Annotation
