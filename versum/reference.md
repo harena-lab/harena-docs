@@ -78,7 +78,8 @@ Deviates the course of the narrative to the target when triggered, i.e., the tar
 
 ### Round Divert `[under debate]`
 ~~~markdown
-* Label|Expression <-> Target
+* Label|Expression <-> Target Knot
+* Label|Expression <-> "Target Text"
 ~~~
 Behaves similarly to the `Forward Divert`, but it returns to the origin (the knot where the divert was triggered) as soon as the user leaves the `Target` knot.
 
