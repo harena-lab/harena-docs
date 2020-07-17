@@ -179,12 +179,13 @@ If it is not subordinated, it is transformed into an HTML blockquote.
 
 ## Option
 ### Markdown to Object
-* Sentence: `+ [label] -> [target] "[parameter]"` or `* [label] -> [target] "[parameter]"`
-* Expression: `^[ \t]*([\+\*])[ \t]*([^\(&> \t\n\r\f][^\(&>\n\r\f]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$`
+* Sentence: `+ [label] ->|<->|(-) [target] "[parameter]"` or `* [label] ->|<->|(-) [target] "[parameter]"`
+* Expression: `^[ \t]*([\+\*])[ \t]+([^\(&<> \t\n\r\f][^\(&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$`
   * Group #1: subtype
   * Group #2: label
-  * Group #3: target
-  * Group #4: parameter
+  * Group #2: divert type
+  * Group #4: target
+  * Group #5: parameter
 ![Option Expression](expressions/option.png)
 * Object:
 ```
