@@ -41,4 +41,27 @@
   <dcc-edge source="n2" target="n2.1"></dcc-edge>
   <dcc-edge source="n2" target="n2.2"></dcc-edge>
 </dcc-graph>
+
+<dcc-graph width="500" height="300">
+  <dcc-node id="n1">
+     <dcc-node id="s1" label="s1"></dcc-node>
+     <dcc-node id="s1.1" label="s1.1"></dcc-node>
+     <dcc-node id="s1.2" label="s1.2"></dcc-node>
+     <dcc-edge source="s1" target="s1.1"></dcc-edge>
+     <dcc-edge source="s1" target="s1.2"></dcc-edge>
+  </dcc-node>
+  <dcc-node id="n1.1" label="1.1"></dcc-node>
+  <dcc-node id="n1.2" label="1.2"></dcc-node>
+  <dcc-node id="n1.1.1" label="1.1.1"></dcc-node>
+  <dcc-node id="n1.1.2" label="1.1.2"></dcc-node>
+  <dcc-node id="n2" label="2"></dcc-node>
+  <dcc-node id="n2.1" label="2.1"></dcc-node>
+  <dcc-node id="n2.2" label="2.2"></dcc-node>
+  <dcc-edge source="n1" target="n1.1"></dcc-edge>
+  <dcc-edge source="n1" target="n1.2"></dcc-edge>
+  <dcc-edge source="n1.1" target="n1.1.1"></dcc-edge>
+  <dcc-edge source="n1.1" target="n1.1.2"></dcc-edge>
+  <dcc-edge source="n2" target="n2.1"></dcc-edge>
+  <dcc-edge source="n2" target="n2.2"></dcc-edge>
+</dcc-graph>
 ~~~
