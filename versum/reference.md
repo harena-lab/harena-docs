@@ -70,20 +70,30 @@ The left part is either a `Label` or a Logical `Expression`. `Label` is the labe
 
 There are three types of divert:
 
+~~~markdown
+* Non numbered exclusive ordered option
+
++ Non numbered exclusive randomized option
+
+[ ] Non numbered non-exclusive ordered option
+
+( ) Non numbered non-exclusive randomized option
+~~~
+
 ### Forward Divert
 ~~~markdown
 * Label|Expression -> Target
 ~~~
 Deviates the course of the narrative to the target when triggered, i.e., the target knot is loaded and presented to the user.
 
-### Round Divert `[under debate]`
+### Round Divert
 ~~~markdown
 * Label|Expression <-> Target Knot
 * Label|Expression <-> "Target Text"
 ~~~
 Behaves similarly to the `Forward Divert`, but it returns to the origin (the knot where the divert was triggered) as soon as the user leaves the `Target` knot.
 
-### Enclosed Divert `[under debate]`
+### Enclosed Divert
 ~~~markdown
 * Label|Expression (-) Target Knot
 * Label|Expression (-) "Enclosed Text"
