@@ -179,13 +179,13 @@ If it is not subordinated, it is transformed into an HTML blockquote.
 
 ## Option
 ### Markdown to Object
-* Sentence: `+ [label] ->|<->|(-) [target] "[parameter]"` or `* [label] ->|<->|(-) [target] "[parameter]"`
+* Sentence: `+ [label] ->|<->|(-) [target] "[message]"` or `* [label] ->|<->|(-) [target] "[message]"`
 * Expression: `^[ \t]*([\+\*])[ \t]+([^\(&<> \t\n\r\f][^\(&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$`
   * Group #1: subtype
   * Group #2: label
   * Group #2: divert type
   * Group #4: target
-  * Group #5: parameter
+  * Group #5: message
 ![Option Expression](expressions/option.png)
 * Object:
 ```
@@ -193,8 +193,9 @@ If it is not subordinated, it is transformed into an HTML blockquote.
    type: "option"
    subtype: "+" or "*"
    label: <label to be displayed -- if there is no explicit label, the target is the label>
+   divert: <divert type "forward", "round", or "enclosed">
    target: <resolved target -- if there is not an explicit target, the label is the target>
-   parameter: <parameter for the target knot>
+   message: <message for the target knot>
 }
 ```
 `<resolved target>` - target after resolving relative links.
