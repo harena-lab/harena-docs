@@ -82,7 +82,7 @@ There are three types of divert:
 
 ### Forward Divert
 ~~~markdown
-* Label|Expression -> Target
+* Label|Expression -> Target "Optional Parameter"
 ~~~
 Deviates the course of the narrative to the target when triggered, i.e., the target knot is loaded and presented to the user.
 
@@ -90,8 +90,13 @@ Deviates the course of the narrative to the target when triggered, i.e., the tar
 ~~~markdown
 * Label|Expression <-> Target Knot
 * Label|Expression <-> "Target Text"
+* Label|Expression <-> Target Knot "Optional Parameter"
 ~~~
 Behaves similarly to the `Forward Divert`, but it returns to the origin (the knot where the divert was triggered) as soon as the user leaves the `Target` knot.
+
+When a `"Target Text"` is specified without a `Target Knot`, it tries to activate a default target in the following order:
+* Knot Level: looks for a knot with the same name of the current knot followed by `Note`, for example, if the name of the present knot is `Presentation`, it will look for a knot named `Presentation Note`.
+* General Level: looks for a knot with the name `Note`.
 
 ### Enclosed Divert
 ~~~markdown

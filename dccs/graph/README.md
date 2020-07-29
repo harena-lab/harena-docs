@@ -43,7 +43,7 @@
 </dcc-graph>
 
 <dcc-graph width="500" height="300">
-  <dcc-node id="n1">
+  <dcc-node id="n1" label="group">
      <dcc-node id="s1" label="s1"></dcc-node>
      <dcc-node id="s1.1" label="s1.1"></dcc-node>
      <dcc-node id="s1.2" label="s1.2"></dcc-node>
