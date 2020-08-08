@@ -422,6 +422,12 @@ Roles of notifications:
 
 ## Aggregator DCC (`<dcc-aggregator>`)
 
+Aggregates items of messages, as RSS messages.
+
+* `publish` - the topic to be published in the message (default is `dcc/rss/post`);
+
+* `quantity` - the quantity of messages in the aggregation.
+
 ~~~html
 <dcc-trigger label="Next Item" action="next/rss">
 </dcc-trigger>
