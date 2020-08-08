@@ -426,15 +426,26 @@ Roles of notifications:
 <dcc-trigger label="Next Item" action="next/rss">
 </dcc-trigger>
 
-<dcc-rss source="https://www.wired.com/category/design/feed">
+<dcc-rss publish="rss/science" source="https://www.wired.com/category/science/feed">
   <subscribe-dcc topic="next/rss" role="step"></subscribe-dcc>
 </dcc-rss>
+
+<dcc-aggregator publish="aggregate/science" quantity="3">
+  <subscribe-dcc topic="rss/science"></subscribe-dcc>
+</dcc-aggregator>
 
 <dcc-lively-talk id="doctor"
                  duration="0s"
                  character="doctor"
                  speech="News ">
-  <subscribe-dcc topic="dcc/rss/post"></subscribe-dcc>
+  <subscribe-dcc topic="rss/science"></subscribe-dcc>
+</dcc-lively-talk>
+
+<dcc-lively-talk id="doctor"
+                 duration="0s"
+                 character="patient"
+                 speech="News ">
+  <subscribe-dcc topic="aggregate/science"></subscribe-dcc>
 </dcc-lively-talk>
 ~~~
 
