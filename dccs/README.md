@@ -382,12 +382,25 @@ This is a multi-entry input presented as a table.
 
 ## RSS DCC `<dcc-rss>`
 
+Fetches items from an RSS feed and publishes them as messages on the bus.
+
+The attribute `source` specifies the address of the source of the feed. When a `start` is triggered, the component reads the feed and deploys the messages.
+
+* `source` - the source of the RSS feeds;
+* `publish`  - the topic to be published in the message (default is `dcc/rss/post`);
+* `interval` - the interval between the publication of the messages in milliseconds (default is 1000).
+
+Roles of notifications:
+`start` - starts a cyclical process of publishing one item per interval;
+`step` - publishes one RSS item (the next in a sequence);
+`stop` - stops the cyclical process.
+
 ~~~html
-<dcc-trigger label="News" action="start/rss">
+<dcc-trigger label="News" action="next/rss">
 </dcc-trigger>
 
-<dcc-rss source="https://www.wired.com/category/science/feed">
-  <subscribe-dcc topic="start/rss" role="start"></subscribe-dcc>
+<dcc-rss source="https://www.wired.com/category/science/feed" publish="rss/science">
+  <subscribe-dcc topic="next/rss" role="step"></subscribe-dcc>
 </dcc-rss>
 ~~~
 
