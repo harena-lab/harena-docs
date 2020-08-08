@@ -380,6 +380,51 @@ This is a multi-entry input presented as a table.
 ~~~
 
 
+## RSS DCC `<dcc-rss>`
+
+~~~html
+<dcc-trigger label="News" action="start/rss">
+</dcc-trigger>
+
+<dcc-rss source="https://www.wired.com/category/science/feed">
+  <subscribe-dcc topic="start/rss" role="start"></subscribe-dcc>
+</dcc-rss>
+~~~
+
+~~~html
+<dcc-trigger label="Next Item" action="next/rss">
+</dcc-trigger>
+
+<dcc-rss source="https://www.wired.com/category/science/feed">
+  <subscribe-dcc topic="next/rss" role="step"></subscribe-dcc>
+</dcc-rss>
+
+<dcc-lively-talk id="doctor"
+                 duration="0s"
+                 character="doctor"
+                 speech="News ">
+  <subscribe-dcc topic="dcc/rss/post"></subscribe-dcc>
+</dcc-lively-talk>
+~~~
+
+## Aggregator DCC (`<dcc-aggregator>`)
+
+~~~html
+<dcc-trigger label="Next Item" action="next/rss">
+</dcc-trigger>
+
+<dcc-rss source="https://www.wired.com/category/design/feed">
+  <subscribe-dcc topic="next/rss" role="step"></subscribe-dcc>
+</dcc-rss>
+
+<dcc-lively-talk id="doctor"
+                 duration="0s"
+                 character="doctor"
+                 speech="News ">
+  <subscribe-dcc topic="dcc/rss/post"></subscribe-dcc>
+</dcc-lively-talk>
+~~~
+
 ### Selective Publish/Subscribe
 
 #### Topic Filters and Wildcards
