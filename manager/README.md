@@ -1,9 +1,13 @@
 # harena-docs
 
-* [System Diagram](imgs/system_diagramversum/)
+* [System Diagram]
 
-![schema](https://raw.githubusercontent.com/datasci4health/harena-manager/development/src/adonisjs/database/schema_designs/v1_1_0/schema.png)
+![system](https://github.com/datasci4health/harena-docs/blob/master/manager/imgs/system_diagram.png)
 
 * [Class Diagram]
+
+![classes](https://github.com/datasci4health/harena-docs/blob/master/manager/imgs/class_diagram.png)
+
 * [Auth mechanism sequence flow]
 
+![classes](https://github.com/datasci4health/harena-docs/blob/master/manager/imgs/auth_sequence_flow.png)
