@@ -7,3 +7,4 @@ Harena is a platform for authoring and playing narrative-based cases. Cases are 
 Here you will find the Harena documentation organized as follows:
 * [Versum Narrative Scripting Language](versum/)
 * [Digital Content Components](dccs/)
+* [Harena Manager](manager/)
