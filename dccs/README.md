@@ -18,7 +18,8 @@ A visual element that triggers an action. Its standard shape is a button, but it
              image="image"
              action="action"
              divert="divert"
-             value="value">
+             value="value"
+             variable="variable">
 </dcc-trigger>
 ~~~
 
@@ -29,7 +30,8 @@ A visual element that triggers an action. Its standard shape is a button, but it
 * `image` (optional) - when the trigger is an image, it is the path of the image file;
 * `action` (optional) - the topic of the message sent by the trigger to activate an action; when the action is not specified, the topic is built from the label ("trigger/<label>/clicked");
 * `divert` (optional) - how the trigger diverts the course of action: forward, round, or enclosed;
-* `value` (optional) - the message body the accompanies the topic.
+* `value` (optional) - the message body the accompanies the topic;
+* `variable` (optional) - a variable that receives the label or value of the trigger; if the variable name is followed by colon, it can indicate which field will be attributed to the variable, e.g., `variable="diagnostics:label`.
 
 ### Examples
 
