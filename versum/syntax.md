@@ -183,7 +183,7 @@ If it is not subordinated, it is transformed into an HTML blockquote.
 * Expression: `^[ \t]*([\+\*])[ \t]+([^\(&<> \t\n\r\f][^\(&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$`
   * Group #1: subtype
   * Group #2: label
-  * Group #2: divert type
+  * Group #3: divert type
   * Group #4: target
   * Group #5: message
 ![Option Expression](expressions/option.png)
@@ -236,18 +236,20 @@ This content is further converted to HTML by the compiler.
 
 ## Divert
 ### Markdown to Object
-* Sentence: `[label] -> [target] "[parameter]"`
-* Expression: `(?:(\w+)|"([^"]+)")(?:[ \t])*-(?:(?:&gt;)|>)[ \t]*(?:(\w[\w.]*)|"([^"]*)")`
+* Sentence: `[label] ->|<->|(-) [target] "[parameter]"`
+* Expression: `(?:(\w+)|"([^"]+)")(?:[ \t])*((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*(?:(\w[\w.]*)|"([^"]*)")`
   * Group #1: label (without quotes)
   * Group #2: label (with quotes)
-  * Group #3: target (without quotes)
-  * Group #4: target (with quotes)
+  * Group #3: divert type
+  * Group #4: target (without quotes)
+  * Group #5: target (with quotes)
 ![Divert Expression](expressions/divert.png)
 * Object:
 ```
 {
    type: "divert",
-   label: <label>
+   label: <label>,
+   divert: <divert type "forward", "round", or "enclosed">
    target: <resolved target>
 }
 ```
