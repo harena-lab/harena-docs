@@ -6,21 +6,21 @@ Learn and try to instantiate and customize Digital Content Components (DCCs) at 
 
 # Syntax and Examples
 
-## Trigger DCC (`<dcc-trigger>`)
+## Trigger DCC (`<dcc-button>`)
 
 A visual element that triggers an action. Its standard shape is a button, but it can be also an image or an element customized by the author.
 
 ### Syntax
 
 ~~~html
-<dcc-trigger id="id"
-             label="label"
-             image="image"
-             action="action"
-             divert="divert"
-             value="value"
-             variable="variable">
-</dcc-trigger>
+<dcc-button id="id"
+            label="label"
+            image="image"
+            topic="topic"
+            message="message"
+            divert="divert"
+            variable="variable">
+</dcc-button>
 ~~~
 
 * `id` - unique id of the trigger;
@@ -28,9 +28,9 @@ A visual element that triggers an action. Its standard shape is a button, but it
   * textual button - textual label showed in the button;
   * image trigger - the title of the image;
 * `image` (optional) - when the trigger is an image, it is the path of the image file;
-* `action` (optional) - the topic of the message sent by the trigger to activate an action; when the action is not specified, the topic is built from the label ("trigger/<label>/clicked");
+* `topic` (optional) - the topic of the message sent by the trigger; when the topic is not specified, the topic is built from the label ("button/<label>/clicked");
+* `message` (optional) - the message body the accompanies the topic;
 * `divert` (optional) - how the trigger diverts the course of action: forward, round, or enclosed;
-* `value` (optional) - the message body the accompanies the topic;
 * `variable` (optional) - a variable that receives the label or value of the trigger; if the variable name is followed by colon, it can indicate which field will be attributed to the variable, e.g., `variable="diagnostics:label`.
 
 ### Examples
@@ -40,10 +40,10 @@ Textual button trigger that sends the following message when clicked:
 * message body - `"message to you"`
 
 ~~~html
-<dcc-trigger label="On"
-             action="button/on/clicked"
-             value="message to you">
-</dcc-trigger>
+<dcc-button label="On"
+            topic="button/on/clicked"
+            message="message to you">
+</dcc-button>
 ~~~
 
 Image trigger with title `check` and whose image is located in `icons/icon-check.svg`. Since the image occupies all available area, a `<div>` surrounding it delimits the size to `100px`.
@@ -52,9 +52,9 @@ When clicked, the trigger will send a message with the topic: `trigger/Check/cli
 
 ~~~html
 <div style="width: 100px">
-   <dcc-trigger label="Check"
-                image="icons/icon-check.svg">
-   </dcc-trigger>
+   <dcc-button label="Check"
+               image="icons/icon-check.svg">
+   </dcc-button>
 </div>
 ~~~
 
@@ -180,8 +180,8 @@ For each subscribed message a DCC declares a `<subscribe-dcc>` inside its elemen
 The following example shows the message `I am a doctor.` when the button with the label `Talk` is triggered.
 
 ~~~html
-<dcc-trigger label="Talk" action="send/message" value="I am a doctor.">
-</dcc-trigger>
+<dcc-button label="Talk" topic="send/message" message="I am a doctor.">
+</dcc-button>
 
 <dcc-lively-talk id="doctor"
                  duration="0s"
@@ -351,8 +351,8 @@ This is a multi-entry input presented as a table.
   <subscribe-dcc topic="state/next" role="next"></subscribe-dcc>
 </dcc-state>
 
-<dcc-trigger label="Next" action="state/next">
-</dcc-trigger>
+<dcc-button label="Next" topic="state/next">
+</dcc-button>
 ~~~
 
 ~~~html
@@ -398,8 +398,8 @@ Roles of notifications:
 `stop` - stops the cyclical process.
 
 ~~~html
-<dcc-trigger label="News" action="next/rss">
-</dcc-trigger>
+<dcc-button label="News" topic="next/rss">
+</dcc-button>
 
 <dcc-rss source="https://www.wired.com/category/science/feed" publish="rss/science">
   <subscribe-dcc topic="next/rss" role="step"></subscribe-dcc>
@@ -407,8 +407,8 @@ Roles of notifications:
 ~~~
 
 ~~~html
-<dcc-trigger label="Next Item" action="next/rss">
-</dcc-trigger>
+<dcc-button label="Next Item" topic="next/rss">
+</dcc-button>
 
 <dcc-rss source="https://www.wired.com/category/science/feed">
   <subscribe-dcc topic="next/rss" role="step"></subscribe-dcc>
@@ -431,8 +431,8 @@ Aggregates items of messages, as RSS messages.
 * `quantity` - the quantity of messages in the aggregation.
 
 ~~~html
-<dcc-trigger label="Next Item" action="next/rss">
-</dcc-trigger>
+<dcc-button label="Next Item" topic="next/rss">
+</dcc-button>
 
 <dcc-rss publish="rss/science" source="https://www.wired.com/category/science/feed">
   <subscribe-dcc topic="next/rss" role="step"></subscribe-dcc>
@@ -480,15 +480,15 @@ Only a single Topic Level can be matched by the wildcard  `+`, which represents 
 The following example show messages selectively displayed.
 
 ~~~html
-<dcc-trigger label="Disease"
-             action="news/disease"
-             value="new disease">
-</dcc-trigger>
+<dcc-button label="Disease"
+            topic="news/disease"
+            message="new disease">
+</dcc-button>
 
-<dcc-trigger label="Medication"
-             action="news/medication"
-             value="new medication">
-</dcc-trigger>
+<dcc-button label="Medication"
+            topic="news/medication"
+            message="new medication">
+</dcc-button>
 
 <dcc-lively-talk duration="0s"
                  character="doctor"
@@ -525,8 +525,8 @@ The following example show messages selectively displayed.
 ## Timer
 
 ~~~html
-<dcc-trigger label="Start" action="timer/start">
-</dcc-trigger>
+<dcc-button label="Start" topic="timer/start">
+</dcc-button>
 
 <dcc-timer cycles="10" interval="1000" publish="send/cycle">
    <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
