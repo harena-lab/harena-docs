@@ -201,7 +201,7 @@ If it is not subordinated, it is transformed into an HTML blockquote.
 `<resolved target>` - target after resolving relative links.
 ### Object to HTML
 ```
-<dcc-trigger id='dcc[seq]'[author] type='[subtype]' action='knot/[target]/navigate' label='[display]'[value][image]></dcc-trigger>
+<dcc-button id='dcc[seq]'[author] type='[subtype]' topic='knot/[target]/navigate' label='[display]'[message][image]></dcc-button>
 ```
 
 ## Field
@@ -236,8 +236,8 @@ This content is further converted to HTML by the compiler.
 
 ## Divert
 ### Markdown to Object
-* Sentence: `[label] ->|<->|(-) [target] "[parameter]"`
-* Expression: `(?:(\w+)|"([^"]+)")(?:[ \t])*((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*(?:(\w[\w.]*)|"([^"]*)")`
+* Sentence: `[label] ->|<->|(-) [target] | "[target]"`
+* Expression: `(?:([^&<> \t\n\r\f][^&<> \t\n\r\f]*)|"([^"]+)")(?:[ \t])*((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*(?:(\w[\w.]*)|"([^"]*)")`
   * Group #1: label (without quotes)
   * Group #2: label (with quotes)
   * Group #3: divert type
@@ -256,7 +256,7 @@ This content is further converted to HTML by the compiler.
 `<resolved target>` - target after resolving relative links.
 ### Object to HTML
 ```
-<dcc-trigger id='dcc[seq]' action='knot/[target]/navigate' label='[display]'></dcc-trigger>
+<dcc-button id='dcc[seq]' topic='knot/[target]/navigate' label='[display]'></dcc-button>
 ```
 
 ## Divert Script
