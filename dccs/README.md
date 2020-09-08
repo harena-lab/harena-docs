@@ -6,9 +6,9 @@ Learn and try to instantiate and customize Digital Content Components (DCCs) at 
 
 # Syntax and Examples
 
-## Trigger DCC (`<dcc-button>`)
+## Button DCC (`<dcc-button>`)
 
-A visual element that triggers an action. Its standard shape is a button, but it can be also an image or an element customized by the author.
+A visual element that acts as a button. Its standard shape is a button, but it can also be an image or an element customized by the author.
 
 ### Syntax
 
@@ -29,7 +29,7 @@ A visual element that triggers an action. Its standard shape is a button, but it
   * image trigger - the title of the image;
 * `image` (optional) - when the trigger is an image, it is the path of the image file;
 * `topic` (optional) - the topic of the message sent by the trigger; when the topic is not specified, the topic is built from the label ("button/<label>/clicked");
-* `message` (optional) - the message body the accompanies the topic;
+* `message` (optional) - a value included in the message body that accompanies the topic;
 * `divert` (optional) - how the trigger diverts the course of action: forward, round, or enclosed;
 * `variable` (optional) - a variable that receives the label or value of the trigger; if the variable name is followed by colon, it can indicate which field will be attributed to the variable, e.g., `variable="diagnostics:label`.
 
