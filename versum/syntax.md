@@ -179,13 +179,16 @@ If it is not subordinated, it is transformed into an HTML blockquote.
 
 ## Option
 ### Markdown to Object
-* Sentence: `+ [label] ->|<->|(-) [target] "[message]"` or `* [label] ->|<->|(-) [target] "[message]"`
-* Expression: `^[ \t]*([\+\*])[ \t]+([^\(&<> \t\n\r\f][^\(&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$`
+* Sentence: `+ [label] ->|<->|(-) [target] "[message]"` or `* [label] ->|<->|(-) [target] "[message]" >((state))?`
+* Expression: `^[ \t]*([\+\*])[ \t]+([^&<> \t\n\r\f][^&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^"\n\r\f(]+)(?:"([^"\n\r\f]*)")?[ \t]*(?:(\>)?\(\(([^)]*)\)\))?(\?)?[ \t]*$`
   * Group #1: subtype
   * Group #2: label
   * Group #3: divert type
   * Group #4: target
   * Group #5: message
+  * Group #6: state change
+  * Group #7: state
+  * Group #8: state test
 ![Option Expression](expressions/option.png)
 * Object:
 ```
@@ -196,6 +199,8 @@ If it is not subordinated, it is transformed into an HTML blockquote.
    divert: <divert type "forward", "round", or "enclosed">
    target: <resolved target -- if there is not an explicit target, the label is the target>
    message: <message for the target knot>
+   state: new state or state tested
+   operation: ">" or "?"
 }
 ```
 `<resolved target>` - target after resolving relative links.
