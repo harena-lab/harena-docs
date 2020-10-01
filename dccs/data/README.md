@@ -22,8 +22,8 @@ Embeds a data model.
   <subscribe-dcc topic="var/comic_id/changed" role="get"></subscribe-dcc>
 </dcc-rest>
 <dcc-dhtml type="get" request="comic_id">
-  <connect-dcc to="xkcd-model" topic="data/schema"/>
-  <connect-dcc to="xkcd-rest" topic="data/rest"/>
+  <connect-dcc to="xkcd-model" topic="data/schema"></connect-dcc>
+  <connect-dcc to="xkcd-rest" topic="data/rest"></connect-dcc>
   XKCD number: {{comic_id}}
 </dcc-dhtml>
 ~~~
@@ -44,4 +44,15 @@ Embeds a data model.
 <dcc-submit label="Submit" topic="data/request">
   <connect-dcc to="user-model" topic="data/schema"></connect-dcc>
 </dcc-submit>
+~~~
+
+~~~html
+<form>
+  <p>email: <input id="email"></p>
+  <p>password: <input id="password"></p>
+  <dcc-submit label="Submit" topic="data/request">
+    <connect-dcc 
+    to="user-model" topic="data/schema"></connect-dcc>
+  </dcc-submit>
+</form>
 ~~~
