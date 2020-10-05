@@ -56,3 +56,14 @@ Embeds a data model.
   </dcc-submit>
 </form>
 ~~~
+
+~~~html
+<form>
+  <p>email: <input id="email"></p>
+  <p>password: <input id="password"></p>
+  <dcc-submit label="Submit"></dcc-submit>
+  <dcc-rest bind="harena-login">
+    <subscribe-dcc topic="button/Submit/clicked" role="post"></subscribe-dcc>
+  </dcc-rest>
+</form>
+~~~
