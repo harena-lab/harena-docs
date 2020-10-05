@@ -67,3 +67,27 @@ Embeds a data model.
   </dcc-rest>
 </form>
 ~~~
+
+~~~html
+<form>
+  <p>email: <input id="email"></p>
+  <p>password: <input type="password" id="password"></p>
+  <dcc-submit label="Login"></dcc-submit>
+  <dcc-rest bind="harena-login">
+    <subscribe-dcc topic="button/Login/clicked" role="post"></subscribe-dcc>
+  </dcc-rest>
+</form>
+
+<hr>
+
+<form>
+  <p>quest id: <input id="questId"></p>
+  <dcc-submit label="Cases"></dcc-submit>
+  <dcc-rest bind="harena-cases">
+    <subscribe-dcc topic="button/Cases/clicked" role="get"></subscribe-dcc>
+  </dcc-rest>
+  <dcc-dhtml>
+    XKCD number: {{comic_id}}
+  </dcc-dhtml>
+</form>
+~~~
