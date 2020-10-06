@@ -155,12 +155,14 @@ If it is not subordinated, it is transformed into an HTML blockquote.
 
 ## Image
 ### Markdown to Object
-* Sentence: `!\[alt-text\]([path] "[title]")`
-* Expression: `([ \t]*)!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\)`
+* Sentence: `!\[alt-text\]([path] =widthxheight "[title]")`
+* Expression: `([ \t]*)!\[([\w \t]*)\]\(<?([\w:.\/\?&#\-~]+)>?[ \t]*(?:=(\d*(?:\.\d+[^x \t"\)])?)(?:x(\d*(?:\.\d+[^ \t"\)])?))?)?[ \t]*(?:"([\w ]*)")?\)`
   * Group #1: subordinate 
   * Group #2: alt text
   * Group #3: image path
-  * Group #4: image title
+  * Group #4: image width
+  * Group #5: image height
+  * Group #6: image title
 ![Image Expression](expressions/image.png)
 * Object:
 ```
