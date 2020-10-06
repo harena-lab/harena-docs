@@ -60,10 +60,10 @@ Embeds a data model.
 ~~~html
 <form>
   <p>email: <input id="email"></p>
-  <p>password: <input id="password"></p>
-  <dcc-submit label="Submit"></dcc-submit>
+  <p>password: <input type='password' id="password"></p>
+  <dcc-submit label="Login"></dcc-submit>
   <dcc-rest bind="harena-login">
-    <subscribe-dcc topic="button/Submit/clicked" role="post"></subscribe-dcc>
+    <subscribe-dcc topic="button/Login/clicked" role="post"></subscribe-dcc>
   </dcc-rest>
 </form>
 ~~~
@@ -86,8 +86,49 @@ Embeds a data model.
   <dcc-rest bind="harena-cases">
     <subscribe-dcc topic="button/Cases/clicked" role="get"></subscribe-dcc>
   </dcc-rest>
-  <dcc-dhtml>
-    XKCD number: {{comic_id}}
-  </dcc-dhtml>
 </form>
+~~~
+
+~~~html
+<form>
+  <p>email: <input id="email"></p>
+  <p>password: <input type='password' id="password"></p>
+  <dcc-submit label="Login"></dcc-submit>
+  <dcc-rest bind="harena-login">
+    <subscribe-dcc topic="button/Login/clicked" role="post"></subscribe-dcc>
+  </dcc-rest>
+</form>
+<dcc-dhtml subscribe="data/service/login">
+  <h1>Testing DHTML</h1>
+  <p><strong>Name:</strong> {{username}}</p>
+  <p><strong>Created at:</strong> {{created_at}}</p>
+</dcc-dhtml>
+~~~
+
+~~~html
+<form>
+  <p>email: <input id="email"></p>
+  <p>password: <input type='password' id="password"></p>
+  <dcc-submit label="Login"></dcc-submit>
+  <dcc-rest bind="harena-login">
+    <subscribe-dcc topic="button/Login/clicked" role="post"></subscribe-dcc>
+  </dcc-rest>
+</form>
+
+<hr>
+
+<dcc-button label="Roles"></dcc-button>
+<dcc-rest bind="harena-roles">
+  <subscribe-dcc topic="button/Roles/clicked" role="get"></subscribe-dcc>
+</dcc-rest>
+
+<hr>
+
+<dcc-dhtml subscribe="data/service/roles">
+  <h1>Roles</h1>
+  {{@foreach . role}}
+    <p><strong>Name:</strong> {{role.name}}</p>
+    <p><strong>Description:</strong> {{role.description}}</p>
+  {{@endfor}}
+</dcc-dhtml>
 ~~~
