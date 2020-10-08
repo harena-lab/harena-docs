@@ -132,3 +132,39 @@ Embeds a data model.
   {{@endfor}}
 </dcc-dhtml>
 ~~~
+
+~~~html
+<form>
+  <p>email: <input id="email"></p>
+  <p>password: <input type='password' id="password"></p>
+  <dcc-submit label="Login"></dcc-submit>
+  <dcc-rest bind="harena-login">
+    <subscribe-dcc topic="button/Login/clicked" role="post"></subscribe-dcc>
+  </dcc-rest>
+</form>
+
+<hr>
+
+<dcc-button label="Roles"></dcc-button>
+<dcc-rest bind="harena-roles">
+  <subscribe-dcc topic="button/Roles/clicked" role="get"></subscribe-dcc>
+</dcc-rest>
+
+<hr>
+
+<dcc-record key="harena-roles">
+  <subscribe-dcc topic="data/service/roles"></subscribe-dcc>
+</dcc-record>
+~~~
+
+~~~html
+<dcc-record key="harena-roles"></dcc-record>
+
+<dcc-dhtml subscribe="data/service/roles">
+  <h1>Roles</h1>
+  {{@foreach . role}}
+    <p><strong>Name:</strong> {{role.name}}</p>
+    <p><strong>Description:</strong> {{role.description}}</p>
+  {{@endfor}}
+</dcc-dhtml>
+~~~
