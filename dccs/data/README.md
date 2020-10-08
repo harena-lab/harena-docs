@@ -153,14 +153,14 @@ Embeds a data model.
 <hr>
 
 <dcc-record key="harena-roles">
-  <subscribe-dcc topic="data/service/roles"></subscribe-dcc>
+  <subscribe-dcc topic="data/service/roles" role="store"></subscribe-dcc>
 </dcc-record>
 ~~~
 
 ~~~html
-<dcc-record key="harena-roles"></dcc-record>
+<dcc-record id="harena-roles" key="harena-roles"></dcc-record>
 
-<dcc-dhtml subscribe="data/service/roles">
+<dcc-dhtml connect="harena-roles:data/record/retrieve">
   <h1>Roles</h1>
   {{@foreach . role}}
     <p><strong>Name:</strong> {{role.name}}</p>
