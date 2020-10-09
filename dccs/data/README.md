@@ -37,56 +37,24 @@ Embeds a data model.
 </dcc-rest>
 ~~~
 
-~~~html
-<dcc-model id="user-model" bind="user"></dcc-model>
-<p>email: <input id="email"></p>
-<p>password: <input id="password"></p>
-<dcc-submit label="Submit" topic="data/request">
-  <connect-dcc to="user-model" topic="data/schema"></connect-dcc>
-</dcc-submit>
-~~~
-
-~~~html
-<form>
-  <p>email: <input id="email"></p>
-  <p>password: <input id="password"></p>
-  <dcc-submit label="Submit" topic="data/request">
-    <connect-dcc 
-    to="user-model" topic="data/schema"></connect-dcc>
-  </dcc-submit>
-</form>
-~~~
+### Harena Examples
 
 ~~~html
 <form>
   <p>email: <input id="email"></p>
   <p>password: <input type='password' id="password"></p>
   <dcc-submit label="Login"></dcc-submit>
-  <dcc-rest bind="harena-login">
-    <subscribe-dcc topic="button/Login/clicked" role="post"></subscribe-dcc>
-  </dcc-rest>
 </form>
+<dcc-rest bind="harena-login" subscribe="button/Login/clicked:post"></dcc-rest>
 ~~~
 
+
 ~~~html
-<form>
-  <p>email: <input id="email"></p>
-  <p>password: <input type="password" id="password"></p>
-  <dcc-submit label="Login"></dcc-submit>
-  <dcc-rest bind="harena-login">
-    <subscribe-dcc topic="button/Login/clicked" role="post"></subscribe-dcc>
-  </dcc-rest>
-</form>
-
-<hr>
-
 <form>
   <p>quest id: <input id="questId"></p>
   <dcc-submit label="Cases"></dcc-submit>
-  <dcc-rest bind="harena-cases">
-    <subscribe-dcc topic="button/Cases/clicked" role="get"></subscribe-dcc>
-  </dcc-rest>
 </form>
+<dcc-rest bind="harena-cases" subscribe="button/Cases/clicked:get"></dcc-rest>
 ~~~
 
 ~~~html
@@ -94,11 +62,9 @@ Embeds a data model.
   <p>email: <input id="email"></p>
   <p>password: <input type='password' id="password"></p>
   <dcc-submit label="Login"></dcc-submit>
-  <dcc-rest bind="harena-login">
-    <subscribe-dcc topic="button/Login/clicked" role="post"></subscribe-dcc>
-  </dcc-rest>
 </form>
-<dcc-dhtml subscribe="data/service/login">
+<dcc-rest id="harena-login" bind="harena-login" subscribe="button/Login/clicked:post"></dcc-rest>
+<dcc-dhtml subscribe="service/response/post/harena-login:update">
   <h1>Testing DHTML</h1>
   <p><strong>Name:</strong> {{username}}</p>
   <p><strong>Created at:</strong> {{created_at}}</p>
@@ -106,25 +72,12 @@ Embeds a data model.
 ~~~
 
 ~~~html
-<form>
-  <p>email: <input id="email"></p>
-  <p>password: <input type='password' id="password"></p>
-  <dcc-submit label="Login"></dcc-submit>
-  <dcc-rest bind="harena-login">
-    <subscribe-dcc topic="button/Login/clicked" role="post"></subscribe-dcc>
-  </dcc-rest>
-</form>
-
-<hr>
-
 <dcc-button label="Roles"></dcc-button>
-<dcc-rest bind="harena-roles">
-  <subscribe-dcc topic="button/Roles/clicked" role="get"></subscribe-dcc>
-</dcc-rest>
+<dcc-rest id="harena-roles" bind="harena-roles" subscribe="button/Roles/clicked:get"></dcc-rest>
 
 <hr>
 
-<dcc-dhtml subscribe="data/service/roles">
+<dcc-dhtml subscribe="service/response/get/harena-roles:update">
   <h1>Roles</h1>
   {{@foreach . role}}
     <p><strong>Name:</strong> {{role.name}}</p>
@@ -134,32 +87,24 @@ Embeds a data model.
 ~~~
 
 ~~~html
-<form>
-  <p>email: <input id="email"></p>
-  <p>password: <input type='password' id="password"></p>
-  <dcc-submit label="Login"></dcc-submit>
-  <dcc-rest bind="harena-login">
-    <subscribe-dcc topic="button/Login/clicked" role="post"></subscribe-dcc>
-  </dcc-rest>
-</form>
+<dcc-rest id="harena-roles" bind="harena-roles"></dcc-rest>
+<dcc-dhtml connect="harena-roles:service/request/get">
+  <h1>Roles</h1>
+  {{@foreach . role}}
+    <p><strong>Name:</strong> {{role.name}}</p>
+    <p><strong>Description:</strong> {{role.description}}</p>
+  {{@endfor}}
+</dcc-dhtml>
+~~~
 
-<hr>
-
+~~~html
 <dcc-button label="Roles"></dcc-button>
-<dcc-rest bind="harena-roles">
-  <subscribe-dcc topic="button/Roles/clicked" role="get"></subscribe-dcc>
-</dcc-rest>
-
-<hr>
-
-<dcc-record key="harena-roles">
-  <subscribe-dcc topic="data/service/roles" role="store"></subscribe-dcc>
-</dcc-record>
+<dcc-rest id="harena-roles" bind="harena-roles" subscribe="button/Roles/clicked:get"></dcc-rest>
+<dcc-record key="harena-roles" subscribe="service/response/get/harena-roles:store"></dcc-record>
 ~~~
 
 ~~~html
 <dcc-record id="harena-roles" key="harena-roles"></dcc-record>
-
 <dcc-dhtml connect="harena-roles:data/record/retrieve">
   <h1>Roles</h1>
   {{@foreach . role}}
