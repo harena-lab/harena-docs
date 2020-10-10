@@ -222,32 +222,75 @@ Elements from the narrative and user inputs are annotated and connected to struc
 Segments between braces are annotated. 
 
 For example, the following narrative present symptoms of a patient:
-> Patient a man 55 years old; rather fat; subject to frequent attacks of winter cough, with asthmatic tendency.
+~~~markdown
+Patient a man 55 years old; rather fat; subject to frequent attacks of winter cough, with asthmatic tendency.
+~~~
 
 Some key characteristics and symptoms of the patient were annotated:
-> Patient a {man} {55 years old}; rather fat; subject to frequent attacks of {winter cough}, with {asthmatic} tendency.
+~~~markdown
+Patient a {man} {55 years old}; rather fat; subject to frequent attacks of {winter cough}, with {asthmatic} tendency.
+~~~
 
 Whenever a segment is annotated, the translator tries to automatically relate it to a KOS.
 
 It is possible to attach literal or formal annotations to the annotated terms. They come between parenthesis after the annotated term and are not presented when the text is rendered. Literal annotations are written in quotes, as follows:
-> Patient a {man} {55 years old}("the age is important in this case"); rather fat; subject to frequent attacks of {winter cough}("it was winter when he came"), with {asthmatic} tendency.
+~~~markdown
+Patient a {man} {55 years old}("the age is important in this case"); rather fat; subject to frequent attacks of {winter cough}("it was winter when he came"), with {asthmatic} tendency.
+~~~
 
 Formal annotations do not come in quotes. They are meant to be interpreted by machines, therefore, they must be connected to a KOS. A usual application is when an annotated term cannot be automatically related to a KOS. In this case, an equivalent formal term is presented between parenthesis beside the term. The following text has annotated terms, which are aligned to a medical knowledge basis.
 
-> Patient a {man}(male) {55 years old}(aging=51); rather fat; subject to frequent attacks of winter {cough}, with {asthmatic}(asthma) tendency.
+~~~markdown
+Patient a {man}(male) {55 years old}(aging=51); rather fat; subject to frequent attacks of winter {cough}, with {asthmatic}(asthma) tendency.
+~~~
 
 Annotations can be seen as the connection of segments to the Data-driven Layer. This layer is designed to be consumed by machines to support the automation of tasks as evaluation and feedback. This Data-driven Layer also defines how segments are associated with external KOSs as MeSH. It can define global associations or they can be guided by an annotation context, detailed in the next section.
 
-One can intentionally associate a specific annotation to a KOS, preceding the annotation with the namespace of the respective KOS.
+One can intentionally associate a specific annotation to a KOS, preceding the annotation with the namespace of the respective KOS. In the following example, three terms (male, aging, and asthma) have formal annotations related to MeSH.
+
+~~~markdown
+Patient a {man}(mesh:male) {55 years old}(mesh:aging=51); rather fat; subject to frequent attacks of winter {cough}, with {asthmatic}(mesh:asthma) tendency.
+~~~
+
+The Data Layer specifies the namespaces, as the following example:
+
+~~~markdown
+___ Data ___
+
+* namespaces:
+  * mesh: http://id.nlm.nih.gov/mesh/
+~~~
 
 ## Annotation Context
 A block of annotation context can be defined between double braces. The block defines a semantic context for the narrative and the respective annotations. The context guides the interpretation of parts of the narrative. The following example presents a `symptoms` annotation context.
 
-> {{symptoms
+~~~markdown
+{{symptoms
 
-> Patient a {man}(male) {55 years old}(aging=51); rather fat; subject to frequent attacks of winter {cough}, with {asthmatic}(asthma) tendency.
+Patient a {man}(male) {55 years old}(aging=51); rather fat; subject to frequent attacks of winter {cough}, with {asthmatic}(asthma) tendency.
 
-> }}
+}}
+~~~
+
+The translator will try automatically to relate the context to a KOS. One can also explicitly specify a namespace in the context, as the example:
+
+~~~markdown
+{{mesh:symptoms
+
+Patient a {man}(male) {55 years old}(aging=51); rather fat; subject to frequent attacks of winter {cough}, with {asthmatic}(asthma) tendency.
+
+}}
+~~~
+
+It is also possible to use context to define a preference namespace to a context. In the following example, the translator will try to relate the terms to MeSH before other KOS:
+
+~~~markdown
+{{mesh:
+
+Patient a {man}(male) {55 years old}(aging=51); rather fat; subject to frequent attacks of winter {cough}, with {asthmatic}(asthma) tendency.
+
+}}
+~~~
 
 <!-- Jekyll directive to avoid Liquid filters
 {% endraw %}

@@ -67,10 +67,11 @@ or
 # Annotations
 
 ## Context
-* Sentence context open: `{{ [context] / [related input] /`
-* Expression context open: `\{\{([\w \t\+\-\*\."=\:%]+)?(?:\/([\w \t\.\:]+)\/)?[\f\n\r]`
-  * Group #1: context
-  * Group #2: related input
+* Sentence context open: `{{ [namespace]: [context] / [related input] /`
+* Expression context open: `\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:\/([\w \t\.\:]+)\/)?$`
+  * Group #1: namespace
+  * Group #2: context
+  * Group #3: related input
 ![Context Open](expressions/context-open.png)
 * Sentence context close: `}}`
 * Expression context close: `\}\}` 
@@ -79,6 +80,7 @@ or
 ```
 {
    type: "context"
+   namespace: <namespace of the context>
    context: <identification of the context>
    input: <variable of a related input>
    annotations: [<set of annotations in this context>]
@@ -93,10 +95,11 @@ or
   * Group #3: context value (intended for evaluations based on selects)
 ![Annotation Outside](expressions/annotation-outside.png)
 * Sentence inside: `[expression] =|: [specification] / [rate]`
-* Expression inside: `([^=\:\n\r\f]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?`
-  * Group #1: expression
-  * Group #2: specification
-  * Group #3: rate
+* Expression inside: `(?:([^\:\n\r\f]+)\:)?([^=\n\r\f]+)(?:=([\w \t%]*)(?:\/([\w \t%]*))?)?`
+  * Group #1: namespace
+  * Group #2: expression
+  * Group #3: specification
+  * Group #4: rate
 ![Annotation Inside](expressions/annotation-inside.png)
 * Object:
 ```
@@ -110,6 +113,7 @@ or
    }
    formal: {
       complete: <complete text written in formal way to be recognized against a dictionary>
+      namespace: <namespace of the expression>
       expression: <expression in the text to be evaluated>
       specification: <specify the expression defining, for example, a measurable value, rate or origin>
       rate: <compose the rate of the specification>
