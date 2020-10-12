@@ -48,6 +48,15 @@ Embeds a data model.
 <dcc-rest bind="harena-login" subscribe="button/Login/clicked:post"></dcc-rest>
 ~~~
 
+~~~html
+<dcc-rest id="harena-login" bind="harena-login"></dcc-rest>
+<form>
+  <p>email: <input id="email"></p>
+  <p>password: <input type='password' id="password"></p>
+  <dcc-submit bind="submit-login" label="Login" connect="harena-login:service/request/post:submit">
+  </dcc-submit>
+</form>
+~~~
 
 ~~~html
 <form>
@@ -88,7 +97,7 @@ Embeds a data model.
 
 ~~~html
 <dcc-rest id="harena-roles" bind="harena-roles"></dcc-rest>
-<dcc-dhtml connect="harena-roles:service/request/get">
+<dcc-dhtml connect="harena-roles:service/request/get:retrieve">
   <h1>Roles</h1>
   {{@foreach . role}}
     <p><strong>Name:</strong> {{role.name}}</p>
