@@ -59,6 +59,11 @@ Embeds a data model.
 ~~~
 
 ~~~html
+<dcc-rest id="harena-logout" bind="harena-logout"></dcc-rest>
+<dcc-submit bind="submit-logout" label="Logout" connect="harena-logout:service/request/post:submit">
+~~~
+
+~~~html
 <form>
   <p>quest id: <input id="questId"></p>
   <dcc-submit label="Cases"></dcc-submit>
