@@ -25,6 +25,7 @@ Embeds a data model.
   <connect-dcc to="xkcd-model" topic="data/schema"></connect-dcc>
   <connect-dcc to="xkcd-rest" topic="data/rest"></connect-dcc>
   XKCD number: {{comic_id}}
+  <end-dcc></end-dcc>
 </dcc-dhtml>
 ~~~
 
@@ -43,9 +44,9 @@ Embeds a data model.
 <form>
   <p>email: <input id="email"></p>
   <p>password: <input type='password' id="password"></p>
-  <dcc-submit label="Login"></dcc-submit>
+  <dcc-submit label="Login" topic="service/request/post"></dcc-submit>
 </form>
-<dcc-rest bind="harena-login" subscribe="button/Login/clicked:post"></dcc-rest>
+<dcc-rest bind="harena-login" subscribe="service/request/post:retrieve"></dcc-rest>
 ~~~
 
 ~~~html
@@ -86,8 +87,8 @@ Embeds a data model.
 ~~~
 
 ~~~html
-<dcc-button label="Roles"></dcc-button>
-<dcc-rest id="harena-roles" bind="harena-roles" subscribe="button/Roles/clicked:get"></dcc-rest>
+<dcc-button label="Roles" topic="service/request/get"></dcc-button>
+<dcc-rest id="harena-roles" bind="harena-roles" subscribe="service/request/get:retrieve"></dcc-rest>
 
 <hr>
 
@@ -97,6 +98,7 @@ Embeds a data model.
     <p><strong>Name:</strong> {{role.name}}</p>
     <p><strong>Description:</strong> {{role.description}}</p>
   {{@endfor}}
+  <end-dcc></end-dcc>
 </dcc-dhtml>
 ~~~
 
@@ -108,6 +110,7 @@ Embeds a data model.
     <p><strong>Name:</strong> {{role.name}}</p>
     <p><strong>Description:</strong> {{role.description}}</p>
   {{@endfor}}
+  <end-dcc></end-dcc>
 </dcc-dhtml>
 ~~~
 
