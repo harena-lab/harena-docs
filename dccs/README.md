@@ -19,7 +19,8 @@ A visual element that acts as a button. Its standard shape is a button, but it c
             topic="topic"
             message="message"
             divert="divert"
-            variable="variable">
+            variable="variable"
+            inline>
 </dcc-button>
 ~~~
 
@@ -31,7 +32,8 @@ A visual element that acts as a button. Its standard shape is a button, but it c
 * `topic` (optional) - the topic of the message sent by the trigger; when the topic is not specified, the topic is built from the label ("button/<label>/clicked");
 * `message` (optional) - a value included in the message body that accompanies the topic;
 * `divert` (optional) - how the trigger diverts the course of action: forward, round, or enclosed;
-* `variable` (optional) - a variable that receives the label or value of the trigger; if the variable name is followed by colon, it can indicate which field will be attributed to the variable, e.g., `variable="diagnostics:label`.
+* `variable` (optional) - a variable that receives the label or value of the trigger; if the variable name is followed by colon, it can indicate which field will be attributed to the variable, e.g., `variable="diagnostics:label`;
+* `inline` (optional) - when true, the button will be inline, i.e., it will follow in the text flow.
 
 ### Examples
 
@@ -101,7 +103,7 @@ An animated image that also displays a text inside a ballon. Usually adopted for
 ### Syntax
 
 ~~~html
-<dcc-lively-talk duration="duration" 
+<dcc-lively-talk duration="duration"
                  delay="delay"
                  direction="direction"
                  character="character"

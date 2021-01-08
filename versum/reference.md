@@ -68,7 +68,7 @@ Label -> Target
 ~~~
 The left part is either a `Label` or a Logical `Expression`. `Label` is the label to be presented or related to the triggerable element; `Expression` is the logical expression to be evaluated. The middle that appears as an arrow ( `->`) or a variation (according to the type), defines the divert. The right element (` Target`) defines the target knot, to be addressed when the divert is triggered.
 
-There are three types of divert:
+There are four types of divert:
 
 ~~~markdown
 * Non numbered exclusive ordered option
@@ -212,14 +212,14 @@ Patient ... :chest pain:+: ... :pain in the chest(chest pain):+:
 
 ~~~
 ? hypothesis
-  * Answer-key -> 
+  * Answer-key ->
 ~~~
 
 ## Annotation
 
 Elements from the narrative and user inputs are annotated and connected to structured data and knowledge organization systems. We will use the acronym KOS (Knowledge Organization System) to refer generically to controlled vocabularies, taxonomies, thesaurus, ontologies, etc. An example of a KOS is [MeSH](https://www.nlm.nih.gov/mesh/meshhome.html) - Medical Subject Headings.
 
-Segments between braces are annotated. 
+Segments between braces are annotated.
 
 For example, the following narrative present symptoms of a patient:
 ~~~markdown
