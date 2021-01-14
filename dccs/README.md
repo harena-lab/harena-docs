@@ -221,10 +221,20 @@ Select your age:
 
 To present a multiple-choice input:
 
+For `<dcc-input-choice>`:
+* `id` - unique id of the input;
+* `statement` - statement presented before the options;
+* `variable` - name of the variable that will receive the value selected;
+* `value` - initial value (choice);
+* `mandatory` - defines if the user must select some value;
+* `exclusive` - exclusivity of the option explicitly declared, defines if the value will be exclusive (radio button) or not (checkbox) - default is non-exclusive;
+* `shuffle` - shuffles the options - default is false;
+* `target` - target to be triggered when an option is selected.
+
 For `<dcc-input-option>`:
 * `parent` - parent of the option explicitly declared (otherwise will be inferred by the hierarchy);
 * `variable` - variable of the option explicitly declared, otherwise will assume the parent's variable (which is the expected scenario);
-* `exclusive` - exclusivity of the option explicitly declared, defines if the value will be exclusive (radio button) or not (checkbox), otherwise will assume the parent's exclusivity (which is the expected scenario);
+* `exclusive` - exclusivity of the option explicitly declared, defines if the value will be exclusive (radio button) or not (checkbox), otherwise will assume the parent's exclusivity (which is the expected scenario).
 
 
 ~~~html
