@@ -22,7 +22,7 @@ This document is a reference guide for Versum writers. Part of the language is s
 
 # Versum
 
-## Knot
+# Knot
 A knot is the basic organizational unit of a case. A knot is a complete unit of presentation, it can represent, for example, a scene, a focus inside a scene, a state in the narrative, etc. Each knot is distinctively presented, one at a time.
 
 Knots are delimited by markdown headers:
@@ -34,7 +34,7 @@ Knots are delimited by markdown headers:
 
 They can be hierarchically grouped by header levels, but only the lower hierarchical levels are rendered.
 
-In the following example, only nodes `Level 3a`, `Level 3b` and `Level 2b` are rendered. Node `Level 2a` aggregates the nodes `Level 3a` and `Level 3b`; node `Level 1` aggregates the remaining. Aggregator nodes are never rendered, they are responsible for the structural organization of the case.
+Aggregator knots are not rendered. They are responsible for the structural organization of the case. In the following example, only knots `Level 3a`, `Level 3b`, and `Level 2b` are rendered. Knots `Level 2a` aggregates the knots `Level 3a` and `Level 3b`; node `Level 1` aggregates the remaining.
 
 ~~~markdown
 # Level 1
@@ -48,6 +48,8 @@ In the following example, only nodes `Level 3a`, `Level 3b` and `Level 2b` are r
 ## Level 2b
 ~~~
 
+There is one exception: when one level has only `notification nodes` as subordinates. We further explain this kind of node.
+
 It is also possible to use the alternative Markdown format with underlines:
 
 ~~~markdown
@@ -57,6 +59,9 @@ Level 1
 Level 2
 -------
 ~~~
+
+## Category
+
 
 
 ## Diverts and Options
