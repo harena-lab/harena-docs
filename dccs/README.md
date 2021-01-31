@@ -393,6 +393,58 @@ This is a multi-entry input presented as a table.
 </dcc-web>
 ~~~
 
+## Compute DCC `<dcc-compute>`
+
+Computes an assignment or a test, containing arithmetic or logical expression.
+
+If the expression has variables, it requests their values sending messages `var/<name>/get`. Variables assigned produces messages `var/<name>/set`.
+
+This component does not show the result - it is performed by the `<dcc-expression>` component.
+
+* `expression` - expression to compute - it can be an arithmetical expression or a logical expression; it is possible to write several statements in the same expression separated by semicolons;
+* `onload` - computes the expression and publishes the result on load.
+
+~~~html
+<dcc-compute expression="a=4+2;b=a+3" onload></dcc-compute>
+~~~
+
+When the expression has only one statement and it does not have an assignment, it considers that the assignment will be for the first variable. This expression assigns the result of this expression to `x`:
+
+~~~html
+<dcc-compute expression="x+2" onload></dcc-compute>
+~~~
+
+## Expression DCC `<dcc-expression>`
+
+Shows the value of a variable or the result of an expression.
+
+* `expression` - expression to compute - it can be an arithmetical expression or a logical expression; it is possible to write several statements in the same expression separated by semicolons;
+* `active` - updates the displayed result whenever a variable value changes.
+
+~~~html
+<dcc-compute expression="a=2+4" onload></dcc-compute>
+<dcc-expression expression="a" active></dcc-expression>
+~~~
+
+~~~html
+<dcc-compute expression="p=10" onload></dcc-compute>
+<p>Value of P: <dcc-expression expression="p" active></dcc-expression></p>
+
+<dcc-button label="Plus 10" topic="compute/add"></dcc-button>
+
+<dcc-compute expression="p+10">
+  <subscribe-dcc topic="compute/add" role="update"></subscribe-dcc>
+</dcc-compute>
+~~~
+
+~~~html
+<dcc-compute expression="p=10" onload></dcc-compute>
+<p>Value of P: <dcc-expression expression="p" active></dcc-expression></p>
+
+<dcc-compute id="plus10" expression="p+10"></dcc-compute>
+
+<dcc-button label="Plus 10" topic="compute/add" connect="plus10:compute/update:click"></dcc-button>
+~~~
 
 ## RSS DCC `<dcc-rss>`
 
