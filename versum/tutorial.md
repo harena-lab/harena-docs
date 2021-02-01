@@ -223,9 +223,9 @@ You are exploring an abandoned factory and found this machine:
 ![The Machine](https://openclipart.org/image/400px/300339)
 
 > What do you want to do?
-+ turn the front crank -> Front ~ points=0
-+ turn a crank from the left -> Left ~ points=10
-+ turn a crank from the right -> Right ~ points=5
++ turn the front crank -> Front ~ points:=0
++ turn a crank from the left -> Left ~ points:=10
++ turn a crank from the right -> Right ~ points:=5
 
 # Front (note)
 
@@ -250,4 +250,48 @@ The machine teletransported you to another dimension.
 Points: ^points^
 
 * Return -> Knot.Previous
+~~~
+
+~~~markdown
+# Machine
+
+You are exploring an abandoned factory and found this machine:
+![The Machine](https://openclipart.org/image/400px/300339)
+
+> What do you want to do?
++ turn the front crank -> Front
++ turn a crank from the left -> Left
++ turn a crank from the right -> Right
+
+# Front (note)
+~ points := 0
+
+The machine exploded due to excess pressure.
+
+Points: ^points^
+
+* Return -> Knot.Previous
+
+# Left (note)
+~ points := 5
+
+The machine stopped.
+
+Points: ^points^
+
+* Return -> Knot.Previous
+
+# Right (note)
+~ points + 10
+
+The machine teletransported you to another dimension.
+
+Points: ^points^
+
+* Return -> Knot.Previous
+~~~
+
+
+~~~markdown
+
 ~~~

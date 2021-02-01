@@ -54,14 +54,14 @@ Embeds a data model.
 <form>
   <p>email: <input id="email"></p>
   <p>password: <input type='password' id="password"></p>
-  <dcc-submit bind="submit-login" label="Login" connect="harena-login:service/request/post:submit">
+  <dcc-submit bind="submit-login" label="Login" connect="submit:harena-login:service/request/post">
   </dcc-submit>
 </form>
 ~~~
 
 ~~~html
 <dcc-rest id="harena-logout" bind="harena-logout"></dcc-rest>
-<dcc-submit bind="submit-logout" label="Logout" connect="harena-logout:service/request/post:submit">
+<dcc-submit bind="submit-logout" label="Logout" connect="submit:harena-login:service/request/post">
 ~~~
 
 ~~~html
@@ -104,7 +104,7 @@ Embeds a data model.
 
 ~~~html
 <dcc-rest id="harena-roles" bind="harena-roles"></dcc-rest>
-<dcc-dhtml connect="harena-roles:service/request/get:retrieve">
+<dcc-dhtml connect="submit:harena-login:service/request/post">
   <h1>Roles</h1>
   {{@foreach . role}}
     <p><strong>Name:</strong> {{role.name}}</p>
