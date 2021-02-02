@@ -117,7 +117,8 @@ Embeds a data model.
 ~~~html
 <dcc-button label="Roles"></dcc-button>
 <dcc-rest id="harena-roles" bind="harena-roles" subscribe="button/Roles/clicked:get"></dcc-rest>
-<dcc-record key="harena-roles" subscribe="service/response/get/harena-roles:store"></dcc-record>
+<dcc-record key="harena-roles" subscribe="service/response/get/harena-roles:store">
+</dcc-record>
 ~~~
 
 ~~~html

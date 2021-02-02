@@ -74,7 +74,7 @@ or
   * Group #3: related input
 ![Context Open](expressions/context-open.png)
 * Sentence context close: `}}`
-* Expression context close: `\}\}` 
+* Expression context close: `\}\}`
 ![Context Close](expressions/context-close.png)
 * Object:
 ```
@@ -118,7 +118,7 @@ or
       specification: <specify the expression defining, for example, a measurable value, rate or origin>
       rate: <compose the rate of the specification>
    }
-   value: <value of the expression according to the context> 
+   value: <value of the expression according to the context>
 }
 ```
 
@@ -161,7 +161,7 @@ If it is not subordinated, it is transformed into an HTML blockquote.
 ### Markdown to Object
 * Sentence: `!\[alt-text\]([path] =widthxheight "[title]")`
 * Expression: `([ \t]*)!\[([\w \t]*)\]\(<?([\w:.\/\?&#\-~]+)>?[ \t]*(?:=(\d*(?:\.\d+[^x \t"\)])?)(?:x(\d*(?:\.\d+[^ \t"\)])?))?)?[ \t]*(?:"([\w ]*)")?\)`
-  * Group #1: subordinate 
+  * Group #1: subordinate
   * Group #2: alt text
   * Group #3: image path
   * Group #4: image width
@@ -385,7 +385,7 @@ This content is further converted to HTML by the compiler.
 ### Object to HTML
 **Standard**
 ```
-<dcc-input id='dcc[seq]' variable='[variable]'[rows][vocabularies]> 
+<dcc-input id='dcc[seq]' variable='[variable]'[rows][vocabularies]>
 </dcc-input>
 ```
 **Group Select subtype**
@@ -420,24 +420,23 @@ The existing `variant` is "`right`", meaning that the output will be the right v
 
 ## Compute
 ### Markdown to Object
-* Sentence: `~ [variable] +|-|*|/|= [number]`
-* Expression: `~[ \t]*(\w+)?[ \t]*([\+-=])[ \t]*(\d+(?:\.\d+)?)`
-  * Group #1: variable
-  * Group #2: operator
-  * Group #3: value
+* Sentence: `~ [expression]?`
+* Expression: `~[ \t]*([\w+\-*/= :<>\t]+)(\?)?`
+  * Group #1: expression
+  * Group #2: question mark
 ![Compute Expression](expressions/compute.png)
+When the expression has only one statement and it does not have an assignment, it considers that the assignment will be for the first variable. This expression assigns the result of this expression to `x`: `x+2`
 * Object:
 ```
 {
    type: "compute"
-   variable: <variable name>
-   operator: +|-|*|/|=
-   value: <value>
+   expression: <expression>
+   conditional: true|false
 }
 ```
 ### Object to HTML
 ```
-<dcc-compute sentence='[sentence]'></dcc-compute>
+<dcc-compute expression='[expression]'></dcc-compute>
 ```
 
 ## Select Context
@@ -463,7 +462,7 @@ no HTML
 ### -- Close
 ### Markdown to Object
 * Sentence context close: `}}`
-* Expression context close: `\}\}` 
+* Expression context close: `\}\}`
 ![Context Close](expressions/context-close.png)
 * Object:
 ```
