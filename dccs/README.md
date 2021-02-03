@@ -455,6 +455,55 @@ Shows the value of a variable or the result of an expression.
 </dcc-compute>
 ~~~
 
+~~~html
+<dcc-compute expression="p:=10" onload></dcc-compute>
+<p>Value of P: <dcc-expression expression="p" active></dcc-expression></p>
+
+<dcc-compute id="plus10" expression="p:=p+10"></dcc-compute>
+<dcc-compute id="subtract10" expression="p:=p-10"></dcc-compute>
+
+<dcc-button id="add-button" label="Plus 10" topic="compute/add" connect="click:plus10:compute/update">
+</dcc-button>
+<dcc-button id="subtract-button" label="Subtract 10" topic="compute/subtract" connect="click:subtract10:compute/update">
+</dcc-button>
+
+<dcc-compute expression="p>=30" onload active connect="true:add-button:style/display/none">
+</dcc-compute>
+
+<dcc-compute expression="p>=30" onload active connect="false:add-button:style/display/initial">
+</dcc-compute>
+~~~
+
+~~~html
+<dcc-compute expression="p:=10" onload></dcc-compute>
+<p>Value of P: <dcc-expression expression="p" active></dcc-expression></p>
+
+<dcc-compute id="plus10" expression="p:=p+10"></dcc-compute>
+
+<dcc-timer cycles="10" interval="1000" connect="cycle:plus10:compute/update" autostart>
+</dcc-timer>
+~~~
+
+~~~html
+<dcc-compute expression="p:=10" onload></dcc-compute>
+<p>Value of P: <dcc-expression expression="p" active></dcc-expression></p>
+
+<dcc-compute id="plus10" expression="p:=p+10"></dcc-compute>
+
+<dcc-timer cycles="10" interval="1000" autostart>
+  <connect-dcc trigger="cycle" to="plus10" topic="compute/update"></connect-dcc>
+</dcc-timer>
+~~~html
+
+~~~html
+<dcc-timer cycles="5" interval="1000" autostart>
+  <connect-dcc trigger="begin" to="power" topic="style/display/none"></connect-dcc>
+  <connect-dcc trigger="cycle" to="power" topic="style/display/none"></connect-dcc>
+  <connect-dcc trigger="end" to="power" topic="style/display/initial"></connect-dcc>
+</dcc-timer>
+<dcc-button id="power" label="Power On"></dcc-button>
+~~~html
+
 ## RSS DCC `<dcc-rss>`
 
 Fetches items from an RSS feed and publishes them as messages on the bus.

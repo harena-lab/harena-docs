@@ -217,12 +217,13 @@ If it is not subordinated, it is transformed into an HTML blockquote.
 
 ## Field
 ### Markdown to Object
-* Sentence: `+ [field]: [value] -> [target]` or `* [field]: [value] -> [target]`
-* Expression: `^([ \t]*)(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f]+)?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$`
+* Sentence: `* [field]: [value] -> [target]` or `* [field]: '[value]' -> [target]`
+* Expression: `^([ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f'][^&>\n\r\f]*)?(?:'([^']*)')?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$`
   * Group #1: subordinate
   * Group #2: field
-  * Group #3: value
-  * Group #4: target
+  * Group #3: value without quotes
+  * Group #4: value with quotes
+  * Group #5: target
 ![Option Expression](expressions/field.png)
 * Object:
 ```
