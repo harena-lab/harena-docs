@@ -6,3 +6,5 @@ header_pages:
  - versum/
  - dccs/
  - manager/
+
+permalink: /:categories/:title/
