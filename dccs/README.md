@@ -167,9 +167,9 @@ Talks can be grouped inside a `<dcc-lively-dialog>`, which define the parameters
 </dcc-lively-dialog>
 ~~~
 
-## Subscribing Messages and Connecting Components (`<subscribe-dcc>`)
+## Subscribing Messages (`<subscribe-dcc>`)
 
-A DCC can subscribe to message in such a way that whenever the message appears on the bus, it will receive it.
+A DCC can subscribe to a message in such a way that whenever the message appears on the bus, it will receive it.
 
 For each subscribed message a DCC declares a `<subscribe-dcc>` inside its element. With the following syntax:
 

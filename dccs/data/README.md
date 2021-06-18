@@ -19,7 +19,7 @@ Embeds a data model.
 <dcc-model id="xkcd-model" bind="xkcd"></dcc-model>
 <dcc-rest id="xkcd-rest" bind="xkcd">
   <connect-dcc to="xkcd-model" topic="data/schema"></connect-dcc>
-  <subscribe-dcc topic="var/comic_id/changed" role="get"></subscribe-dcc>
+  <subscribe-dcc topic="var/comic_id/changed" map="par/comic_id/get"></subscribe-dcc>
 </dcc-rest>
 <dcc-dhtml type="get" request="comic_id">
   <connect-dcc to="xkcd-model" topic="data/schema"></connect-dcc>
@@ -34,7 +34,7 @@ Embeds a data model.
 <dcc-model id="coronavirus-model" bind="coronavirus"></dcc-model>
 <dcc-rest id="coronavirus-rest" bind="coronavirus">
   <connect-dcc to="coronavirus-model" topic="data/schema"></connect-dcc>
-  <subscribe-dcc topic="var/region/changed" role="get"></subscribe-dcc>
+  <subscribe-dcc topic="var/region/changed" map="par/region/get"></subscribe-dcc>
 </dcc-rest>
 ~~~
 

@@ -1,0 +1,83 @@
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {%- seo -%}
+  <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
+
+  <link rel="stylesheet" href="https://harena-lab.github.io/harena-space/src/adonisjs/public/lib/fontawesome-5-10-1/css/all.min.css">
+  <link rel="stylesheet" href="https://harena-lab.github.io/harena-space/src/adonisjs/public/lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="https://harena-lab.github.io/harena-space/src/adonisjs/public/infra/css/common-player.css">
+  <link rel="stylesheet" href="https://harena-lab.github.io/harena-space/src/adonisjs/public/infra/css/common-author.css">
+
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/lib/popper-1-15-0/popper.min.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/config/config-standalone.js"></script>
+
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/infra/bus.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/infra/basic.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/infra/dcc-common-server-proxy.js"></script>
+
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/base/dcc.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/base/subscribe-dcc.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/base/connect-dcc.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/base/trigger-dcc.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/base/property-dcc.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/base/dcc-base.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/base/end-dcc.js"></script>
+
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/control/dcc-timer.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/base/dcc-visual.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-markdown.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-annotation.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-image.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-expression.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/base/dcc-block.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-state.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-group.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-button.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-character.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-lively-dialog.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-notice-input.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-state-select.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-image-marker.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/base/dcc-styler.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-entity.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-input.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-input-typed.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-input-choice.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-input-table.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-slider.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/control/dcc-compute.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-report.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/web/dcc-web.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/visual/dcc-graph.js"></script>
+
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/web/dcc-rss.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/web/dcc-aggregator.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/web/dcc-dhtml.js"></script>
+
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/web/dcc-include.js"></script>
+
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/cell/dcc-space-cellular.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/cell/dcc-cell.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/cell/dcc-cell-color.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/cell/dcc-cell-image.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/cell/rule-dcc-cell.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/cell/rule-dcc-cell-transition.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/cell/rule-dcc-cell-neighbor.js"></script>
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/dccs/components/cell/rule-dcc-cell-expression.js"></script>
+
+  <script src="https://harena-lab.github.io/harena-space/src/adonisjs/public/player/js/state.js"></script>
+
+  {%- feed_meta -%}
+  {%- if jekyll.environment == 'production' and site.google_analytics -%}
+    {%- include google-analytics.html -%}
+  {%- endif -%}
+
+  {%- include custom-head.html -%}
+
+</head>
