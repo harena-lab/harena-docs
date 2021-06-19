@@ -1,3 +1,8 @@
+---
+categories: ["versum", "tutorial-versum-dccs"]
+title: Versum-DCCs Tutorial
+---
+
 # Combining Versus with Digital Content Components
 
 ~~~markdown
@@ -65,7 +70,7 @@ Temperature: {{temperature}}.
   <option value="blue">Too low</option>
   <option value="green">Regular</option>
   <option value="red">Too high</option>
-  </select> 
+  </select>
   <dcc-submit label="Set Temperature" topic="var/*/set"></dcc-submit>
 </form>
 

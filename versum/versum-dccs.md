@@ -1,3 +1,7 @@
+---
+categories: ["versum", "dccs"]
+title: Versum-DCCs
+---
 
 [DCC Id] = event => [DCC Id]
 @Id(DCC) = event => @Id(DCC)

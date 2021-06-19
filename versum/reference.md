@@ -1,3 +1,8 @@
+---
+categories: ["versum", "reference"]
+title: Versum Reference
+---
+
 <!-- Jekyll directive to avoid Liquid filters
 {% raw %}
 -->

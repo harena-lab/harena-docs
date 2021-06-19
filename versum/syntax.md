@@ -1,3 +1,8 @@
+---
+categories: ["versum", "syntax"]
+title: Versum Syntax
+---
+
 <!-- Jekyll directive to avoid Liquid filters
 {% raw %}
 -->

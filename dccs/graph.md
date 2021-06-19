@@ -1,5 +1,6 @@
 ---
 categories: ["dccs","graph"]
+title: "Graph DCCs"
 ---
 
 # Graph Digital Content Components
