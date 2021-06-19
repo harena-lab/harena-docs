@@ -1,3 +1,4 @@
+permalink: /:categories/
 title: Harena Docs
 author:
   name: Harena Team
@@ -21,5 +22,4 @@ defaults:
     scope:
       path: "README.md"
     values:
-      layout: "home"
       permalink: "index.html"

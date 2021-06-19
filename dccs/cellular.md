@@ -1,4 +1,5 @@
 ---
+categories: ["dccs","cellular"]
 ---
 
 # Cellular Digital Content Components

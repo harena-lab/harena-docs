@@ -1,4 +1,5 @@
 ---
+categories: ["dccs","data"]
 ---
 
 # Data-related Digital Content Components
