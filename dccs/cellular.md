@@ -1,3 +1,6 @@
+---
+---
+
 # Cellular Digital Content Components
 
 ## Playground
@@ -888,12 +891,12 @@ In the following sentences, all items listed as "conditions" must be true to tri
     * the source minus the share rate is equal or greater than the value of the target or the target has no value
   * action:
     * the origin copies the share rate to the destination
-* `1` 
+* `1`
   * condition:
     * the origin's value is 1
   * action:
     * the rule is applied
-* `0` 
+* `0`
   * condition:
     * the origin's value is 0
   * action:

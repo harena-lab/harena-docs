@@ -1,3 +1,6 @@
+---
+---
+
 # Data-related Digital Content Components
 
 The schemas specification follows the [JSON schema](https://json-schema.org/) format.

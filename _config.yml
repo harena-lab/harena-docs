@@ -1,10 +1,25 @@
 title: Harena Docs
+author:
+  name: Harena Team
+description: >
+  Here you will find the Harena documentation.
 
+show_excerpts: false
+
+minima:
+  date_format: "%b %-d, %Y"
+
+# Build settings
 theme: minima
 
-header_pages:
- - versum/
- - dccs/
- - manager/
+plugins:
+ - jekyll-feed
+ - jekyll-seo-tag
 
-permalink: /:categories/:title/
+defaults:
+  -
+    scope:
+      path: "README.md"
+    values:
+      layout: "home"
+      permalink: "index.html"
