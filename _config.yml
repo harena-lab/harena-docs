@@ -20,6 +20,11 @@ plugins:
 defaults:
   -
     scope:
+      path: ""
+    values:
+      layout: "default"
+  -
+    scope:
       path: "README.md"
     values:
       permalink: "index.html"
