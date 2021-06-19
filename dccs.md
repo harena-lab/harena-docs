@@ -1,5 +1,6 @@
 ---
 categories: ["dccs"]
+title: DCC
 ---
 
 # Digital Content Components
