@@ -11,7 +11,9 @@ class DCCSlider extends DCCInput {
   connectedCallback () {
     if (!this.hasAttribute('min')) { this.min = DCCSlider.defaultValueMin }
     if (!this.hasAttribute('max')) { this.max = DCCSlider.defaultValueMax }
-    if (!this.hasAttribute('value')) { this.value = Math.round((parseInt('' + this.min) + parseInt('' + this.max)) / 2) }
+
+    this._value = (this.hasAttribute('value')) ? parseInt(this.value) :
+        Math.round((parseInt('' + this.min) + parseInt('' + this.max)) / 2)
 
     super.connectedCallback()
     this.innerHTML = ''
@@ -57,12 +59,12 @@ class DCCSlider extends DCCInput {
 
   inputChanged () {
     this.changed = true
-    this.value = this._inputVariable.value
-    if (this._inputIndex) { this._inputIndex.innerHTML = this.value }
+    this._value = this._inputVariable.value
+    if (this._inputIndex) { this._inputIndex.innerHTML = this._value }
     MessageBus.ext.publish('var/' + this.variable + '/changed',
       {
         sourceType: DCCSlider.elementTag,
-        value: this.value
+        value: this._value
       })
   }
 
@@ -79,20 +81,19 @@ class DCCSlider extends DCCInput {
   // _injectDCC(presentation, render) {
   async _renderInterface () {
     // === pre presentation setup
-    const statement =
-         (this.hasAttribute('xstyle') && this.xstyle.startsWith('out'))
-           ? '' : this._statement
+    const statement = (this._xstyle.startsWith('out'))
+                        ? '' : this._statement
 
     const index = (this.index)
       ? "<span id='" + this.variable + "-index'>" +
-              ((this.mandatory) ? '  ' : this.value) +
+              ((this.mandatory) ? '  ' : this._value) +
            '</span>'
       : ''
 
     const html = DCCSlider.templateElement
       .replace('[statement]', statement)
       .replace('[variable]', this.variable)
-      .replace('[value]', this.value)
+      .replace('[value]', this._value)
       .replace('[min]', this.min)
       .replace('[max]', this.max)
       .replace('[render]', this._renderStyle())
@@ -100,7 +101,7 @@ class DCCSlider extends DCCInput {
 
     // === presentation setup (DCC Block)
     let presentation
-    if (this.hasAttribute('xstyle') && this.xstyle.startsWith('out')) {
+    if (this._xstyle.startsWith('out')) {
       await this._applyRender(this._statement, 'innerHTML', 'text')
       presentation = await this._applyRender(html, 'innerHTML', 'slider')
     } else { presentation = await this._applyRender(html, 'innerHTML', 'slider') }

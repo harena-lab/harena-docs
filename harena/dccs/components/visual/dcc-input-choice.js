@@ -121,7 +121,7 @@ class DCCInputOption extends DCCInput {
       // === pre presentation setup
       // <TODO> review this sentence (copied from dcc-input-typed but not analysed)
       const statement =
-            (this.hasAttribute('xstyle') && this.xstyle.startsWith('out'))
+            (this._xstyle.startsWith('out'))
               ? '' : this._statement
 
       const html = (this.target)

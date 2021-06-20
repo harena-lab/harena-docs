@@ -85,9 +85,8 @@ class DCCInputTyped extends DCCInput {
   // _injectDCC(presentation, render) {
   async _renderInterface () {
     // === pre presentation setup
-    const statement =
-         (this.hasAttribute('xstyle') && this.xstyle.startsWith('out'))
-           ? '' : this._statement
+    const statement = (this._xstyle.startsWith('out'))
+                        ? '' : this._statement
 
     let html
     if (this.hasAttribute('rows') && this.rows > 1) {
@@ -107,7 +106,7 @@ class DCCInputTyped extends DCCInput {
 
     // === presentation setup (DCC Block)
     let presentation
-    if (this.hasAttribute('xstyle') && this.xstyle.startsWith('out')) {
+    if (this._xstyle.startsWith('out')) {
       await this._applyRender(this._statement, 'innerHTML', 'text')
       presentation = await this._applyRender(html, 'innerHTML', 'input')
     } else { presentation = await this._applyRender(html, 'innerHTML', 'input') }
