@@ -9,11 +9,21 @@ class DCCSlider extends DCCInput {
   }
 
   connectedCallback () {
-    if (!this.hasAttribute('min')) { this.min = DCCSlider.defaultValueMin }
-    if (!this.hasAttribute('max')) { this.max = DCCSlider.defaultValueMax }
+    if (this.hasAttribute('variable'))
+      this._variable = this._variable
+    else
+      this._variable = DCC.generateVarName()
+    if (this.hasAttribute('min'))
+      this._min = this.min
+    else
+      this._min = DCCSlider.defaultValueMin
+    if (this.hasAttribute('max'))
+      this._max = this.max
+    else
+      this._max = DCCSlider.defaultValueMax
 
     this._value = (this.hasAttribute('value')) ? parseInt(this.value) :
-        Math.round((parseInt('' + this.min) + parseInt('' + this.max)) / 2)
+        Math.round((parseInt('' + this._min) + parseInt('' + this._max)) / 2)
 
     super.connectedCallback()
     this.innerHTML = ''
@@ -94,8 +104,8 @@ class DCCSlider extends DCCInput {
       .replace('[statement]', statement)
       .replace('[variable]', this.variable)
       .replace('[value]', this._value)
-      .replace('[min]', this.min)
-      .replace('[max]', this.max)
+      .replace('[min]', this._min)
+      .replace('[max]', this._max)
       .replace('[render]', this._renderStyle())
       .replace('[index]', index)
 
