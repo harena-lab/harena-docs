@@ -10,6 +10,7 @@ A Digital Content Component (DCC) is a model and technology that enables the pac
 * [Tutorial](tutorial/)
 * [Reference](reference/)
 * [Development Guide](development/)
+* [Message Protocol](message/)
 * [Data-related DCCs Examples](data/)
 * [Cellular-related DCCs Examples](cellular/)
 * [Graph DCCs Examples](graph/)
