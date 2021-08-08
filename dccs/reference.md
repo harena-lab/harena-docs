@@ -1,6 +1,7 @@
 ---
 categories: ["dccs", "reference"]
-title: DCCs Reference
+title: "DCCs Reference"
+layout: tutorial
 ---
 
 # Digital Content Component (DCC) Reference
@@ -46,12 +47,12 @@ Textual button trigger that sends the following message when clicked:
 * topic - `button/on/clicked`
 * message body - `"message to you"`
 
-~~~html
+<dcc-play>
 <dcc-button label="On"
             topic="button/on/clicked"
             message="message to you">
 </dcc-button>
-~~~
+</dcc-play>
 
 Image trigger with title `check` and whose image is located in `icons/icon-check.svg`. Since the image occupies all available area, a `<div>` surrounding it delimits the size to `100px`.
 
