@@ -3,6 +3,8 @@ categories: ["dccs","message"]
 title: "DCCs Message Protocol"
 ---
 
+# Digital Content Component (DCC) Message Protocol
+
 ## Topic Structure and Wildcards
 The wildcards standard is based in the MQTT 3.1.1, as specified in the document: [MQTT Version 3.1.1](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html), Section 4.7.1 Topic wildcards.
 

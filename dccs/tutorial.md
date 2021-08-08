@@ -4,6 +4,8 @@ title: "DCC Tutorial"
 layout: tutorial
 ---
 
+# Digital Content Component (DCC) Tutorial
+
 A Digital Content Component (DCC) is a model and technology that enables the packaging of blocks of software and media inside components. These components can be customized and combined to solve small tasks; interact with a user; perform animations and simulations; or create applications.
 
 This tutorial will present the basic steps to work with DCCs.

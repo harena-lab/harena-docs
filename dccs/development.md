@@ -3,6 +3,8 @@ categories: ["dccs","development"]
 title: "DCC Development Guide"
 ---
 
+# Digital Content Component (DCC) Development Guide
+
 Components work together by exchanging messages. A message bus, which is part of the framework, delivers these messages. When the framework starts, it instantiates a default global message bus. If not indicated otherwise, the default message bus links all DCCs.
 
 The primary way to publish messages on the bus is the `publish` method:

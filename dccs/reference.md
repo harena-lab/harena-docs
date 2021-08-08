@@ -3,7 +3,7 @@ categories: ["dccs", "reference"]
 title: DCCs Reference
 ---
 
-# Digital Content Components
+# Digital Content Component (DCC) Reference
 
 ## Playground
 
