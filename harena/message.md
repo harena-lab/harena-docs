@@ -1,7 +1,9 @@
 ---
-categories: ["message","harena"]
+categories: ["harena","message"]
 title: "Harena Message Protocol"
 ---
+
+# Harena Message Protocol
 
 ## Control Actions
 

@@ -1,15 +1,17 @@
 ---
-categories: ["message"]
-title: Message Protocols
+categories: ["harena"]
+title: Harena
 ---
 
-# Message Protocols
+# Harena General Definitions
+
+## Message Protocols
 
 The general rules to build Harena messages is based on:
 * [DCCs Message Protocol](/harena-docs/dccs/message/)
 
-The Harena specific message protocol is defined at:
-* [Harena Message Protocol](/harena-docs/harena/message/)
+The Harena specific message protocol:
+* [Harena Message Protocol](message/)
 
 The Development Guides has a section explaining javascript implementation details of exchanging messages through the bus:
 * [DCCs Development Guide](/harena-docs/dccs/development/)
