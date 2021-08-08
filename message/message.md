@@ -1,5 +1,5 @@
 ---
-categories: ["harena","message"]
+categories: ["dccs","message2"]
 title: "Harena Message Protocol"
 ---
 
