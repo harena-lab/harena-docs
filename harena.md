@@ -1,9 +1,9 @@
 ---
 categories: ["harena"]
-title: Harena
+title: Harena General Specifications
 ---
 
-# Harena General Definitions
+# Harena General Specifications
 
 ## Message Protocols
 
