@@ -44,7 +44,7 @@ This DCC presents a slider on the screen. Four properties can be customized:
 * `index` - defines if the index is presented besides the slider.
 
 <dcc-play>
-   <dcc-slider min=”0” max=”100” value=”30” index></dcc-slider>
+   <dcc-slider min="0" max="100" value="30" index></dcc-slider>
 </dcc-play>
 
 ## Subscribing Messages (attribute `subscribe` or `<subscribe-dcc>`)
