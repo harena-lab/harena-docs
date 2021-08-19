@@ -13,7 +13,7 @@ class DCCInputTyped extends DCCInput {
     super.connectedCallback()
     this.innerHTML = ''
 
-    MessageBus.int.publish('var/' + this.variable + '/input/ready',
+    this._publish('var/' + this._variable + '/input/ready',
       DCCInputTyped.elementTag)
   }
 
@@ -55,21 +55,21 @@ class DCCInputTyped extends DCCInput {
   inputTyped () {
     this.changed = true
     this.value = this._inputVariable.value
-    MessageBus.ext.publish('var/' + this.variable + '/typed',
+    this._publish('var/' + this._variable + '/typed',
       {
         sourceType: DCCInputTyped.elementTag,
         value: this.value
-      })
+      }, true)
   }
 
   inputChanged () {
     this.changed = true
     this.value = this._inputVariable.value
-    MessageBus.ext.publish('var/' + this.variable + '/changed',
+    this._publish('var/' + this._variable + '/changed',
       {
         sourceType: DCCInputTyped.elementTag,
         value: this.value
-      })
+      }, true)
   }
 
   /* Rendering */
@@ -93,12 +93,12 @@ class DCCInputTyped extends DCCInput {
       html = DCCInputTyped.templateElements.area
         .replace('[statement]', statement)
         .replace('[rows]', this.rows)
-        .replace('[variable]', this.variable)
+        .replace('[variable]', this._variable)
         .replace('[render]', this._renderStyle())
     } else {
       html = DCCInputTyped.templateElements.text
         .replace('[statement]', statement)
-        .replace('[variable]', this.variable)
+        .replace('[variable]', this._variable)
         .replace('[render]', this._renderStyle())
         .replace('[itype]', (this.hasAttribute('itype'))
           ? " type='" + this.itype + "'" : '')
@@ -112,7 +112,7 @@ class DCCInputTyped extends DCCInput {
     } else { presentation = await this._applyRender(html, 'innerHTML', 'input') }
 
     // === post presentation setup
-    const selector = '#' + this.variable.replace(/\./g, '\\.')
+    const selector = '#' + this._variable.replace(/\./g, '\\.')
     this._inputVariable = presentation.querySelector(selector)
     this._inputVariable.addEventListener('input', this.inputTyped)
     this._inputVariable.addEventListener('change', this.inputChanged)

@@ -9,18 +9,14 @@ class DCCSlider extends DCCInput {
   }
 
   connectedCallback () {
+    // <TODO> replicated provisory
     if (this.hasAttribute('variable'))
-      this._variable = this._variable
+      this._variable = this.getAttribute('variable')
     else
       this._variable = DCC.generateVarName()
-    if (this.hasAttribute('min'))
-      this._min = this.min
-    else
-      this._min = DCCSlider.defaultValueMin
-    if (this.hasAttribute('max'))
-      this._max = this.max
-    else
-      this._max = DCCSlider.defaultValueMax
+
+    this._min = (this.hasAttribute('min')) ? this.min : DCCSlider.defaultValueMin
+    this._max = (this.hasAttribute('max')) ? this.max : DCCSlider.defaultValueMax
 
     this._value = (this.hasAttribute('value')) ? parseInt(this.value) :
         Math.round((parseInt('' + this._min) + parseInt('' + this._max)) / 2)
@@ -28,7 +24,7 @@ class DCCSlider extends DCCInput {
     super.connectedCallback()
     this.innerHTML = ''
 
-    MessageBus.int.publish('var/' + this.variable + '/input/ready',
+    this._publish('var/' + this._variable + '/input/ready',
       DCCSlider.elementTag)
   }
 
@@ -46,6 +42,7 @@ class DCCSlider extends DCCInput {
   }
 
   set min (newValue) {
+    this._min = newValue
     this.setAttribute('min', newValue)
   }
 
@@ -54,6 +51,7 @@ class DCCSlider extends DCCInput {
   }
 
   set max (newValue) {
+    this._max = newValue
     this.setAttribute('max', newValue)
   }
 
@@ -71,11 +69,11 @@ class DCCSlider extends DCCInput {
     this.changed = true
     this._value = this._inputVariable.value
     if (this._inputIndex) { this._inputIndex.innerHTML = this._value }
-    MessageBus.ext.publish('var/' + this.variable + '/changed',
+    this._publish('var/' + this._variable + '/changed',
       {
         sourceType: DCCSlider.elementTag,
         value: this._value
-      })
+      }, true)
   }
 
   /* Rendering */
@@ -95,14 +93,14 @@ class DCCSlider extends DCCInput {
                         ? '' : this._statement
 
     const index = (this.index)
-      ? "<span id='" + this.variable + "-index'>" +
+      ? "<span id='" + this._variable + "-index'>" +
               ((this.mandatory) ? '  ' : this._value) +
            '</span>'
       : ''
 
     const html = DCCSlider.templateElement
       .replace('[statement]', statement)
-      .replace('[variable]', this.variable)
+      .replace('[variable]', this._variable)
       .replace('[value]', this._value)
       .replace('[min]', this._min)
       .replace('[max]', this._max)
@@ -117,7 +115,7 @@ class DCCSlider extends DCCInput {
     } else { presentation = await this._applyRender(html, 'innerHTML', 'slider') }
 
     // === post presentation setup
-    const selector = '#' + this.variable.replace(/\./g, '\\.')
+    const selector = '#' + this._variable.replace(/\./g, '\\.')
     this._inputVariable = presentation.querySelector(selector)
     this._inputVariable.oninput = this.inputChanged
     if (this.hasAttribute('index')) { this._inputIndex = presentation.querySelector(selector + '-index') }

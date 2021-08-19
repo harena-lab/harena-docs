@@ -8,19 +8,27 @@ class Properties {
   /*
   constructor () {
     this.applyPropertiesDetails = this.applyPropertiesDetails.bind(this)
-    MessageBus.ext.subscribe('properties/apply/details',
+    MessageBus.i.subscribe('properties/apply/details',
       this.applyPropertiesDetails)
     this.applyPropertiesShort = this.applyPropertiesShort.bind(this)
-    MessageBus.ext.subscribe('properties/apply/short',
+    MessageBus.i.subscribe('properties/apply/short',
       this.applyPropertiesShort)
     this.closeProperties = this.closeProperties.bind(this)
-    MessageBus.ext.subscribe('properties/cancel/short',
+    MessageBus.i.subscribe('properties/cancel/short',
       this.closeProperties)
   }
   */
 
   attachPanelDetails (panel) {
     this._panelDetails = panel
+  }
+
+  get artifacts () {
+    return this._artifacts
+  }
+
+  set artifacts (artifacts) {
+    this._artifacts = artifacts
   }
 
   async closePreviousProperties () {
@@ -67,7 +75,10 @@ class Properties {
             editp.inlineProperty, this)
           break
         case 'image':
-          this._editor = new EditDCCImage(obj, dcc, editp.htmls, this)
+          this._editor = new EditDCCMedia(obj, dcc, this, 'image')
+          break
+        case 'media':
+          this._editor = new EditDCCMedia(obj, dcc, this, 'media')
           break
         case 'option':
           if (this._item > -1) {
@@ -294,15 +305,15 @@ class Properties {
 
       if (this._knotOriginalTitle &&
              this._knotOriginalTitle != this._objProperties.title) {
-        MessageBus.ext.publish('control/knot/rename',
-          this._objProperties.title)
+        MessageBus.i.publish('control/knot/rename',
+          this._objProperties.title, true)
         delete this._knotOriginalTitle
       }
 
       /*
       delete this._objProperties
-      MessageBus.ext.publish('control/knot/update')
-      if (!details) { MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
+      MessageBus.i.publish('control/knot/update', null, true)
+      if (!details) { MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message), null, true) }
       */
     }
     await this.closeProperties(details)
@@ -313,9 +324,9 @@ class Properties {
       this._editor = null;
     if (this._objProperties) {
       delete this._objProperties
-      await MessageBus.ext.request('control/knot/update')
+      await MessageBus.i.request('control/knot/update', null, null, true)
     }
-    // if (!details) {MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
+    // if (!details) {MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message), null, true) }
   }
 
   async _applySingleProperty (property, seq, panel, sufix, previous) {
@@ -372,12 +383,12 @@ class Properties {
         // uploads the image
         if (field.files[0]) {
           const asset = await
-          MessageBus.ext.request('data/asset//new',
+          MessageBus.i.request('data/asset//new',
             {
               file: field.files[0],
               caseid: Basic.service.currentCaseId
-            })
-          objProperty = asset.message
+            }, null, true)
+          objProperty = asset.message.filename
         }
         break
     }
@@ -429,6 +440,30 @@ class Properties {
         visual: 'inline'
       }
     }},
+    media: {
+      default: {
+        subtype: {
+          type: 'shortStr',
+          label: 'Type'
+        },
+        path: {
+          type: 'media',
+          label: 'Media',
+          visual: 'inline'
+        }
+      },
+      expand: {
+        subtype: {
+          type: 'shortStr',
+          label: 'Type'
+        },
+        path: {
+          type: 'media',
+          label: 'Media',
+          visual: 'inline'
+        }
+      }
+    },
     option: {default: {
       label: {
         type: 'shortStr',
@@ -645,6 +680,12 @@ class Properties {
    <label class="styp-field-label std-border" for="pfield[n]">[label]</label>
    <input type="file" id="pfield[n]" name="pfield[n]" class="styd-selector styp-field-value"
           accept="image/png, image/jpeg, image/svg">
+</div>`,
+    media:
+`<div class="styd-notice styd-border-notice">
+<label class="styp-field-label std-border" for="pfield[n]">[label]</label>
+<input type="file" id="pfield[n]" name="pfield[n]" class="styd-selector styp-field-value"
+      accept="audio/mpeg, video/mp4, video/webm">
 </div>`,
     selectOpen:
 `<div class="styp-field-row">

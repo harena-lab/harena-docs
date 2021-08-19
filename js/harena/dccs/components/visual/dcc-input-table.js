@@ -21,7 +21,7 @@ class DCCInputTable extends DCCInput {
     super.connectedCallback()
     this.innerHTML = ''
 
-    MessageBus.int.publish('var/' + this.variable + '/input/ready',
+    this._publish('var/' + this._variable + '/input/ready',
       DCCInputTable.elementTag)
   }
 
@@ -87,11 +87,11 @@ class DCCInputTable extends DCCInput {
     const row = parseInt(id.substring(p + 1)) - 1
     this._value[row][col] = event.target.value
 
-    MessageBus.ext.publish('var/' + this.variable + '/changed',
+    this._publish('var/' + this._variable + '/changed',
       {
         sourceType: DCCInputTable.elementTag,
         value: this._value
-      })
+      }, true)
   }
 
   /* Rendering */
@@ -128,8 +128,8 @@ class DCCInputTable extends DCCInput {
     }
 
     if (this.hasAttribute('player')) {
-      const value = await MessageBus.ext.request(
-        'var/' + this.player + '/get/sub', this.innerHTML)
+      const value = await this._request(
+        'var/' + this.player + '/get/sub', this.innerHTML, null, true)
       console.log('=== return value')
       console.log(value)
       const input = value.message
@@ -144,7 +144,7 @@ class DCCInputTable extends DCCInput {
       content += '<tr>'
       for (let c = 1; c <= this.cols; c++) {
         content += "<td><input type='text' id='" +
-                       this.variable + '_' + r + '_' + c + "'>" +
+                       this._variable + '_' + r + '_' + c + "'>" +
                        ((this._value[r - 1][c - 1] == null) ? '' : this._value[r - 1][c - 1]) +
                        '</input></td>'
       }
@@ -153,7 +153,7 @@ class DCCInputTable extends DCCInput {
 
     const html = templateElements
       .replace('[statement]', statement)
-      .replace('[variable]', this.variable)
+      .replace('[variable]', this._variable)
       .replace('[render]', this._renderStyle())
       .replace('[content]', content)
 
@@ -169,7 +169,7 @@ class DCCInputTable extends DCCInput {
       this._inputSet = []
       for (let r = 1; r <= this.rows; r++) {
         for (let c = 1; c <= this.cols; c++) {
-          const v = document.getElementById(this.variable + '_' + r + '_' + c)
+          const v = document.getElementById(this._variable + '_' + r + '_' + c)
           v.addEventListener('change', this.inputChanged)
           this._inputSet.push(v)
         }
