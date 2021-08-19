@@ -58,7 +58,7 @@ There are several ways to publish a message, it depends on the reason why the co
 A `dcc-button` produces a clickable button that can send a message when it is clicked. The following example shows a `dcc-button` with a label `Talk` that publishes a message when it is clicked. The message will have the topic `action/speech` and the content `Hello`:
 
 <dcc-play>
-   <dcc-button label="Talk" topic="action/speech" message="Hello">
+   <dcc-button label="Talk" topic="action/speech" message="Graauuuurrrr">
    </dcc-button>
 </dcc-play>
 
