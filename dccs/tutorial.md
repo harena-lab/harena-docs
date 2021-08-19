@@ -113,6 +113,11 @@ The following example shows the message `I am a doctor.` when the button with th
    <dcc-button label="Clear" topic="button/clear"></dcc-button>
 </dcc-play>
 
+<dcc-play>
+<dcc-slider variable="age" index></dcc-slider>
+<dcc-lively-talk speech="My age is " subscribe="var/age/changed:action/speech">
+</dcc-lively-talk>
+</dcc-play>
 
 ## Connecting Components (attribute `connect` or `<connect-dcc>`)
 
@@ -133,4 +138,57 @@ An Origin DCC can be connected to a Target DCC in such a way that, whenever an e
 
    <dcc-button label="Plus 10" topic="compute/add" connect="click:plus10:compute/update">
    </dcc-button>
+</dcc-play>
+
+### Selective Publish/Subscribe
+
+#### Topic Filters and Wildcards
+
+In the subscription process, it is possible to specify a specific Topic Name or a Topic Filter, which works as a regular expression representing a set of possible Topic Names.
+
+Wildcards are represented by the special `#` and/or `+` characters, appearing inside a Topic Name in the subscription process. They enable the subscription of a set of topics, since they generically represent one or more Topic Levels, according to the following rules:
+
+#### Multilevel Wildcard `#`
+The wildcard `#` can be used only in two positions in the Topic Filter:
+* alone (the filter is only a `#`) - matches any Topic Name with any number of levels;
+* end of the Topic Name (always preceded by a `/ `) -  matches any number of Topic Levels with the prefix specified before the wildcard.
+
+#### Single Level Wildcard `+`
+Only a single Topic Level can be matched by the wildcard  `+`, which represents any possible complete Topic Level Label. The `+` wildcard can appear only in four positions:
+* alone (the filter is only a `+`) - matches any Topic Label in a single level (without slashes);
+* beginning of the Topic Filter, always followed by a slash;
+* end of the Topic Filter, always preceded by a slash;
+* middle of the Topic Filter, always between two slashes.
+
+The following example show messages selectively displayed.
+
+<dcc-play>
+   <dcc-button label="Disease"
+               topic="news/disease"
+               message="dengue symptoms">
+   </dcc-button>
+
+   <dcc-button label="Drug"
+               topic="news/drug"
+               message="coronavirus vaccine">
+   </dcc-button>
+
+   <dcc-button label="Dinosaur"
+               topic="news/dinosaur"
+               message="brazilian dinosaurs">
+   </dcc-button>
+
+  <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/tutorial/images/doctor.png"
+                    speech="I heard about: "
+                    subscribe="news/#:speech">
+   </dcc-lively-talk>
+
+   <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/tutorial/images/nurse.png"
+                    speech="I heard about: "
+                    subscribe="news/disease:speech">
+   </dcc-lively-talk>
+
+   <dcc-lively-talk speech="I heard about: "
+                    subscribe="+/dinosaur:speech">
+   </dcc-lively-talk>
 </dcc-play>
