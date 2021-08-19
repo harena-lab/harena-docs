@@ -8,7 +8,7 @@ layout: tutorial
 
 ## Playground
 
-Learn and try to instantiate and customize Digital Content Components (DCCs) at [DCC Playground](http://datasci4health.github.io/harena-space/src/adonisjs/public/dccs/playground/).
+Learn and try to instantiate and customize Digital Content Components (DCCs) at [DCC Playground](https://harena-lab.github.io/harena-docs/js/harena/dccs/playground/).
 
 # Syntax and Examples
 

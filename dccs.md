@@ -9,6 +9,7 @@ A Digital Content Component (DCC) is a model and technology that enables the pac
 
 * [Tutorial](tutorial/)
 * [Reference](reference/)
+* [Playground](https://harena-lab.github.io/harena-docs/js/harena/dccs/playground/)
 * [Development Guide](development/)
 * [Message Protocol](message/)
 * [Data-related DCCs Examples](data/)
