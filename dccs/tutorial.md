@@ -16,14 +16,14 @@ This tutorial will present the basic steps to work with DCCs.
 
 # Instantiating and customizing DCCs
 
-In this tutorial we will work with a version of DCCs that run straight in your browser. It derives from the Web Components model and, therefore, they are defined using HTML elements. We expect that you are familiar with the HTML language to follow this tutorial.
+In this tutorial, we will work with a version of DCCs that runs straight in your browser. It derives from the Web Components model and, therefore, they are defined using HTML elements. We expect that you are familiar with the HTML language to follow this tutorial.
 
 The first step involves instantiating a DCC. This process involves selecting a DCC from our library and creating an instance from it. You may imagine that each DCC from our library is a template or blueprint to create distinct “individuals” or objects that follow this blueprint. We call this process *instantiation*.
 
 All instantiation follows the same procedure. It takes the following general form:
 
 ~~~html
-<dcc-x property_1=“value_1” ... property_n=“value_n”><dcc-x>
+<dcc-x property_1="value_1" ... property_n="value_n"><dcc-x>
 ~~~
 
 Where `<dcc-x>` is the DCC from the library that you want to instantiate. Each DCC can be customized, while it is instantiated, by defining values to its properties, which take the form of HTML attributes. The available properties depend on the selected DCC.
@@ -34,14 +34,15 @@ The following example shows an instantiation of a `<dcc-slider>`:
    <dcc-slider></dcc-slider>
 </dcc-play>
 
-This tutorial is alive, i.e., examples presented are real DCCs that you can interact with. On top of each DCC, it is presented the expression that generates it.
-
+This tutorial is alive, i.e., the examples presented are real DCCs that you can interact with. On top of each DCC, it is presented the HTML expression that generates it. You can try it yourself by modifying the expression and clicking on the [render] button to verify the results.
 
 This DCC presents a slider on the screen. Four properties can be customized:
 * `min` - minimal value accepted;
 * `max` - maximal value accepted;
 * `value` - current value of the slider;
 * `index` - defines if the index is presented besides the slider.
+
+This is an example of a customized Slider DCC:
 
 <dcc-play>
    <dcc-slider min="0" max="100" value="30" index></dcc-slider>
@@ -55,21 +56,21 @@ Each message is labeled by a *topic*, which is the basis of the publish/subscrib
 
 There are several ways to publish a message, it depends on the reason why the component is publishing it. Some components enable you to customize the published message, such as the `dcc-button`.
 
-A `dcc-button` produces a clickable button that can send a message when it is clicked. The following example shows a `dcc-button` with a label `Talk` that publishes a message when it is clicked. The message will have the topic `action/speech` and the content `Hello`:
+A `dcc-button` produces a clickable button that can send a message when it is clicked. The following example shows a `dcc-button` with a label `Talk` that publishes a message when it is clicked. The message will have the topic `action/speech` and the content `Graaauuuurrrr`:
 
 <dcc-play>
-   <dcc-button label="Talk" topic="action/speech" message="Graauuuurrrr">
+   <dcc-button label="Talk" topic="action/speech" message="Graaauuuurrrr">
    </dcc-button>
 </dcc-play>
 
-The result is further presented. After rendering the button, you can click on the button and the message published is presented in the panel `Messages`:
+You can also try by yourself in a complete experimentation setup that we call [DCC Playground](https://harena-lab.github.io/harena-docs/js/harena/dccs/playground/). The parts of this Playground are further presented. After rendering the button, you can click on the button and the message published is presented in the panel `Messages`:
 
 
 A DCC can subscribe to a topic in such a way that whenever a message with the respective topic appears on the bus, it will receive the message. There are two strategies to subscribe to a topic: the `subscribe` attribute and the `<subscribe-dcc>` element.
 
 ### `subscribe` attribute
 
-A DCC can subscribe a topic adding an attribute subscribe in the following format:
+A DCC can subscribe to a topic by adding an attribute subscribe in the following format:
 
 ~~~html
 subscribe=“ topic:map”
@@ -78,15 +79,15 @@ subscribe=“ topic:map”
 * `topic` - the topic of the message subscribed;
 * `map` (optional) - the external subscribed message can be mapped to an internal expected message related to an action.
 
-The following example we added a second DCC, the `dcc-lively-talk`, which presents a character with
+In the following example, we added a second DCC, the `dcc-lively-talk`, which presents a character with
 
 
-shows the message `Hello.` when the button with the label `Talk` is triggered.
+shows the message `Graauuuurrrr` when the button with the label `Talk` is triggered.
 
 <dcc-play>
    <dcc-lively-talk subscribe="action/speech"></dcc-lively-talk>
 
-   <dcc-button label="Talk" topic="action/speech" message="Hello">
+   <dcc-button label="Talk" topic="action/speech" message="Graauuuurrrr">
    </dcc-button>
 </dcc-play>
 
@@ -100,7 +101,7 @@ For each subscribed message a DCC declares a `<subscribe-dcc>` inside its elemen
 
 * message - specifies the subscribed message
 
-The following example shows the message `I am a doctor.` when the button with the label `Talk` is triggered.
+The following example shows the message `Graauuuurrrr` when the button with the label `Talk` is triggered.
 
 <dcc-play>
    <dcc-lively-talk>
@@ -108,15 +109,15 @@ The following example shows the message `I am a doctor.` when the button with th
       <subscribe-dcc topic="button/clear" map="clear"></subscribe-dcc>
    </dcc-lively-talk>
 
-   <dcc-button label="Talk" topic="button/talk" message="Hello"></dcc-button>
+   <dcc-button label="Talk" topic="button/talk" message="Graauuuurrrr"></dcc-button>
 
    <dcc-button label="Clear" topic="button/clear"></dcc-button>
 </dcc-play>
 
 <dcc-play>
-<dcc-slider variable="age" index></dcc-slider>
-<dcc-lively-talk speech="My age is " subscribe="var/age/changed:action/speech">
-</dcc-lively-talk>
+  <dcc-slider variable="age" index></dcc-slider>
+  <dcc-lively-talk speech="My age is " subscribe="var/age/changed:action/speech">
+  </dcc-lively-talk>
 </dcc-play>
 
 ## Connecting Components (attribute `connect` or `<connect-dcc>`)
