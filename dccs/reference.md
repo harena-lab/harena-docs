@@ -43,22 +43,22 @@ A visual element that acts as a button. Its standard shape is a button, but it c
 
 ### Examples
 
-Textual button trigger that sends the following message when clicked:
+Textual button that sends the following message when clicked:
 * topic - `button/on/clicked`
 * message body - `"message to you"`
 
-<dcc-play>
+<dcc-play messages>
   <dcc-button label="On"
                topic="button/on/clicked"
                message="message to you">
   </dcc-button>
 </dcc-play>
 
-Image trigger with title `check` and whose image is located in `icons/icon-check.svg`. Since the image occupies all available area, a `<div>` surrounding it delimits the size to `100px`.
+Image button with title `check` and whose image is located in `icons/icon-check.svg`. Since the image occupies all available area, a `<div>` surrounding it delimits the size to `100px`.
 
-When clicked, the trigger will send a message with the topic: `trigger/Check/clicked`.
+When clicked, the trigger will send a message with the topic: `button/Check/clicked`.
 
-<dcc-play>
+<dcc-play messages>
   <div style="width: 100px">
      <dcc-button label="Check"
                  image="https://harena-lab.github.io/harena-docs/dccs/reference/images/icon-check.svg">
@@ -97,9 +97,14 @@ An input component presented as a slider.
 
 A simple example:
 
-~~~html
-<dcc-slider variable="age" value="1" min="1" max="130" index>Select your age:</dcc-slider>
-~~~
+<dcc-play messages>
+  <dcc-slider statement="Select your age:"
+              variable="age" value="20"
+              min="1" max="130" index>
+
+  </dcc-slider>
+</dcc-play>
+
 
 
 ## Lively Talk DCC (`<dcc-lively-talk>`)
@@ -131,47 +136,53 @@ Available characters in the playground: nurse, doctor, and patient.
 
 A static patient showing the speech "Please, help me!"
 
-~~~html
-<dcc-lively-talk duration="0"
-                 character="patient"
-                 speech="Please, help me!">
+<dcc-play>
+  <dcc-lively-talk speech="Grrraaauuuurrrr">
+  </dcc-lively-talk>
+</dcc-play>
+
+An animated character - the animation takes two seconds:
+
+<dcc-play>
+<dcc-lively-talk duration="2s"
+                 speech="Grrraaauuuurrrr">
 </dcc-lively-talk>
-~~~
+</dcc-play>
 
 An animated nurse that enters in 2 seconds and shows the speech "Doctor, please you have to evaluate a man!"
 
-~~~html
-<dcc-lively-talk duration="2s"
-                 character="nurse"
-                 speech="Doctor, please you have to evaluate a man!">
-</dcc-lively-talk>
-~~~
+<dcc-play>
+  <dcc-lively-talk duration="2s"
+                   character="https://harena-lab.github.io/harena-docs/dccs/reference/images/nurse.png"
+                   speech="Doctor, please you have to evaluate a man!">
+  </dcc-lively-talk>
+</dcc-play>
 
 An animated doctor that enters in 2 seconds after waiting 2 seconds and shows the speech "Ok, I'm on my way." The doctor's animation goes in the right direction.
 
-~~~html
-<dcc-lively-talk duration="2s"
-                 delay="2s"
-                 direction="right"
-                 character="doctor"
-                 speech="Ok, I'm on my way.">
-</dcc-lively-talk>
-~~~
+<dcc-play>
+  <dcc-lively-talk duration="2s"
+                   delay="2s"
+                   direction="right"
+                   Character="https://harena-lab.github.io/harena-docs/dccs/reference/images/doctor.png"
+                     speech="Ok, I'm on my way.">
+  </dcc-lively-talk>
+</dcc-play>
 
 ### Talks Inside a Dialog
 
 Talks can be grouped inside a `<dcc-lively-dialog>`, which define the parameters of the complete dialog.
 
-~~~html
+<dcc-play>
 <dcc-lively-dialog rate="6s" duration="2s">
-   <dcc-lively-talk character="nurse"
+   <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/reference/images/nurse.png"
                     speech="Doctor, please you have to evaluate a man!">
    </dcc-lively-talk>
-   <dcc-lively-talk character="doctor"
+   <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/reference/images/doctor.png"
                     speech="Ok, I'm on my way.">
    </dcc-lively-talk>
 </dcc-lively-dialog>
-~~~
+</dcc-play>
 
 ## Subscribing Messages (`<subscribe-dcc>`)
 
