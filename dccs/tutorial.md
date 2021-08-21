@@ -12,7 +12,7 @@ This tutorial will present the basic steps to work with DCCs.
 
 # Introductory Video (in Portuguese)
 
-[![Web Components and DCCs](http://img.youtube.com/vi/l8UFlxF29xE/0.jpg)](https://youtu.be/l8UFlxF29xE)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/AH1U6jhtutc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 # Instantiating and customizing DCCs
 
@@ -30,11 +30,13 @@ Where `<dcc-x>` is the DCC from the library that you want to instantiate. Each D
 
 The following example shows an instantiation of a `<dcc-slider>`:
 
-<dcc-play>
+<dcc-play messages>
    <dcc-slider></dcc-slider>
 </dcc-play>
 
-This tutorial is alive, i.e., the examples presented are real DCCs that you can interact with. On top of each DCC, it is presented the HTML expression that generates it. You can try it yourself by modifying the expression and clicking on the [render] button to verify the results.
+This tutorial is alive, i.e., the examples presented are real DCCs that you can interact with. On top of these DCCs, it is presented the HTML expression that generates it. Sometimes, a panel of `Messages on the Bus` is activated below these DCCs to unveil the messages on the DCC Message Bus.
+
+You can try it yourself by modifying the expression and clicking on the [render] button to verify the results.
 
 This DCC presents a slider on the screen. Four properties can be customized:
 * `min` - minimal value accepted;
@@ -44,7 +46,7 @@ This DCC presents a slider on the screen. Four properties can be customized:
 
 This is an example of a customized Slider DCC:
 
-<dcc-play>
+<dcc-play messages>
    <dcc-slider min="0" max="100" value="30" index></dcc-slider>
 </dcc-play>
 
@@ -58,7 +60,7 @@ There are several ways to publish a message, it depends on the reason why the co
 
 A `dcc-button` produces a clickable button that can send a message when it is clicked. The following example shows a `dcc-button` with a label `Talk` that publishes a message when it is clicked. The message will have the topic `action/speech` and the content `Graaauuuurrrr`:
 
-<dcc-play>
+<dcc-play messages>
    <dcc-button label="Talk" topic="action/speech" message="Graaauuuurrrr">
    </dcc-button>
 </dcc-play>
@@ -115,9 +117,9 @@ The following example shows the message `Graauuuurrrr` when the button with the 
 </dcc-play>
 
 <dcc-play>
-  <dcc-slider variable="age" index></dcc-slider>
   <dcc-lively-talk speech="My age is " subscribe="var/age/changed:action/speech">
   </dcc-lively-talk>
+  <dcc-slider variable="age" index></dcc-slider>
 </dcc-play>
 
 ## Connecting Components (attribute `connect` or `<connect-dcc>`)
@@ -182,14 +184,14 @@ The following example show messages selectively displayed.
   <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/tutorial/images/doctor.png"
                     speech="I heard about: "
                     subscribe="news/#:speech">
-   </dcc-lively-talk>
+  </dcc-lively-talk>
 
-   <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/tutorial/images/nurse.png"
+  <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/tutorial/images/nurse.png"
                     speech="I heard about: "
                     subscribe="news/disease:speech">
-   </dcc-lively-talk>
+  </dcc-lively-talk>
 
-   <dcc-lively-talk speech="I heard about: "
+  <dcc-lively-talk speech="I heard about: "
                     subscribe="+/dinosaur:speech">
-   </dcc-lively-talk>
+  </dcc-lively-talk>
 </dcc-play>

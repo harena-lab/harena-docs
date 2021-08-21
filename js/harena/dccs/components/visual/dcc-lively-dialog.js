@@ -230,7 +230,6 @@ class DCCLivelyTalk extends DCCVisual {
   notify (topic, message) {
     if (!topic.includes('/'))
       topic = 'action/' + topic
-    console.log('=== update speech')
     switch (topic.toLowerCase()) {
       case 'action/speech':
         // this.speech = this._prefixSpeech + ((message.value) ? message.value : message)
