@@ -48,23 +48,23 @@ Textual button trigger that sends the following message when clicked:
 * message body - `"message to you"`
 
 <dcc-play>
-<dcc-button label="On"
-            topic="button/on/clicked"
-            message="message to you">
-</dcc-button>
+  <dcc-button label="On"
+               topic="button/on/clicked"
+               message="message to you">
+  </dcc-button>
 </dcc-play>
 
 Image trigger with title `check` and whose image is located in `icons/icon-check.svg`. Since the image occupies all available area, a `<div>` surrounding it delimits the size to `100px`.
 
 When clicked, the trigger will send a message with the topic: `trigger/Check/clicked`.
 
-~~~html
-<div style="width: 100px">
-   <dcc-button label="Check"
-               image="icons/icon-check.svg">
-   </dcc-button>
-</div>
-~~~
+<dcc-play>
+  <div style="width: 100px">
+     <dcc-button label="Check"
+                 image="https://harena-lab.github.io/harena-docs/dccs/reference/images/icon-check.svg">
+     </dcc-button>
+  </div>
+</dcc-play>
 
 ## Slider DCC (`<dcc-slider>`)
 
@@ -542,7 +542,7 @@ Example of an RSS Feed connected to a button and a character. The button request
            topic="rss/science">
   </dcc-rss>
 
-  <dcc-lively-talk speech="News :" subscribe="rss/science:speech">
+  <dcc-lively-talk speech="News: " subscribe="rss/science:speech">
   </dcc-lively-talk>
 
   <dcc-button label="Next Item" topic="next/rss">
@@ -666,23 +666,35 @@ The following example show messages selectively displayed.
 </dcc-notice-input>
 ~~~
 
-## Timer
+## Timer DCC `<dcc-timer>`
 
-~~~html
-<dcc-button label="Start" topic="timer/start">
-</dcc-button>
+Generates messages timely spaced by an `interval`.
 
-<dcc-timer cycles="10" interval="1000" publish="send/cycle">
-   <subscribe-dcc topic="timer/start" map="start"></subscribe-dcc>
-</dcc-timer>
+* `topic`  - the topic to be published in the message (default is `dcc/timer/cycle`);
+* `cycles` - number of cycles and respective messages generated;
+* `interval` - interval between messages in milliseconds;
+* `autostart` - the timer starts automatically when it loads.
 
-<dcc-lively-talk id="doctor"
-                 duration="0s"
-                 character="doctor"
-                 speech="Counting: ">
-  <subscribe-dcc topic="send/cycle"></subscribe-dcc>
-</dcc-lively-talk>
-~~~
+Topics of messages received and their role:
+`action/reset` - restarts the timer;
+`action/start` - starts the timer;
+`action/stop` - stops the timer;
+`action/step` - goes to the next cycle;
+`action/interval` - redefines the timer interval.
+
+<dcc-play>
+  <dcc-lively-talk speech="Counting: "
+                   subscribe="next/count:speech">
+  </dcc-lively-talk>
+
+  <dcc-timer cycles="10" interval="1000"
+               topic="next/count"
+             subscribe="start/timer:start">
+  </dcc-timer>
+
+  <dcc-button label="Start" topic="start/timer">
+  </dcc-button>
+</dcc-play>
 
 ## Select a State
 
