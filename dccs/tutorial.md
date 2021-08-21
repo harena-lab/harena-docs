@@ -81,10 +81,7 @@ subscribe=“ topic:map”
 * `topic` - the topic of the message subscribed;
 * `map` (optional) - the external subscribed message can be mapped to an internal expected message related to an action.
 
-In the following example, we added a second DCC, the `dcc-lively-talk`, which presents a character with
-
-
-shows the message `Graauuuurrrr` when the button with the label `Talk` is triggered.
+In the following example, we added a second DCC, the `dcc-lively-talk`, which presents a character that shows the message `Graauuuurrrr` when the button with the label `Talk` is triggered:
 
 <dcc-play>
    <dcc-lively-talk subscribe="action/speech"></dcc-lively-talk>
@@ -93,17 +90,31 @@ shows the message `Graauuuurrrr` when the button with the label `Talk` is trigge
    </dcc-button>
 </dcc-play>
 
-The `dcc-button` publishes a topic `action/speech` and message `Hello` when the button is clicked. The `dcc-lively-talk` subscribes to the `action/speech` message, i.e.,
+The `dcc-button` publishes a topic `action/speech` and message `Talk` when the button is clicked. The `dcc-lively-talk` subscribes to the `action/speech` message, i.e., it receives the message whenever it is published in the bus. The `action/speech` message has a default interpretation by the `<dcc-lively-talk>` DCC - it shows in the balloon the content of the message.
+
+The same procedure with the `<dcc-slider>`:
+
+<dcc-play>
+  <dcc-lively-talk speech="My age is " subscribe="var/age/changed:action/speech">
+  </dcc-lively-talk>
+  <dcc-slider variable="age" index></dcc-slider>
+</dcc-play>
+
+### `<subscribe-dcc>` element
 
 For each subscribed message a DCC declares a `<subscribe-dcc>` inside its element. With the following syntax:
 
 ~~~html
-<subscribe-dcc topic="message"></subscribe-dcc>
+<subscribe-dcc topic="topic" map="map"></subscribe-dcc>
 ~~~
 
-* message - specifies the subscribed message
+They have the same roles as the previous subscribe:
+* `topic` - the topic of the message subscribed;
+* `map` (optional) - the external subscribed message can be mapped to an internal expected message related to an action.
 
-The following example shows the message `Graauuuurrrr` when the button with the label `Talk` is triggered.
+The advantage of this second strategy is that a component can have just one `subscribe` attribute, but can have several `<dcc-subscribe>` sub-elements.
+
+The following example shows two subscriptions of two buttons. The first one (label `Talk`) triggers the message `Graauuuurrrr` and the second one (label `Clear`) clears the message.
 
 <dcc-play>
    <dcc-lively-talk>
@@ -114,33 +125,6 @@ The following example shows the message `Graauuuurrrr` when the button with the 
    <dcc-button label="Talk" topic="button/talk" message="Graauuuurrrr"></dcc-button>
 
    <dcc-button label="Clear" topic="button/clear"></dcc-button>
-</dcc-play>
-
-<dcc-play>
-  <dcc-lively-talk speech="My age is " subscribe="var/age/changed:action/speech">
-  </dcc-lively-talk>
-  <dcc-slider variable="age" index></dcc-slider>
-</dcc-play>
-
-## Connecting Components (attribute `connect` or `<connect-dcc>`)
-
-An Origin DCC can be connected to a Target DCC in such a way that, whenever an event happens, the Origin DCC sends a request to the Target DCC. There  
-
-<dcc-play>
-   <dcc-lively-talk id="person"></dcc-lively-talk>
-
-   <dcc-button label="Talk" connect="click:person:action/speech" message="Hello">
-   </dcc-button>
-</dcc-play>
-
-<dcc-play>
-   <dcc-compute expression="p:=10" onload></dcc-compute>
-   <p>Value of P: <dcc-expression expression="p" active></dcc-expression></p>
-
-   <dcc-compute id="plus10" expression="p:=p+10"></dcc-compute>
-
-   <dcc-button label="Plus 10" topic="compute/add" connect="click:plus10:compute/update">
-   </dcc-button>
 </dcc-play>
 
 ### Selective Publish/Subscribe
@@ -194,4 +178,29 @@ The following example show messages selectively displayed.
   <dcc-lively-talk speech="I heard about: "
                     subscribe="+/dinosaur:speech">
   </dcc-lively-talk>
+</dcc-play>
+
+<hr>
+<h1>Under Construction</h1>
+<hr>
+
+## Connecting Components (attribute `connect` or `<connect-dcc>`)
+
+An Origin DCC can be connected to a Target DCC in such a way that, whenever an event happens, the Origin DCC sends a request to the Target DCC. There  
+
+<dcc-play>
+   <dcc-lively-talk id="person"></dcc-lively-talk>
+
+   <dcc-button label="Talk" connect="click:person:action/speech" message="Hello">
+   </dcc-button>
+</dcc-play>
+
+<dcc-play>
+   <dcc-compute expression="p:=10" onload></dcc-compute>
+   <p>Value of P: <dcc-expression expression="p" active></dcc-expression></p>
+
+   <dcc-compute id="plus10" expression="p:=p+10"></dcc-compute>
+
+   <dcc-button label="Plus 10" topic="compute/add" connect="click:plus10:compute/update">
+   </dcc-button>
 </dcc-play>

@@ -188,27 +188,155 @@ Talks can be grouped inside a `<dcc-lively-dialog>`, which define the parameters
 
 A DCC can subscribe to a message in such a way that whenever the message appears on the bus, it will receive it.
 
-For each subscribed message a DCC declares a `<subscribe-dcc>` inside its element. With the following syntax:
+The [DCC Tutorial](https://harena-lab.github.io/harena-docs/dccs/tutorial/) details how to subscribe messages.
 
-~~~html
-<subscribe-dcc topic="message"></subscribe-dcc>
-~~~
+In the following example, the character represented by a `dcc-lively-talk` shows the message `Graauuuurrrr` when the button with the label `Talk` is triggered:
 
-* message - specifies the subscribed message
+<dcc-play>
+   <dcc-lively-talk subscribe="action/speech"></dcc-lively-talk>
 
-The following example shows the message `I am a doctor.` when the button with the label `Talk` is triggered.
+   <dcc-button label="Talk" topic="action/speech" message="Graauuuurrrr">
+   </dcc-button>
+</dcc-play>
 
-~~~html
-<dcc-button label="Talk" topic="send/message" message="I am a doctor.">
-</dcc-button>
+## Timer DCC `<dcc-timer>`
 
-<dcc-lively-talk id="doctor"
-                 duration="0s"
-                 character="doctor"
-                 speech="Hello, ">
-  <subscribe-dcc topic="send/message"></subscribe-dcc>
-</dcc-lively-talk>
-~~~
+Generates rhythm messages timely spaced by an `interval`.
+
+* `topic`  - the topic to be published in the message (default is `dcc/timer/cycle`);
+* `cycles` - number of cycles and respective messages generated;
+* `interval` - interval between messages in milliseconds;
+* `autostart` - the timer starts automatically when it loads.
+
+Topics of messages received and their role:
+`action/reset` - restarts the timer;
+`action/start` - starts the timer;
+`action/stop` - stops the timer;
+`action/step` - goes to the next cycle;
+`action/interval` - redefines the timer interval.
+
+In the following example a button starts a timer, which in turn sends ten `next/count` messages, spaced 1000 milliseconds one from the next:
+
+<dcc-play messages>
+  <dcc-timer cycles="10" interval="1000"
+               topic="next/count"
+             subscribe="start/timer:start">
+  </dcc-timer>
+
+  <dcc-button label="Start" topic="start/timer">
+  </dcc-button>
+</dcc-play>
+
+Adding a character who displays the counting:
+
+<dcc-play>
+  <dcc-lively-talk speech="Counting: "
+                   subscribe="next/count:speech">
+  </dcc-lively-talk>
+
+  <dcc-timer cycles="10" interval="1000"
+               topic="next/count"
+             subscribe="start/timer:start">
+  </dcc-timer>
+
+  <dcc-button label="Start" topic="start/timer">
+  </dcc-button>
+</dcc-play>
+
+## RSS DCC `<dcc-rss>`
+
+Fetches items from an RSS feed and publishes them as messages on the bus.
+
+The attribute `source` specifies the address of the source of the feed. When a `next` is triggered, the component deploys the next RSS message from the source.
+
+* `source` - the source of the RSS feeds;
+* `topic`  - the topic to be published in the message (default is `dcc/rss/post`);
+
+Topics of messages received and their role:
+`action/next` - publishes one RSS item (the next in a sequence).
+
+Example of an RSS Feed connected to a button that requests the next feed:
+
+<dcc-play messages>
+  <dcc-rss source="https://www.wired.com/category/science/feed"
+           subscribe="next/rss:next"
+           topic="rss/science">
+  </dcc-rss>
+
+  <dcc-button label="News" topic="next/rss">
+  </dcc-button>
+</dcc-play>
+
+Example of an RSS Feed connected to a button and a character. The button requests the next feed displayed in the character balloon:
+
+<dcc-play>
+  <dcc-rss source="https://www.wired.com/category/science/feed"
+           subscribe="next/rss:next"
+           topic="rss/science">
+  </dcc-rss>
+
+  <dcc-lively-talk speech="News: " subscribe="rss/science:speech">
+  </dcc-lively-talk>
+
+  <dcc-button label="Next Item" topic="next/rss">
+  </dcc-button>
+</dcc-play>
+
+Example of a timer that automatically requests the next feed and displays on the character balloon:
+
+<dcc-play>
+  <dcc-rss source="https://www.wired.com/category/science/feed"
+           subscribe="next/rss:next"
+           topic="rss/science">
+  </dcc-rss>
+
+  <dcc-lively-talk speech="News :" subscribe="rss/science:speech">
+  </dcc-lively-talk>
+
+  <dcc-timer cycles="10" interval="1000"
+               topic="next/rss"
+             subscribe="start/feed:start">
+  </dcc-timer>
+
+  <dcc-button label="Start" topic="start/feed">
+  </dcc-button>
+</dcc-play>
+
+## Aggregator DCC (`<dcc-aggregator>`)
+
+Aggregates items of messages, as RSS messages.
+
+* `topic` - the topic to be published in the message (default is `dcc/aggregate/post`);
+* `quantity` - the quantity of messages in the aggregation.
+
+<dcc-play>
+  <dcc-rss source="https://www.wired.com/category/science/feed"
+           subscribe="next/rss:next"
+           topic="rss/science">
+  </dcc-rss>
+
+  <dcc-aggregator topic="aggregate/science"
+                  quantity="3"
+                  subscribe="rss/science">
+  </dcc-aggregator>
+
+  <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/tutorial/images/nurse.png"
+                    speech="News: "
+                    subscribe="rss/science:speech">
+  </dcc-lively-talk>
+
+  <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/tutorial/images/doctor.png"
+                    speech="Compact: "
+                    subscribe="aggregate/science:speech">
+  </dcc-lively-talk>
+
+  <dcc-button label="Next Item" topic="next/rss">
+  </dcc-button>
+</dcc-play>
+
+<hr>
+<h1>Under Construction</h1>
+<hr>
 
 The following example shows a character that tells you "Hello *your name*" when you type your name.
 
@@ -521,97 +649,6 @@ Shows the value of a variable or the result of an expression.
 <dcc-button id="power" label="Power On"></dcc-button>
 ~~~
 
-## RSS DCC `<dcc-rss>`
-
-Fetches items from an RSS feed and publishes them as messages on the bus.
-
-The attribute `source` specifies the address of the source of the feed. When a `next` is triggered, the component deploys the next RSS message from the source.
-
-* `source` - the source of the RSS feeds;
-* `topic`  - the topic to be published in the message (default is `dcc/rss/post`);
-
-Topics of messages received and their role:
-`action/next` - publishes one RSS item (the next in a sequence).
-
-Example of an RSS Feed connected to a button that requests the next feed:
-
-<dcc-play messages>
-  <dcc-rss source="https://www.wired.com/category/science/feed"
-           subscribe="next/rss:next"
-           topic="rss/science">
-  </dcc-rss>
-
-  <dcc-button label="News" topic="next/rss">
-  </dcc-button>
-</dcc-play>
-
-Example of an RSS Feed connected to a button and a character. The button requests the next feed displayed in the character balloon:
-
-<dcc-play>
-  <dcc-rss source="https://www.wired.com/category/science/feed"
-           subscribe="next/rss:next"
-           topic="rss/science">
-  </dcc-rss>
-
-  <dcc-lively-talk speech="News: " subscribe="rss/science:speech">
-  </dcc-lively-talk>
-
-  <dcc-button label="Next Item" topic="next/rss">
-  </dcc-button>
-</dcc-play>
-
-Example of a timer that automatically requests the next feed and displays on the character balloon:
-
-<dcc-play>
-  <dcc-rss source="https://www.wired.com/category/science/feed"
-           subscribe="next/rss:next"
-           topic="rss/science">
-  </dcc-rss>
-
-  <dcc-lively-talk speech="News :" subscribe="rss/science:speech">
-  </dcc-lively-talk>
-
-  <dcc-timer cycles="10" interval="1000"
-               topic="next/rss"
-             subscribe="start/feed:start">
-  </dcc-timer>
-
-  <dcc-button label="Start" topic="start/feed">
-  </dcc-button>
-</dcc-play>
-
-## Aggregator DCC (`<dcc-aggregator>`)
-
-Aggregates items of messages, as RSS messages.
-
-* `topic` - the topic to be published in the message (default is `dcc/aggregate/post`);
-* `quantity` - the quantity of messages in the aggregation.
-
-<dcc-play>
-  <dcc-rss source="https://www.wired.com/category/science/feed"
-           subscribe="next/rss:next"
-           topic="rss/science">
-  </dcc-rss>
-
-  <dcc-aggregator topic="aggregate/science"
-                  quantity="3"
-                  subscribe="rss/science">
-  </dcc-aggregator>
-
-  <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/tutorial/images/nurse.png"
-                    speech="News: "
-                    subscribe="rss/science:speech">
-  </dcc-lively-talk>
-
-  <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/tutorial/images/doctor.png"
-                    speech="Compact: "
-                    subscribe="aggregate/science:speech">
-  </dcc-lively-talk>
-
-  <dcc-button label="Next Item" topic="next/rss">
-  </dcc-button>
-</dcc-play>
-
 ### Selective Publish/Subscribe
 
 #### Topic Filters and Wildcards
@@ -632,7 +669,7 @@ Only a single Topic Level can be matched by the wildcard  `+`, which represents 
 * end of the Topic Filter, always preceded by a slash;
 * middle of the Topic Filter, always between two slashes.
 
-The following example show messages selectively displayed.
+The following example shows messages selectively displayed.
 
 ~~~html
 <dcc-button label="Disease"
@@ -677,35 +714,6 @@ The following example show messages selectively displayed.
 </dcc-notice-input>
 ~~~
 
-## Timer DCC `<dcc-timer>`
-
-Generates messages timely spaced by an `interval`.
-
-* `topic`  - the topic to be published in the message (default is `dcc/timer/cycle`);
-* `cycles` - number of cycles and respective messages generated;
-* `interval` - interval between messages in milliseconds;
-* `autostart` - the timer starts automatically when it loads.
-
-Topics of messages received and their role:
-`action/reset` - restarts the timer;
-`action/start` - starts the timer;
-`action/stop` - stops the timer;
-`action/step` - goes to the next cycle;
-`action/interval` - redefines the timer interval.
-
-<dcc-play>
-  <dcc-lively-talk speech="Counting: "
-                   subscribe="next/count:speech">
-  </dcc-lively-talk>
-
-  <dcc-timer cycles="10" interval="1000"
-               topic="next/count"
-             subscribe="start/timer:start">
-  </dcc-timer>
-
-  <dcc-button label="Start" topic="start/timer">
-  </dcc-button>
-</dcc-play>
 
 ## Select a State
 
