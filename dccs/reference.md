@@ -169,6 +169,21 @@ An animated doctor that enters in 2 seconds after waiting 2 seconds and shows th
   </dcc-lively-talk>
 </dcc-play>
 
+### Talks Inside a Dialog
+
+Talks can be grouped inside a `<dcc-lively-dialog>`, which define the parameters of the complete dialog.
+
+<dcc-play>
+<dcc-lively-dialog rate="6s" duration="2s">
+   <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/reference/images/nurse.png"
+                    speech="Doctor, please you have to evaluate a man!">
+   </dcc-lively-talk>
+   <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/reference/images/doctor.png"
+                    speech="Ok, I'm on my way.">
+   </dcc-lively-talk>
+</dcc-lively-dialog>
+</dcc-play>
+
 ## Subscribing Messages (`<subscribe-dcc>`)
 
 A DCC can subscribe to a message in such a way that whenever the message appears on the bus, it will receive it.
