@@ -7,7 +7,7 @@ title: "DCC Development Guide"
 
 Components work together by exchanging messages. A message bus, which is part of the framework, delivers these messages. When the framework starts, it instantiates a default global message bus. If not indicated otherwise, the default message bus links all DCCs.
 
-The primary way to publish messages on the bus is the `publish` method:
+The primary way to publish messages on the bus is the `publish` (or `_publish` inside a DCC) method:
 
 ~~~javascript
 <reference>.publish(topic, message, track)
@@ -27,10 +27,10 @@ The `track` argument is optional. The default value is false.
 A DCC publishes a message on the bus through the following statement:
 
 ~~~javascript
-this.publish(topic, message, track)
+this._publish(topic, message, track)
 ~~~
 
-Every DCC inherits the `publish` method from the DCC Base, which in turn calls the publish method from the bus. By default, each DCC published the message in the default DCC, but the scope can be also constrained. We further describe it.
+Every DCC inherits the `_publish` method from the DCC Base, which in turn calls the publish method from the bus. By default, each DCC published the message in the default DCC, but the scope can be also constrained. We further describe it.
 
 ## Publishing a message outside a DCC
 
