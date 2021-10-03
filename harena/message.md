@@ -17,8 +17,8 @@ title: "Harena Message Protocol"
 
    * `knot/<</navigate` - navigates to the first knot of the case
 
-   * `knot/<knot id>/start` - notifies that the node `<knot id>` started
-     * this message demarks when the user starts to play the node - used to track how much time the user will spend in this node;
+   * `knot/<knot id>/start` - indicates that the knot `<knot id>` started
+     * demarks when the user starts to play the knot - used to track how much time the user will spend in this knot
      * example: `knot/Day_1/start` - notifies that `Day_1` started
 
 2. user types an answer to a question (variable related hypothesis)
@@ -32,13 +32,35 @@ title: "Harena Message Protocol"
 
 3. user clicks on button Next to go no the next knot
 
-   * `flow/>/navigate` - navigates to the next knot in the flow
+   * `flow/>/navigate` - navigates to the next knot in the flow (see the topic: Navigating through knots)
 
-   * `var/Day_1.hypothesis/set` - sets the value of `hypothesis` variable  (before leaving the knot)
+   * `control/input/submit` - before leaving the knot, this message requests to all components to notify any value to be recorded
 
-   * `control/input/submit` - notifies submission of the input (before leaving the knot)
+   * every value produced in the knot (e.g., data from the input fields) will be persisted by the following message
 
-   * `knot/Day_1/end` - indicates the end of a knot execution
+   * `var/<knot id>.<var name>/set` - stores the value of a variable in the State Mechanism (an Harena mechanism that persists values of variables during the entire case)
+     * example: `var/Day_1.hypothesis/set` - stores the `Day_1.hypothesis` variable in the State Mechanism
+
+   * `knot/<knot id>/end` - indicates that the knot `<knot id>` ended
+     * demarks when the user ends playing this knot - used to track how much time the user spent in this knot
+     * example: `knot/Day_1/end` - indicates the end of `Day_1` knot execution
+
+4. the previous cycle follows until the user reaches a knot assigned as the `end` knot
+
+   * `case/completed` - indicates that the user reached the last knot of the case and that the case was completed
+
+   * `case/summary` - a special message dispatched in the end of the case by the State Machine summarizing: (i) the sequence of knots visited by the user with timestamp; (ii) the value of all variables defined during the case
+
+# Navigating through knots
+
+The following messages are triggered whenever there is a request to the player to navigate to another knot or case. Each type requests a navigation to:
+
+* `knot/<knot id>/navigate` - a knot specified by the `<knot id>`
+* `knot/<</navigate` - first knot (assigned by a special type or the first in the knot sequence of the case)
+* `knot/>/navigate` - next knot considering the sequence of knots in the case
+* `knot/</navigate` - previous knot in the navigation stack
+* `flow/>/navigate` - in the flow sequence (specification of the sequence of nodes to be followed, which is independent of the sequence of nodes in the case)
+* `case/>/navigate` - next case in the case list
 
 ## Control Actions
 
@@ -49,8 +71,8 @@ Most of the control actions trigger the final action, for example, the `control/
 Levels of detail:
 * `case`
 * `knot`
-* `element`
-
+* `flow`
+* `var`
 
 * `control/case/load`
 * `control/case/selected`
@@ -107,15 +129,8 @@ All the internal paths are mapped to the external paths prefixing the path by: `
 `<knot id>` - Uniquely identifies a knot. Derived from the knot title replacing spaces for underscores (as we do not use spaces in the topics).
 
 * `knot/<knot id>/selected` - A knot has been selected in the authoring environment.
+   message: `<knot title>`
 
-  message: `<knot title>`
-
-* `knot/<knot id>/navigate` - The player navigates to a specific knot.
-* `knot/</navigate`
-* `knot/<</navigate`
-* `knot/>/navigate`
-
-*
 
 ### Entity: `variable`
 
