@@ -9,36 +9,36 @@ title: "Harena Message Protocol"
 
 1. user selects a case to play
 
-  a. `data/case/<case id>/get` - loads and returns the markdown of the case
+   * `data/case/<case id>/get` - loads and returns the markdown of the case
 
-  b. Harena compiles the case
+   * Harena compiles the case
 
-  c. `control/case/ready` - indicates that case is loaded, compiled, and ready to run
+   * `control/case/ready` - indicates that case is loaded, compiled, and ready to run
 
-  d. `knot/<</navigate` - navigates to the first knot of the case
+   * `knot/<</navigate` - navigates to the first knot of the case
 
-  e. `knot/<knot id>/start` - notifies that the node `<knot id>` started
-    * this message demarks when the user starts to play the node - used to track how much time the user will spend in this node;
-    * example: `knot/Day_1/start` - notifies that `Day_1` started
+   * `knot/<knot id>/start` - notifies that the node `<knot id>` started
+     * this message demarks when the user starts to play the node - used to track how much time the user will spend in this node;
+     * example: `knot/Day_1/start` - notifies that `Day_1` started
 
 2. user types an answer to a question (variable related hypothesis)
 
-  a. for each typed key: `var/<knot id>.<var name>/typed`
-    * the names of variables are preceded by the knot id, so their scope is restricted to the knot, i.e., the same variable name in two knots can have distinct values
-    * example: for each typed key in an input in the knot `Day_1` whose related variable name is `hypothesis`: `var/Day_1.hypothesis/typed`
+   * for each typed key: `var/<knot id>.<var name>/typed`
+     * the names of variables are preceded by the knot id, so their scope is restricted to the knot, i.e., the same variable name in two knots can have distinct values
+     * example: for each typed key in an input in the knot `Day_1` whose related variable name is `hypothesis`: `var/Day_1.hypothesis/typed`
 
-  b. `var/<knot id>.<var name>/changed` - user confirms the input (tab to leave the field or click in another button/field)
-    * example: `var/Day_1.hypothesis/changed` - user confirms the input related to the variable `hypothesis` in the knot `Day_1`
+   * `var/<knot id>.<var name>/changed` - user confirms the input (tab to leave the field or click in another button/field)
+     * example: `var/Day_1.hypothesis/changed` - user confirms the input related to the variable `hypothesis` in the knot `Day_1`
 
 3. user clicks on button Next to go no the next knot
 
-  a. `flow/>/navigate` - navigates to the next knot in the flow
+   * `flow/>/navigate` - navigates to the next knot in the flow
 
-  b. `var/Day_1.hypothesis/set` - sets the value of `hypothesis` variable  (before leaving the knot)
+   * `var/Day_1.hypothesis/set` - sets the value of `hypothesis` variable  (before leaving the knot)
 
-  c. `control/input/submit` - notifies submission of the input (before leaving the knot)
+   * `control/input/submit` - notifies submission of the input (before leaving the knot)
 
-  d. `knot/Day_1/end` - indicates the end of a knot execution
+   * `knot/Day_1/end` - indicates the end of a knot execution
 
 ## Control Actions
 
