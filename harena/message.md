@@ -51,7 +51,7 @@ title: "Harena Message Protocol"
 
    * `case/summary` - a special message dispatched in the end of the case by the State Machine summarizing: (i) the sequence of knots visited by the user with timestamp; (ii) the value of all variables defined during the case
 
-# Navigating through knots
+# Navigating through the Knots
 
 The following messages are triggered whenever there is a request to the player to navigate to another knot or case. Each type requests a navigation to:
 
