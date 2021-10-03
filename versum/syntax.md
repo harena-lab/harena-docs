@@ -73,10 +73,11 @@ or
 
 ## Context
 * Sentence context open: `{{ [namespace]: [context] / [related input] /`
-* Expression context open: `\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:\/([\w \t\.\:]+)\/)?$`
+* Expression context open: `\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:@(\w+))?(?:\/([\w \t\.\:]+)\/)?$`
   * Group #1: namespace
-  * Group #2: context
-  * Group #3: related input
+  * Group #2: context qualification
+  * Group #3: context id
+  * Group #4: related input
 ![Context Open](expressions/context-open.png)
 * Sentence context close: `}}`
 * Expression context close: `\}\}`
@@ -463,9 +464,11 @@ When the expression has only one statement and it does not have an assignment, i
 ### -- Open
 ### Markdown to Object
 * Sentence context open: `{{ [context] / [related input] /`
-* Expression context open: `\{\{([\w \t\+\-\*\."=\:%]+)?(?:\/([\w \t\.]+)\/)?[\f\n\r]`
-  * Group #1: context
-  * Group #2: related input
+* Expression context open: `\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:@(\w+))?(?:\/([\w \t\.\:]+)\/)?$`
+  * Group #1: namespace
+  * Group #2: context
+  * Group #3: context id
+  * Group #4: related input
 ![Context Open](expressions/context-open.png)
 * Object:
 ~~~
