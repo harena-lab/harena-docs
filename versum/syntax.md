@@ -43,18 +43,19 @@ __ [title] __
 ### Markdown to Object
 * Sentence:
 ~~~
-## [title] ([category],..,[category]): [inheritance] ##
+## * [title] ([category],..,[category]): [inheritance] ##
 ~~~
 or
 ~~~
-[title] ([category],..,[category]): [inheritance]
+* [title] ([category],..,[category]): [inheritance]
 =====
 ~~~             
-* Expression: `(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)`
-  * Group #1 or Group #8: level of the knot (acordding to the number of # or the underline type === or ---)
-  * Group #2 or Group #5: title
-  * Group #3 or Group #6: [categories]
-  * Group #4 or Group #7: inheritance
+* Expression: `(?:^[ \t]*(#+)[ \t]*(\*[ \t]*)?([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*(\*[ \t]*)?([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)`
+  * Group #1 or Group #10: level of the knot (acordding to the number of # or the underline type === or ---)
+  * Group #2 or Group #6: unity knot mark
+  * Group #3 or Group #7: title
+  * Group #4 or Group #8: [categories]
+  * Group #5 or Group #9: inheritance
 ![Knot Expression](expressions/knot.png)
 * Object:
 ~~~
