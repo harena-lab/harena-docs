@@ -43,12 +43,16 @@ __ [title] __
 ### Markdown to Object
 * Sentence:
 ~~~
+
 ## * [title] ([category],..,[category]): [inheritance] ##
+
 ~~~
 or
 ~~~
+
 * [title] ([category],..,[category]): [inheritance]
 =====
+
 ~~~             
 * Expression: `(?:^[ \t]*(#+)[ \t]*(\*[ \t]*)?([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*(\*[ \t]*)?([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)`
   * Group #1 or Group #10: level of the knot (acordding to the number of # or the underline type === or ---)
@@ -73,23 +77,28 @@ or
 # Annotations
 
 ## Context
-* Sentence context open: `{{ [namespace]: [context] / [related input] /`
+* Sentence context open: `{{ [namespace:context] @[id] / [namespace:property] [namespace:value] /`
 * Expression context open: `\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:@(\w+))?(?:\/([\w \t\.\:]+)\/)?$`
   * Group #1: namespace
   * Group #2: context qualification
   * Group #3: context id
-  * Group #4: related input
+  * Group #4: related input property
+  * Group #5: related input value
 ![Context Open](expressions/context-open.png)
 * Sentence context close: `}}`
 * Expression context close: `\}\}`
+
 ![Context Close](expressions/context-close.png)
+
 * Object:
 ~~~
 {
    type: "context"
    namespace: <namespace of the context>
-   context: <identification of the context>
-   input: <variable of a related input>
+   context: <qualification of the context>
+   id: <identification of the context>
+   property: <property of a related input>
+   value: <value of a related input>
    annotations: [<set of annotations in this context>]
 }
 ~~~
@@ -183,7 +192,7 @@ If it is not subordinated, it is transformed into an HTML blockquote.
 ~~~
 {
     type:  "image"
-    subordinate: <subordination according to spaces preceeding>
+    subordinate: <subordination according to spaces preceding>
     alternative:   <alt text>
     path:  <image path>
     title: <image title>
@@ -193,6 +202,28 @@ If it is not subordinated, it is transformed into an HTML blockquote.
 ### Object to HTML
 ~~~
 <img src="[path]" alt="[title]">
+~~~
+
+## Media
+### Markdown to Object
+* Sentence: `<video><source src="[path]"></video>` or `<audio><source src="[path]"></audio>`
+* Expression: `<(video|audio)(?:[^>]*)?>(?:<source src="([^"]+)">)?<\/(?:video|audio)>`
+  * Group #1: video or audio
+  * Group #2: media path
+![Media Expression](expressions/media.png)
+* Object:
+~~~
+{
+    type:  "media"
+    subtype: "video" or "audio"
+    path:  <media path>
+}
+~~~
+
+### Object to HTML
+~~~
+<video><source src="[path]"></video>
+<audio><source src="[path]"></audio>
 ~~~
 
 ## Option
@@ -230,8 +261,8 @@ If it is not subordinated, it is transformed into an HTML blockquote.
 
 ## Field
 ### Markdown to Object
-* Sentence: `* [field]: [value] -> [target]` or `* [field]: '[value]' -> [target]`
-* Expression: `^([ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f'][^&>\n\r\f]*)?(?:'([^']*)')?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$`
+* Sentence: `* [field]: [value] -> [target]` or `* '[field]': '[value]' -> [target]`
+* Expression: `^([ \t]*)(?:[\+\*])[ \t]+((?:[\w.\/\?&#\-][\w.\/\?&#\- \t]*)|(?:'[^']*')[ \t]*):[ \t]*([^&>\n\r\f'][^&>\n\r\f]*)?(?:'([^']*)')?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$`
   * Group #1: subordinate
   * Group #2: field
   * Group #3: value without quotes
@@ -245,7 +276,8 @@ If it is not subordinated, it is transformed into an HTML blockquote.
    presentation: <unprocessed content in markdown>
    subordinate: <subordination according to spaces preceeding>
    level: <level of subordination (if subordinate)>
-   field: <label of the field>
+   field: <label of the field without quotes>
+   quotes: <field has quotes - to generate it in the same way>
    value: <value of the field>
    target: <target triggered when the state/value is achieved>
 }
