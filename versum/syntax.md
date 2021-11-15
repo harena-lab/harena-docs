@@ -42,19 +42,19 @@ __ [title] __
 # Knot
 ### Markdown to Object
 * Sentence:
-~~~
 
+~~~
 ## [title] ([category],..,[category]): [inheritance] ##
-
 ~~~
+
 or
-~~~
 
+~~~
 =====
 [title] ([category],..,[category]): [inheritance]
 =====
-
 ~~~             
+
 * Expression: `(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f\:#][^\(\n\r\f\:#]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f#][^\(\n\r\f\t#]*))?[ \t]*(#+)?[ \t]*$)|^(?:(==+|--+)[\f\n\r][\n\r]?)?(?:[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)`
   * Group #1 or Group #10: level of the knot (acordding to the number of # or the underline type === or ---)
   * Group #2 or Group #7: title

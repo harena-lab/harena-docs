@@ -109,7 +109,7 @@ Embeds a data model.
 
 ~~~html
 <dcc-rest id="harena-roles" bind="harena-roles"></dcc-rest>
-<dcc-dhtml connect="submit:harena-login:service/request/post">
+<dcc-dhtml connect="retrieve:harena-roles:service/request/get">
   <h1>Roles</h1>
   {{@foreach . role}}
     <p><strong>Name:</strong> {{role.name}}</p>
