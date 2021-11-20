@@ -30,7 +30,6 @@ Embeds a data model.
   <connect-dcc to="xkcd-model" topic="data/schema"></connect-dcc>
   <connect-dcc to="xkcd-rest" topic="data/rest"></connect-dcc>
   XKCD number: {{comic_id}}
-  <end-dcc></end-dcc>
 </dcc-dhtml>
 ~~~
 
@@ -103,7 +102,6 @@ Embeds a data model.
     <p><strong>Name:</strong> {{role.name}}</p>
     <p><strong>Description:</strong> {{role.description}}</p>
   {{@endfor}}
-  <end-dcc></end-dcc>
 </dcc-dhtml>
 ~~~
 
@@ -115,7 +113,6 @@ Embeds a data model.
     <p><strong>Name:</strong> {{role.name}}</p>
     <p><strong>Description:</strong> {{role.description}}</p>
   {{@endfor}}
-  <end-dcc></end-dcc>
 </dcc-dhtml>
 ~~~
 
@@ -135,4 +132,9 @@ Embeds a data model.
     <p><strong>Description:</strong> {{role.description}}</p>
   {{@endfor}}
 </dcc-dhtml>
+~~~
+
+~~~
+<dcc-table-csv></dcc-table-csv>
+<dcc-decision-tree  subscribe="table/updated:ml/train"></dcc-decision-tree>
 ~~~
