@@ -32,9 +32,9 @@ A knot is the basic organizational unit of a case. A knot is a complete unit of 
 
 Knots are delimited by markdown headers:
 ~~~markdown
-# * Emergency Room
+# Emergency Room #
 
-# * Zombie Treatment
+# Zombie Treatment #
 ~~~
 
 They can be hierarchically grouped by header levels, but only the lower hierarchical levels are rendered.
@@ -42,15 +42,15 @@ They can be hierarchically grouped by header levels, but only the lower hierarch
 Aggregator knots are not rendered. They are responsible for the structural organization of the case. In the following example, only knots `Level 3a`, `Level 3b`, and `Level 2b` are rendered. Knots `Level 2a` aggregates the knots `Level 3a` and `Level 3b`; node `Level 1` aggregates the remaining.
 
 ~~~markdown
-# * Level 1
+# Level 1 #
 
-## * Level 2a
+## Level 2a ##
 
-### * Level 3a
+### Level 3a ###
 
-### * Level 3b
+### Level 3b ###
 
-## * Level 2b
+## Level 2b ##
 ~~~
 
 There is one exception: when one level has only `notification nodes` as subordinates. We further explain this kind of node.
@@ -58,11 +58,13 @@ There is one exception: when one level has only `notification nodes` as subordin
 It is also possible to use the alternative Markdown format with underlines:
 
 ~~~markdown
-* Level 1
-=========
+=======
+Level 1
+=======
 
-* Level 2
----------
+-------
+Level 2
+-------
 ~~~
 
 ## Category
