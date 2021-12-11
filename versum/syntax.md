@@ -139,7 +139,7 @@ or
 }
 ~~~
 
-# Items
+# Elements
 
 ## Text
 * Sentence: `([ \t]*)([^\f\n\r]+)$`
@@ -260,6 +260,29 @@ If it is not subordinated, it is transformed into an HTML blockquote.
 <dcc-button id='dcc[seq]'[author] type='[subtype]' topic='knot/[target]/navigate' label='[display]'[message][image]></dcc-button>
 ~~~
 
+## Item
+### Markdown to Object
+* Sentence: `* [label]` or `* '[label]'`
+* Expression: `^((?:  |\t)[ \t]*)(?:[\+\*])[ \t]+((?:[\w.\/\?&#\-][\w.\/\?&#\- \t]*)|(?:'[^']*')[ \t]*)$`
+  * Group #1: subordinate
+  * Group #2: label
+![Item Expression](expressions/item.png)
+* Object:
+~~~
+{
+   type: "item"
+   presentation: <unprocessed content in markdown>
+   subordinate: <subordination according to spaces preceeding>
+   level: <level of subordination (if subordinate)>
+   label: <label of the item without quotes>
+   quotes: <field has quotes - to generate it in the same way>
+}
+~~~
+The level of subordination is calculated as follows: for each tab or two spaces preceding the field, it counts one.
+
+If one item succeeds a field and the field has an aggregator item, the item is embedded to the field.
+
+
 ## Field
 ### Markdown to Object
 * Sentence: `* [field]: [value] -> [target]` or `* '[field]': '[value]' -> [target]`
@@ -275,7 +298,7 @@ If it is not subordinated, it is transformed into an HTML blockquote.
 {
    type: "field"
    presentation: <unprocessed content in markdown>
-   subordinate: <subordination according to spaces preceeding>
+   subordinate: <subordination according to spaces preceding>
    level: <level of subordination (if subordinate)>
    field: <label of the field without quotes>
    quotes: <field has quotes - to generate it in the same way>

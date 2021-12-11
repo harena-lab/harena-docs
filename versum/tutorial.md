@@ -287,7 +287,7 @@ Points: ^points^
 * Return -> Knot.Previous
 
 # Right (note)
-~ points + 10
+~ points := points + 10
 
 The machine teletransported you to another dimension.
 
@@ -298,5 +298,61 @@ Points: ^points^
 
 
 ~~~markdown
+# Presentation #
 
+> Digite a quantidade que você quer fabricar
+? quantidade
+
+> Digite o preço de venda
+? preco
+
+* Faturamento Previsto -> Income
+
+# Income #
+~ faturamento := Presentation.preco * Presentation.quantidade
+
+O faturamento previsto é: ^faturamento^
+~~~
+
+~~~markdown
+# Presentation #
+
+> Digite a quantidade que você quer fabricar
+? quantidade
+
+> Digite o preço de venda
+? preco
+
+* Faturamento Previsto -> Income
+
+# Income #
+~ faturamento := Presentation.preco * Presentation.quantidade
+~ vendas := random(Presentation.quantidade)
+
+O faturamento previsto é: ^faturamento^.
+As vendas foram de: ^vendas^.
+~~~
+
+~~~markdown
+# Presentation #
+~ disponivel := 50
+
+Quantidade disponível: ^disponivel^
+
+> Digite a quantidade que você quer fabricar
+? quantidade
+
+> Digite o preço de venda
+? preco
+
+* Faturamento Previsto -> Income
+
+# Income #
+~ faturamento := Presentation.preco * Presentation.quantidade
+~ vendas := random(Presentation.quantidade)
+~ excedeu := Presentation.quantidade > disponivel
+
+O faturamento previsto é: ^faturamento^.
+As vendas foram de: ^vendas^.
+Excedeu disponível: ^excedeu^.
 ~~~
