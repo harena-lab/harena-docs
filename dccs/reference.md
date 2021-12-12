@@ -105,8 +105,6 @@ A simple example:
   </dcc-slider>
 </dcc-play>
 
-
-
 ## Lively Talk DCC (`<dcc-lively-talk>`)
 
 An animated image that also displays a text inside a ballon. Usually adopted for animated dialogs.
@@ -198,6 +196,85 @@ In the following example, the character represented by a `dcc-lively-talk` shows
    <dcc-button label="Talk" topic="action/speech" message="Graauuuurrrr">
    </dcc-button>
 </dcc-play>
+
+## Input Choice DCC (`<dcc-input-choice>`)
+
+To present a multiple-choice input:
+
+For `<dcc-input-choice>`:
+* `id` - unique id of the input;
+* `statement` - statement presented before the options;
+* `variable` - name of the variable that will receive the value selected;
+* `value` - initial value (choice);
+* `mandatory` - defines if the user must select some value;
+* `exclusive` - exclusivity of the option explicitly declared, defines if the value will be exclusive (radio button) or not (checkbox) - default is non-exclusive;
+* `shuffle` - shuffles the options - default is false;
+* `reveal` - presentation of the options: horizontal, vertical or integral (consider extra html inside the choice)
+* `target` - target to be triggered when an option is selected.
+
+For `<dcc-input-option>`:
+* `parent` - parent of the option explicitly declared (otherwise will be inferred by the hierarchy);
+* `variable` - variable of the option explicitly declared, otherwise will assume the parent's variable (which is the expected scenario);
+* `exclusive` - exclusivity of the option explicitly declared, defines if the value will be exclusive (radio button) or not (checkbox), otherwise will assume the parent's exclusivity (which is the expected scenario).
+
+The following example shows options horizontally, with the default non-exclusive selection:
+
+<dcc-play>
+  <dcc-input-choice variable="role" statement="What is your role?" reveal="horizontal">
+     <dcc-input-option>I am a patient</dcc-input-option>
+     <dcc-input-option>I am a doctor</dcc-input-option>
+     <dcc-input-option>I am a nurse</dcc-input-option>
+  </dcc-input-choice>
+</dcc-play>
+
+When the option is selected, a message `input/change/<variable>` is produced, where `variable` is the name of the specified variable. When the value of each option is not specified, its label assumes also the role of value.
+
+Changing parameters for `vertical` and `exclusive`:
+
+<dcc-play>
+  <dcc-input-choice variable="role" statement="What is your role?" reveal="vertical" exclusive>
+     <dcc-input-option>I am a patient</dcc-input-option>
+     <dcc-input-option>I am a doctor</dcc-input-option>
+     <dcc-input-option>I am a nurse</dcc-input-option>
+  </dcc-input-choice>
+</dcc-play>
+
+One can explicitly specify the value of each item. You will observe that this value is send in the message:
+
+<dcc-play>
+  <dcc-input-choice variable="role" statement="What is your role?" reveal="vertical" exclusive>
+     <dcc-input-option value="patient">I am a patient</dcc-input-option>
+     <dcc-input-option value="doctor">I am a doctor</dcc-input-option>
+     <dcc-input-option value="nurse">I am a nurse</dcc-input-option>
+  </dcc-input-choice>
+</dcc-play>
+
+The options `reveal` `horizontal` or `vertical` control the presentation and no extra HTML is considered. When the reveal option is not specified, no treatment is applied to the elements and it is possible to add extra HTML inside to customize the presentation:
+
+<dcc-play>
+  <dcc-input-choice variable="role" statement="What is your role?" exclusive>
+     <dcc-input-option value="patient">I am a patient</dcc-input-option><br>
+     <hr>
+     <dcc-input-option value="doctor">I am a doctor</dcc-input-option><br>
+     <hr>
+     <dcc-input-option value="nurse">I am a nurse</dcc-input-option><br>
+  </dcc-input-choice>
+</dcc-play>
+
+The following example shows a `dcc-input-choice` working with a `dcc-lively-talk`, so the option selected is presented by the character:
+
+<dcc-play>
+  <dcc-input-choice variable="role" statement="What is your role?" reveal="vertical" exclusive>
+     <dcc-input-option>I am a patient</dcc-input-option>
+     <dcc-input-option>I am a doctor</dcc-input-option>
+     <dcc-input-option>I am a nurse</dcc-input-option>
+  </dcc-input-choice>
+
+  <dcc-lively-talk subscribe="input/changed/role:speech"></dcc-lively-talk>
+</dcc-play>
+
+When a `dcc-input-choice` or a `dcc-input-option` has a `target`, each option appears as a `dcc-button`, which triggers a navigation message when clicked, specified in the `target` attribute.
+
 
 ## Timer DCC `<dcc-timer>`
 
@@ -338,7 +415,7 @@ Aggregates items of messages, as RSS messages.
 <h1>Under Construction</h1>
 <hr>
 
-The following example shows a character that tells you "Hello *your name*" when you type your name.
+The following example shows a character that tells you "Grrraaaauuurrrr *your name*" when you type your name.
 
 ~~~html
 <dcc-input-typed variable="name">Type your name:</dcc-input-typed>
@@ -361,66 +438,11 @@ Select your age:
 </dcc-lively-talk>
 ~~~
 
-To present a multiple-choice input:
-
-For `<dcc-input-choice>`:
-* `id` - unique id of the input;
-* `statement` - statement presented before the options;
-* `variable` - name of the variable that will receive the value selected;
-* `value` - initial value (choice);
-* `mandatory` - defines if the user must select some value;
-* `exclusive` - exclusivity of the option explicitly declared, defines if the value will be exclusive (radio button) or not (checkbox) - default is non-exclusive;
-* `shuffle` - shuffles the options - default is false;
-* `target` - target to be triggered when an option is selected.
-
-For `<dcc-input-option>`:
-* `parent` - parent of the option explicitly declared (otherwise will be inferred by the hierarchy);
-* `variable` - variable of the option explicitly declared, otherwise will assume the parent's variable (which is the expected scenario);
-* `exclusive` - exclusivity of the option explicitly declared, defines if the value will be exclusive (radio button) or not (checkbox), otherwise will assume the parent's exclusivity (which is the expected scenario).
-
-
-~~~html
-<dcc-input-choice variable="role" statement="What is your role?" exclusive>
-   <dcc-input-option>patient</dcc-input-option>
-   <dcc-input-option>doctor</dcc-input-option>
-   <dcc-input-option>nurse</dcc-input-option>
-</dcc-input-choice>
-~~~
-
-~~~html
-<dcc-input-choice variable="role" statement="What is your role?" exclusive>
-   <dcc-input-option value="patient">I am a patient</dcc-input-option>
-   <dcc-input-option value="doctor">I am a doctor</dcc-input-option>
-   <dcc-input-option value="nurse">I am a nurse</dcc-input-option>
-</dcc-input-choice>
-~~~
+## Input Choice DCC (`<dcc-input-choice>`)
+### Future
 
 ~~~html
 <dcc-unfold><dcc-unfold-short>I am a patient</dcc-unfold-short></dcc-unfold>
-~~~
-
-~~~html
-<dcc-input-choice variable="role" exclusive>
-   What is your role?
-   <dcc-input-option value="patient">I am a patient</dcc-input-option>
-   <dcc-input-option value="doctor">I am a doctor</dcc-input-option>
-   <dcc-input-option value="nurse">I am a nurse</dcc-input-option>
-</dcc-input-choice>
-~~~
-
-~~~html
-<dcc-input-choice variable="role" statement="What is your role?" exclusive>
-   <dcc-input-option value="patient">I am a patient</dcc-input-option>
-   <dcc-input-option value="doctor">I am a doctor</dcc-input-option>
-   <dcc-input-option value="nurse">I am a nurse</dcc-input-option>
-</dcc-input-choice>
-
-<dcc-lively-talk id="doctor"
-                 duration="0s"
-                 character="doctor"
-                 speech="I am a ">
-  <subscribe-dcc topic="var/role/changed"></subscribe-dcc>
-</dcc-lively-talk>
 ~~~
 
 ~~~html
