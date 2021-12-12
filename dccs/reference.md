@@ -343,11 +343,8 @@ The following example shows a character that tells you "Hello *your name*" when 
 ~~~html
 <dcc-input-typed variable="name">Type your name:</dcc-input-typed>
 
-<dcc-lively-talk id="doctor"
-                 duration="0s"
-                 character="doctor"
-                 speech="Hello ">
-  <subscribe-dcc topic="var/name/changed"></subscribe-dcc>
+<dcc-lively-talk speech="Grrraaaauuurrrr "
+                 subscribe="var/name/changed:speech">
 </dcc-lively-talk>
 ~~~
 
