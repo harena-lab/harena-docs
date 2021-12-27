@@ -101,7 +101,6 @@ A simple example:
   <dcc-slider statement="Select your age:"
               variable="age" value="20"
               min="1" max="130" index>
-
   </dcc-slider>
 </dcc-play>
 
@@ -123,28 +122,30 @@ An animated image that also displays a text inside a ballon. Usually adopted for
 * `duration` - duration of the animation (duration=0 means a static image);
 * `delay` - delay before the animation is started;
 * `direction` - direction of the animation (`left` (default) or `right`);
-* `character` - character that appears in the image;
+* `character` - path to the image file of the character;
 * `speech` - text of the speech.
 
-When a Lively Talk DCC receives a message, it shows the body of the message as a speech in the ballon.
+When a Lively Talk DCC receives a message, it shows the body of the message as a speech in the balloon.
 
 ### Examples
 
-Available characters in the playground: nurse, doctor, and patient.
+When the character image is not specified, it shows the standard image of a dinosaur.
 
-A static patient showing the speech "Please, help me!"
+A static dinosaur showing the speech "Grrraaauuuurrrr"
 
 <dcc-play>
   <dcc-lively-talk speech="Grrraaauuuurrrr">
   </dcc-lively-talk>
 </dcc-play>
 
+The following examples show animations that probably were already executed when you reach this part of the reference. To run them again, click on the `<dcc-lively-talk>` code and click on the [render] button that is displayed.
+
 An animated character - the animation takes two seconds:
 
 <dcc-play>
-<dcc-lively-talk duration="2s"
-                 speech="Grrraaauuuurrrr">
-</dcc-lively-talk>
+  <dcc-lively-talk duration="2s"
+                   speech="Grrraaauuuurrrr">
+  </dcc-lively-talk>
 </dcc-play>
 
 An animated nurse that enters in 2 seconds and shows the speech "Doctor, please you have to evaluate a man!"
@@ -169,17 +170,29 @@ An animated doctor that enters in 2 seconds after waiting 2 seconds and shows th
 
 ### Talks Inside a Dialog
 
-Talks can be grouped inside a `<dcc-lively-dialog>`, which define the parameters of the complete dialog.
+Talks can be grouped inside a `<dcc-lively-dialog>`, which define the parameters and rate of the complete dialog.
+
+~~~html
+<dcc-lively-dialog rate="rate"
+                   duration="duration">
+   <dcc-lively-talk ...></dcc-lively-talk>
+   <dcc-lively-talk ...></dcc-lively-talk>
+</dcc-lively-dialog>
+~~~
+
+* `rate` - complete time slot of each animation (talk) inside the dialog, including the duration - the rate minus the duration defines the delay among the animations;
+* `duration` - duration of the animation (talk) inside the dialog, when it starts after the delay (duration=0 means a static image).
+Animation of two characters. Each character will take a 6 seconds slot (4 seconds of delay plus 2 seconds of animation):
 
 <dcc-play>
-<dcc-lively-dialog rate="6s" duration="2s">
+  <dcc-lively-dialog rate="6s" duration="2s">
    <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/reference/images/nurse.png"
                     speech="Doctor, please you have to evaluate a man!">
    </dcc-lively-talk>
    <dcc-lively-talk character="https://harena-lab.github.io/harena-docs/dccs/reference/images/doctor.png"
                     speech="Ok, I'm on my way.">
    </dcc-lively-talk>
-</dcc-lively-dialog>
+  </dcc-lively-dialog>
 </dcc-play>
 
 ## Subscribing Messages (`<subscribe-dcc>`)
