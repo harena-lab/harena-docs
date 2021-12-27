@@ -29,6 +29,21 @@ class DCCRest extends DCCBase {
     */
   }
 
+  /* Properties
+      **********/
+
+  static get observedAttributes () {
+    return DCCBase.observedAttributes.concat(['parameters'])
+  }
+
+  get parameters () {
+    return this.getAttribute('parameters')
+  }
+
+  set parameters (newValue) {
+    this.setAttribute('parameters', newValue)
+  }
+
   async connectTo (trigger, id, topic) {
     super.connectTo(trigger, id, topic)
     if (trigger == 'schema')
@@ -36,20 +51,22 @@ class DCCRest extends DCCBase {
   }
 
   async restRequest(method, parameters) {
-    // console.log('============ rest method')
-    // console.log(method)
-    // console.log('=== service request')
-    // console.log(method)
-    // console.log(parameters)
     let result = null
 
     if (this._setup.environment)
       for (let e in this._setup.environment)
         parameters[e] = this._setup.environment[e]
 
+    if (this.hasAttribute('parameters')) {
+      const par = this.parameters.split(';')
+      for (const p of par) {
+        const atr = p.split(':')
+        parameters[atr[0]] = atr[1]
+      }
+    }
+
     if (this._setup != null && this._setup.oas != null &&
         this._setup.oas.paths != null) {
-      // console.log('--- inside request')
       const paths = Object.keys(this._setup.oas.paths)
       if (paths.length > 0) {
         let url = paths[0]
@@ -90,7 +107,9 @@ class DCCRest extends DCCBase {
             console.log('===== error in request')
             console.log(error.message)
             console.log('=====')
-            result = error.message
+            result = {
+              error: error.message
+            }
           })
 
       }
@@ -98,12 +117,12 @@ class DCCRest extends DCCBase {
     return result
   }
 
-  async serviceRequest (topic, message) {
+  async serviceRequest (topic, message, track) {
     let result = await this.serviceRequestC(topic, message)
-    this._publish(MessageBus.buildResponseTopic(topic, message), result, true)
+    this._publish(MessageBus.buildResponseTopic(topic, message), result, track)
     if (this.hasAttribute('id'))
       this._publish('service/response/' + MessageBus.extractLevel(topic, 3) + '/' + this.id,
-        result, true)
+        result, track)
   }
 
   async serviceRequestC (topic, message) {

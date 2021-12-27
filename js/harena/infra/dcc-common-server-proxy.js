@@ -1,28 +1,13 @@
 /**
- *
+ * All service requests shared by Harena environments
  */
 
 class DCCCommonServer {
   constructor () {
-    // this._local = false
-
-    /*
-      console.log("=== token");
-      this._token = null;
-      if (document.cookie.includes("token="))
-         this._token = document.cookie
-                          .split("; ")
-                          .find(row => row.startsWith("token="))
-                          .split("=")[1];
-      console.log(this._token);
-      */
-
-    // this.userLogin = this.userLogin.bind(this);
-    // MessageBus.i.subscribe("data/user/login", this.userLogin);
     this.casesList = this.casesList.bind(this)
     MessageBus.i.subscribe('data/case/*/list', this.casesList)
     this.loadCase = this.loadCase.bind(this)
-    MessageBus.i.subscribe('data/case/+/get', this.loadCase)
+    MessageBus.i.subscribe('case/get/+', this.loadCase)
     this.loadTheme = this.loadTheme.bind(this)
     this.themeFamilySettings = this.themeFamilySettings.bind(this)
     MessageBus.i.subscribe('data/theme_family/+/settings',
@@ -34,89 +19,13 @@ class DCCCommonServer {
     MessageBus.i.subscribe('data/context/+/get', this.loadContext)
   }
 
-  /*
-   get token() {
-      return this._token;
-   }
-
-   set token(newToken) {
-      this._token = newToken;
-   }
-   */
-
-  /*
-  get local () {
-    return this._local
-  }
-
-  set local (newValue) {
-    this._local = newValue
-  }
-  */
-
-  /*
-    * Wrappers of the services
-    * ************************
-    */
-
-  /*
-   async userLogin(topic, message) {
-      let header = {
-         "async": true,
-         "crossDomain": true,
-         "method": "POST",
-         "headers": {
-            "Content-Type": "application/json"
-          },
-          "body": JSON.stringify({"email": message.email,
-                                  "password": message.password})
-      }
-
-      console.log("=== login request");
-      console.log(DCCCommonServer.managerAddressAPI + "user/login");
-      console.log(header);
-
-      const response = await fetch(
-         DCCCommonServer.managerAddressAPI + "user/login", header);
-
-      console.log("=== login response");
-      console.log(response);
-
-      const jsonResponse = await response.json();
-      console.log(jsonResponse);
-      const busResponse = {
-         userid: jsonResponse.id,
-         token: jsonResponse.token
-      };
-      this._token = jsonResponse.token;
-      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-                           busResponse, true);
-   }
-   */
-
-  async casesList (topic, message) {
+  async casesList (topic, message, track) {
     const clearance = new URL(document.location).searchParams.get('clearance')
     const config = {
       method: 'GET',
       url: DCCCommonServer.managerAddressAPI + 'user/cases?clearance=' + clearance,
       withCredentials: true
     }
-    /*
-      if (message.filterBy) {
-         header.body = JSON.stringify({
-            filterBy: message.filterBy,
-            filter: message.filter
-         });
-      }
-      const response = await fetch(
-         DCCCommonServer.managerAddressAPI + "case/list", header);
-      */
-    // console.log(DCCCommonServer.managerAddressAPI);
-    /*
-      const response = await fetch(
-         DCCCommonServer.managerAddressAPI +
-         ((message.user) ? "user/cases" : "cases"), header);
-      */
     let jsonResponse
     await axios(config)
       .then(function (endpointResponse) {
@@ -131,8 +40,6 @@ class DCCCommonServer {
       busResponse.push({
         id: jsonResponse.cases[c].id,
         title: jsonResponse.cases[c].title
-        // icon: Basic.service.rootPath + 'resources/icons/mono-slide.svg'
-      // svg : jsonResponse[c].svg
       })
       busResponse.push({pages: jsonResponse.pages})
     }
@@ -140,10 +47,10 @@ class DCCCommonServer {
       return (c1.title < c2.title) ? -1 : 1
     })
     MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      busResponse, true)
+      busResponse, track)
   }
 
-  async loadCase (topic, message) {
+  async loadCase (topic, message, track) {
     let caseComplete
 
     if (HarenaConfig.local) {
@@ -157,7 +64,7 @@ class DCCCommonServer {
       // <TODO> the topic service/request/get is extremely fragile -- refactor
       const caseId = MessageBus.extractLevel(topic, 3)
       const caseObj = await MessageBus.i.request(
-        'service/request/get', {caseId: caseId}, null, true)
+        'service/request/get', {caseId: caseId}, null, track)
 
       caseComplete = caseObj.message
       const template =
@@ -167,63 +74,16 @@ class DCCCommonServer {
         const templateMd =
           await MessageBus.i.request(
             'data/template/' + template[1].replace(/\//g, '.') +
-              '/get', {static: true}, null, true)
+              '/get', {static: true}, null, track)
         caseComplete.source += templateMd.message
       }
-      /*
-      const caseId = MessageBus.extractLevel(topic, 3)
-      if (document.querySelector('#settings-modal') == null) {
-
-        const header = {
-          async: true,
-          crossDomain: true,
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + DCCCommonServer.token
-          }
-        }
-
-        const response =
-            await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId,
-              header)
-
-        const jsonResponse = await response.json()
-
-        caseObj = {
-          title: jsonResponse.title,
-          description: jsonResponse.description,
-          language: jsonResponse.language,
-          domain: jsonResponse.domain,
-          specialty: jsonResponse.specialty,
-          keywords: jsonResponse.keywords,
-          source: jsonResponse.source
-        }
-      } else {
-        caseObj = {
-          title: document.getElementById('case_title').value,
-          description: document.getElementById('description').value,
-          language: document.getElementById('language').value,
-          domain: document.getElementById('domain').value,
-          specialty: document.getElementById('specialty').value,
-          keywords: document.getElementById('keywords').value,
-          source: document.getElementById('case_source').value
-            .replace(/\\"/gm, '"')
-        }
-      }
-      */
     }
 
-    // console.log('====================Case object');
-    // console.log(caseObj);
-
-    // console.log('=== case complete')
-    // console.log(caseComplete)
     MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-                         caseComplete, true)
+                         caseComplete, track)
   }
 
-  async themeFamilySettings (topic, message) {
+  async themeFamilySettings (topic, message, track) {
     let settings = {}
     if (!HarenaConfig.local) {
       const themeFamily = MessageBus.extractLevel(topic, 3)
@@ -240,10 +100,10 @@ class DCCCommonServer {
       settings = await response.json()
     }
     MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      settings)
+      settings, track)
   }
 
-  async loadTheme (topic, message) {
+  async loadTheme (topic, message, track) {
     let themeObj
     const themeCompleteName = MessageBus.extractLevel(topic, 3)
     const separator = themeCompleteName.indexOf('.')
@@ -275,10 +135,10 @@ class DCCCommonServer {
       themeObj = await response.text()
     }
     MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      themeObj, true)
+      themeObj, track)
   }
 
-  async contextList (topic, message) {
+  async contextList (topic, message, track) {
     let ctxCatalog = {}
     if (!HarenaConfig.local) {
       const header = {
@@ -294,10 +154,10 @@ class DCCCommonServer {
       ctxCatalog = await response.json()
     }
     MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      ctxCatalog)
+      ctxCatalog, track)
   }
 
-  async loadContext (topic, message) {
+  async loadContext (topic, message, track) {
     const header = {
       async: true,
       crossDomain: true,
@@ -310,7 +170,7 @@ class DCCCommonServer {
                                    message.body, header)
     const textResponse = await response.text()
     MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      textResponse)
+      textResponse, track)
   }
 }
 

@@ -9,28 +9,36 @@ class EditDCCMedia extends EditDCC {
 
   async _componentEditor (obj, mtype) {
     // checks if the image is subordinated to another entity
-    if (obj.image)
-      obj.image.path = await this._mediaUploadPanel(
-        mtype, EditDCCMedia.fileExt[mtype])
-    else
-      obj.path = await this._mediaUploadPanel(
-        mtype, EditDCCMedia.fileExt[mtype])
-    console.log('=== media properties')
-    console.log(this._properties)
-    this._properties.applyProperties(true)
-    // MessageBus.i.publish('properties/apply/details', null, true)
+    const path = await this._mediaUploadPanel(
+                          mtype, EditDCCMedia.fileExt[mtype])
+    if (path != null) {
+      if (path != '_#clear#_') {
+        if (obj.image)
+          obj.image.path = path
+        else
+          obj.path = path
+      } else {
+        if (obj.image)
+          obj.image.path = Translator.objTemplates.image.path
+        else {
+          if (mtype == 'image')
+            obj.path = Translator.objTemplates.image.path
+          else if (obj.path)
+            delete obj.path
+        }
+      }
+      this._properties.applyProperties(true)
+    }
   }
-
-
 }
 
 (function () {
   EditDCCMedia.fileExt = {
     'image': {
-      select: ['png', 'jpg', 'jpeg', 'png'],
+      select: Translator.extension.image,
       browse: 'image/png, image/jpeg, image/svg' },
     'media': {
-      select: ['mpg', 'mpeg', 'mp4', 'webm', 'mp3'],
+      select: Translator.extension.video.concat(Translator.extension.audio),
       browse: 'audio/mpeg, video/mp4, video/webm'
     }
   }

@@ -26,12 +26,12 @@ class DCCSubmit extends DCCButton {
     await this._computeTrigger()
   }
 
-  async notify (topic, message) {
+  async notify (topic, message, track) {
     // super.notify(topic, message)
     if (topic.toLowerCase().includes('submit')) {
       await this.computeSubmit()
       this._publish(
-        MessageBus.buildResponseTopic(topic, message), null, true)
+        MessageBus.buildResponseTopic(topic, message), null, track)
     }
   }
 
@@ -41,7 +41,7 @@ class DCCSubmit extends DCCButton {
       const topic = (this.hasAttribute('topic'))
         ? this.topic
         : (this.hasAttribute('variable'))
-          ? 'var/' + this.variable + '/changed'
+          ? 'input/changed/' + this.variable.replace(/\./g, '/')
           : 'button/' + this.label + '/clicked'
       if (this.hasAttribute('message')) { message.value = this.message }
       let form = null
@@ -60,13 +60,17 @@ class DCCSubmit extends DCCButton {
         if (form != null)
           for (let f of form) {
             if (f.type == 'radio' || f.type == 'checkbox') {
-              if (f.checked)
-                message.value[f.id] = f.value
+              if (f.checked) {
+                if (f.type == 'checkbox' || !f.hasAttribute('name'))
+                  message.value[f.id] = f.value
+                else
+                  message.value[f.name] = f.value
+              }
             } else
               message.value[f.id] = f.value
           }
       }
-      if (this._checkPre(message, form)) {
+      if (await this._checkPre(message, form) == true) {
           if (this._connections != null) {
           const response = await this.multiRequest('submit', message)
           if (this._setup != null && this._setup.pos != null)
@@ -74,13 +78,14 @@ class DCCSubmit extends DCCButton {
         } else
           this._publish(topic, message, true)
       }
+
     }
   }
 
-  _checkPre(message, form) {
+  async _checkPre(message, form) {
     let result = true
     if (this._setup != null && this._setup.pre != null)
-      result = this._setup.pre(message, form, this._schema)
+      result = await this._setup.pre(message, form, this._schema)
     return result
   }
 }

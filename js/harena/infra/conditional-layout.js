@@ -3,6 +3,9 @@ class LayoutController {
     this._case = null
     this._user = null
     this.busMessages()
+    //Prognosis specific experiment
+    this.prognosisAvatar = this.prognosisAvatar.bind(this)
+    MessageBus.i.subscribe('control/html/ready', this.prognosisAvatar)
     // this.startController()
   }
 
@@ -56,7 +59,7 @@ class LayoutController {
 
   async busMessages(){
     // console.log('======= starting conditional-layout')
-    LayoutController.user = await MessageBus.i.waitMessage('data/user/info')
+    LayoutController.user = await MessageBus.i.waitMessage('user/login/+')
     if(new URL(document.location).pathname == '/author/'){
       LayoutController.case = await MessageBus.i.waitMessage('service/response/get/harena-case')
     }
@@ -64,7 +67,18 @@ class LayoutController {
     this.startController()
 
   }
-  /////////  @@WORK IN PROGRESS //
+  async prognosisAvatar (){
+    if(new URL(document.location).pathname.includes('/prognosis')
+    && !new URL(document.location).pathname.includes('/prognosis/creation')
+    && !new URL(document.location).pathname.includes('/prognosis/calculator')){
+      if(!PrognosisAvatar.i._avatarSet)
+       PrognosisAvatar.i._avatarSet = await PrognosisAvatar.i.avatarSet()
+      if (PrognosisAvatar.i._avatarSet != false) {
+        PrognosisAvatar.i.changeMenuAvatar (PrognosisAvatar.i._avatarSet, document.querySelector('#logoutDropdownBtn'))
+      }
+    }
+  }
+  /////////  @@WORK IN PROGRESS NOT IMPLEMENTED//
   async authorizeCommentSection() {
     // var dhtmlReady = querySelector('#dhtml-case-comments')
     console.log('============')
