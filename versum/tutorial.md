@@ -5,7 +5,7 @@ title: Versum Tutorial
 
 # Tutorial
 
-~~~markdown
+~~~
 # Machine
 
 You are exploring an abandoned factory and found this machine:
@@ -21,7 +21,7 @@ You are exploring an abandoned factory and found this machine:
 Your action will be: **^Machine.action^**
 ~~~
 
-~~~markdown
+~~~
 # Machine
 
 You are exploring an abandoned factory and found this machine:
@@ -39,7 +39,7 @@ Your action will be: **^Machine.action^**
 * Return -> Machine
 ~~~
 
-~~~markdown
+~~~
 # Machine
 
 You are exploring an abandoned factory and found this machine:
@@ -63,7 +63,7 @@ Your certainty: **^Machine.certain^**
 * Return -> Machine
 ~~~
 
-~~~markdown
+~~~
 # Machine
 
 You are exploring an abandoned factory and found this machine:
@@ -86,7 +86,7 @@ Your action will be: **^Machine.action^**
 * Return -> Machine
 ~~~
 
-~~~markdown
+~~~
 # Machine
 
 You are exploring an abandoned factory and found this machine:
@@ -110,7 +110,7 @@ Your action will be: **^Machine.action^**
 * Return -> Machine
 ~~~
 
-~~~markdown
+~~~
 # Machine
 
 You are exploring an abandoned factory and found this machine:
@@ -135,7 +135,7 @@ Your action will be: **^Machine.action^**
 * Return -> Machine
 ~~~
 
-~~~markdown
+~~~
 # Machine
 
 You are exploring an abandoned factory and found this machine:
@@ -159,7 +159,7 @@ Your action will be: **^Machine.action^**
 * Return -> Machine
 ~~~
 
-~~~markdown
+~~~
 # Machine
 
 You are exploring an abandoned factory and found this machine:
@@ -191,7 +191,7 @@ The machine teletransported you to another dimension.
 * Return -> Machine
 ~~~
 
-~~~markdown
+~~~
 # Machine
 
 You are exploring an abandoned factory and found this machine:
@@ -221,7 +221,7 @@ The machine teletransported you to another dimension.
 * Return -> Machine
 ~~~
 
-~~~markdown
+~~~
 # Machine
 
 You are exploring an abandoned factory and found this machine:
@@ -257,7 +257,7 @@ Points: ^points^
 * Return -> Knot.Previous
 ~~~
 
-~~~markdown
+~~~
 # Machine
 
 You are exploring an abandoned factory and found this machine:
@@ -297,7 +297,7 @@ Points: ^points^
 ~~~
 
 
-~~~markdown
+~~~
 # Presentation #
 
 > Digite a quantidade que você quer fabricar
@@ -314,7 +314,7 @@ Points: ^points^
 O faturamento previsto é: ^faturamento^
 ~~~
 
-~~~markdown
+~~~
 # Presentation #
 
 > Digite a quantidade que você quer fabricar
@@ -333,7 +333,7 @@ O faturamento previsto é: ^faturamento^.
 As vendas foram de: ^vendas^.
 ~~~
 
-~~~markdown
+~~~
 # Presentation #
 ~ disponivel := 50
 
@@ -355,4 +355,25 @@ Quantidade disponível: ^disponivel^
 O faturamento previsto é: ^faturamento^.
 As vendas foram de: ^vendas^.
 Excedeu disponível: ^excedeu^.
+~~~
+
+~~~
+# Knot
+~ custo := 10
+~ preco := 9
+~ quantidade := 3
+
+~ saldo := abs((preco - custo) * quantidade)
+
+Custo: ^custo^
+Preço: ^preco^
+Quantidade: ^quantidade^
+
+$ (custo < preco)
+  Você teve um lucro.
+
+$ (custo > preco)
+  Você teve um prejuízo.
+
+Valor: ^saldo^
 ~~~

@@ -204,3 +204,20 @@ An Origin DCC can be connected to a Target DCC in such a way that, whenever an e
    <dcc-button label="Plus 10" topic="compute/add" connect="click:plus10:compute/update">
    </dcc-button>
 </dcc-play>
+
+<dcc-compute id="price" expression="price:=500;quantity:=2;total:=price*quantity"></dcc-compute>
+<dcc-dhtml connect="retrieve:price:compute/calculate" autoupdate>
+  <p>Price: {{price}}</p>
+  <p>Quantity: {{quantity}}</p>
+  <p>Total: {{total}}</p>
+</dcc-dhtml>
+
+<dcc-compute id="price" expression="a:=1;b:=2;test:=b>a"></dcc-compute>
+<dcc-dhtml connect="retrieve:price:compute/calculate" autoupdate>
+  <p>A: {{a}}</p>
+  <p>B: {{b}}</p>
+  <p>Test: {{test}}</p>
+  {{@if test}}
+    B é maior que A
+  {{@endif}}
+</dcc-dhtml>

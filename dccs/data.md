@@ -107,11 +107,22 @@ Embeds a data model.
 
 ~~~html
 <dcc-rest id="harena-roles" bind="harena-roles"></dcc-rest>
-<dcc-dhtml connect="retrieve:harena-roles:service/request/get">
+<dcc-dhtml connect="retrieve:harena-roles:service/request/get" autoupdate>
   <h1>Roles</h1>
   {{@foreach . role}}
     <p><strong>Name:</strong> {{role.name}}</p>
     <p><strong>Description:</strong> {{role.description}}</p>
+  {{@endfor}}
+</dcc-dhtml>
+~~~
+
+~~~html
+<dcc-rest id="harena-logger-list" bind="harena-logger-list"></dcc-rest>
+<dcc-dhtml connect="retrieve:harena-logger-list:service/request/get" autoupdate>
+  <h1>Logger</h1>
+  {{@foreach logs lg}}
+    <p><strong>Id:</strong> {{lg.id}}</p>
+    <p><strong>Description:</strong> {{lg.username}}</p>
   {{@endfor}}
 </dcc-dhtml>
 ~~~
