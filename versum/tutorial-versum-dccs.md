@@ -32,6 +32,18 @@ Value of temperature: <dcc-expression expression="temperature" active></dcc-expr
 ~~~
 
 ~~~markdown
+~ p:=10
+
+<p>Value of P: ^p^</p>
+
+[~|plus10][["p:=p+10"]]
+
+[*|add-button][["Add 10"]]
+
+[add-button] =click|update=> [plus10]
+~~~
+
+~~~markdown
 [~][["p:=10";autorun]]
 
 <p>Value of P: [^][["p";active]]</p>
@@ -75,6 +87,46 @@ Value of temperature: <dcc-expression expression="temperature" active></dcc-expr
 <dcc-button id="add-button" label="Add 10"></dcc-button>
 
 <connect-dcc from="add-button" trigger="click" to="plus10" topic="update"></connect-dcc>
+~~~
+
+~~~markdown
+~ p:=10
+~ half:=p/2
+~ double:=p*2
+
+<p>Value of P: ^p^</p>
+<p>Value of Half: ^half^</p>
+<p>Value of Double: ^double^</p>
+
+[~|plus10][[
+p:=p+10
+half:=p/2
+double:=p*2
+]]
+
+[*|add-button][["Add 10"]]
+
+[add-button] =click|update=> [plus10]
+~~~
+
+~~~markdown
+~ total:=0
+
+Digite a quantidade:
+[slider][[
+  * variable: quantidade
+  * index
+]]
+
+[*|vender][["Vender"]]
+
+[~|total][[
+  total:=10*quantidade
+]]
+
+Total: ^total^
+
+[vender] =click|update=> [total]
 ~~~
 
 ~~~html
@@ -212,5 +264,11 @@ gggggggggggggggggggg
 ..............v.....
 ........v...........
 ....................
+]]
+
+[dcc-cell-image][[
+  * type: w
+  * label: wave
+  * image: https://mc-unicamp.github.io/oficinas/simula/contagion/harena/scripts/playground/images/cell/waves.svg
 ]]
 ~~~
