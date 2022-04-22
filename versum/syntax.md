@@ -593,6 +593,52 @@ no HTML
 ### Object to HTML
 Each line feed is converted to `<br>`
 
+## Component
+
+Defines a component (Digital Content Component - DCC). Besides the DCC type and id, the sentence can specify attributes and/or content inside it. Id and attributes/content are optional, but it must have one of them.
+
+* Sentence:
+
+~~~
+[type | id][[
+  * attribute
+  * attribute
+  content
+]]
+~~~
+
+* Expression: `\[[ \t]*([^|\]]+)(?:(?:\|[ \t]*([^\]]+))?[ \t]*\]\[\[((?:[^\]]*(?:\][^\]]+)*)+)\]\]|\|[ \t]*([^\]]+)[ \t]*\](?:\[\[((?:[^\]]*(?:\][^\]]+)*)+)\]\])?)`
+  * Group #1: component type
+  * Group #2 or #4: component id
+  * Group #3 or #5: attributes / content
+![Component Expression](expressions/component.png)
+
+* Expression to recognize attributes and distinguish them from content: `^[ \t]*(?:[\+\*])[ \t]+([\w-]+)[ \t]*(?::[ \t]*([^\n\r\f]+))?$`
+  * Group #1: attribute name
+  * Group #2: attribute value
+![Attribute Expression](expressions/component-attribute.png)
+
+* Object:
+~~~
+{
+   type: "component"
+   dcc: <DCC type - inferred from the id>
+   id: <component id>
+   attributes: {
+     <attribute name>: <attribute value>
+     ...
+   }
+   content: <content not recognized as attribute>
+}
+~~~
+
+### Object to HTML
+~~~
+<[DCC type] [attribute name]="[attribute value]"...>
+  [content]
+</[DCC type]>
+~~~
+
 <!-- Jekyll directive to avoid Liquid filters
 {% endraw %}
 -->
