@@ -616,7 +616,7 @@ Defines a component (Digital Content Component - DCC). Besides the DCC type and 
 * Expression to recognize attributes and distinguish them from content: `^[ \t]*(?:[\+\*])[ \t]+([\w-]+)[ \t]*(?::[ \t]*([^\n\r\f]+))?$`
   * Group #1: attribute name
   * Group #2: attribute value
-![Attribute Expression](expressions/component-attribute.png)
+![Attributes Expression](expressions/component-attributes.png)
 
 * Object:
 ~~~
