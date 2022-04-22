@@ -31,6 +31,52 @@ Value of temperature: [^][[
 Value of temperature: <dcc-expression expression="temperature" active></dcc-expression>
 ~~~
 
+~~~markdown
+[~][["p:=10";autorun]]
+
+<p>Value of P: [^][["p";active]]</p>
+
+[~|plus10][["p:=p+10"]]
+
+[*|add-button][["Add 10"]]
+
+[add-button] =click|update=> [plus10]
+~~~
+
+~~~markdown
+[~][[
+  * autorun
+  p:=10
+]]
+
+<p>Value of P: [^][[
+  * active
+  p
+]]</p>
+
+[~|plus10][[
+  p:=p+10
+]]
+
+[*|add-button][[
+  Plus 10
+]]
+
+[add-button] =click|update=> [plus10]
+~~~
+
+~~~html
+<dcc-compute id="dcc1" autorun expression="p:=10"></dcc-compute>
+
+<p>Value of P: <dcc-expression id="dcc4" active expression="p"></dcc-expression></p>
+
+<dcc-compute id="plus10" expression="p:=p+10"></dcc-compute>
+
+<dcc-button id="add-button" label="Add 10"></dcc-button>
+
+<connect-dcc from="add-button" trigger="click" to="plus10" topic="update"></connect-dcc>
+~~~
+
 ~~~html
 # Presentation
 
@@ -142,52 +188,6 @@ Temperature:
 Temperature: {{Knot_1.temperature}}.
 <end-dcc></end-dcc>
 </dcc-dhtml>
-~~~
-
-~~~markdown
-[~][["p:=10";autorun]]
-
-<p>Value of P: [^][["p";active]]</p>
-
-[~|plus10][["p:=p+10"]]
-
-[*|add-button][["Add 10"]]
-
-[add-button] =click|update=> [plus10]
-~~~
-
-~~~markdown
-[~][[
-  * autorun
-  p:=10
-]]
-
-<p>Value of P: [^][[
-  * active
-  p
-]]</p>
-
-[~|plus10][[
-  p:=p+10
-]]
-
-[*|add-button][[
-  Plus 10
-]]
-
-[add-button] =click|update=> [plus10]
-~~~
-
-~~~html
-<dcc-compute id="dcc1" autorun expression="p:=10"></dcc-compute>
-
-<p>Value of P: <dcc-expression id="dcc4" active expression="p"></dcc-expression></p>
-
-<dcc-compute id="plus10" expression="p:=p+10"></dcc-compute>
-
-<dcc-button id="add-button" label="Add 10"></dcc-button>
-
-<connect-dcc from="add-button" trigger="click" to="plus10" topic="update"></connect-dcc>
 ~~~
 
 ~~~markdown
