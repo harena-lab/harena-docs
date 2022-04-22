@@ -634,9 +634,44 @@ Defines a component (Digital Content Component - DCC). Besides the DCC type and 
 
 ### Object to HTML
 ~~~
-<[DCC type] [attribute name]="[attribute value]"...>
+<[DCC type] id="[id]" [attribute name]="[attribute value]"...>
   [content]
 </[DCC type]>
+~~~
+
+## Connection
+
+A connection between two components (DCCs), specifying which is the triggering event and the topic sent to the target.
+
+* Sentence:
+
+~~~
+[id source] =trigger|topic=> [id target]
+~~~
+
+* Expression: `\[([^\]]+)\][ \t]*=([^|]+)\|([^=]+)=>[ \t]*\[([^\]]+)\]`
+  * Group #1: source component, which triggers the operation through the connection
+  * Group #2: triggering event in the source component
+  * Group #3: the topic of the message sent to the target
+  * Group #4: target component, which receives the message, executes the related operation, and sends the result to the source component (if there is a response)
+![Connection Expression](expressions/connection.png)
+
+* Object:
+~~~
+{
+   type: "connection"
+   from: <source component>
+   trigger: <triggering event>
+   topic: <the topic of the message sent to the target>
+   to: <target component>
+   content: <content not recognized as attribute>
+}
+~~~
+
+### Object to HTML
+~~~
+<connect-dcc from="[from]" trigger="[trigger]" to="[to]" topic="[topic]">
+</connect-dcc>
 ~~~
 
 <!-- Jekyll directive to avoid Liquid filters

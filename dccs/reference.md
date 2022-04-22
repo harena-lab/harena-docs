@@ -579,11 +579,11 @@ If the expression has variables, it requests their values sending messages `var/
 This component does not show the result - it is performed by the `<dcc-expression>` component.
 
 * `expression` - expression to compute - it can be an arithmetical expression or a logical expression; it is possible to write several statements in the same expression separated by semicolons;
-* `onload` - computes the expression and publishes the result on load;
+* `autorun` - computes the expression and publishes the result on load;
 * `active` - runs again the expression whenever a variable value changes.
 
 ~~~html
-<dcc-compute expression="a:=4+2;b:=a+3" onload></dcc-compute>
+<dcc-compute expression="a:=4+2;b:=a+3" autorun></dcc-compute>
 ~~~
 
 ## Expression DCC `<dcc-expression>`
@@ -594,12 +594,12 @@ Shows the value of a variable or the result of an expression.
 * `active` - updates the displayed result whenever a variable value changes.
 
 ~~~html
-<dcc-compute expression="a:=2+4" onload></dcc-compute>
+<dcc-compute expression="a:=2+4" autorun></dcc-compute>
 <dcc-expression expression="a" active></dcc-expression>
 ~~~
 
 ~~~html
-<dcc-compute expression="p:=10" onload></dcc-compute>
+<dcc-compute expression="p:=10" autorun></dcc-compute>
 <p>Value of P: <dcc-expression expression="p" active></dcc-expression></p>
 
 <dcc-button label="Plus 10" topic="compute/add"></dcc-button>
@@ -610,7 +610,7 @@ Shows the value of a variable or the result of an expression.
 ~~~
 
 ~~~html
-<dcc-compute expression="p:=10" onload></dcc-compute>
+<dcc-compute expression="p:=10" autorun></dcc-compute>
 <p>Value of P: <dcc-expression expression="p" active></dcc-expression></p>
 
 <dcc-compute id="plus10" expression="p:=p+10"></dcc-compute>
@@ -620,7 +620,7 @@ Shows the value of a variable or the result of an expression.
 ~~~
 
 ~~~html
-<dcc-compute expression="p:=10" onload></dcc-compute>
+<dcc-compute expression="p:=10" autorun></dcc-compute>
 <p>Value of P: <dcc-expression expression="p" active></dcc-expression></p>
 
 <dcc-compute id="plus10" expression="p:=p+10"></dcc-compute>
@@ -628,12 +628,12 @@ Shows the value of a variable or the result of an expression.
 <dcc-button id="add-button" label="Plus 10" topic="compute/add" connect="click:plus10:compute/update">
 </dcc-button>
 
-<dcc-compute expression="p>=30" onload active connect="true:add-button:style/display/none">
+<dcc-compute expression="p>=30" autorun active connect="true:add-button:style/display/none">
 </dcc-compute>
 ~~~
 
 ~~~html
-<dcc-compute expression="p:=10" onload></dcc-compute>
+<dcc-compute expression="p:=10" autorun></dcc-compute>
 <p>Value of P: <dcc-expression expression="p" active></dcc-expression></p>
 
 <dcc-compute id="plus10" expression="p:=p+10"></dcc-compute>
@@ -644,15 +644,15 @@ Shows the value of a variable or the result of an expression.
 <dcc-button id="subtract-button" label="Subtract 10" topic="compute/subtract" connect="click:subtract10:compute/update">
 </dcc-button>
 
-<dcc-compute expression="p>=30" onload active connect="true:add-button:style/display/none">
+<dcc-compute expression="p>=30" autorun active connect="true:add-button:style/display/none">
 </dcc-compute>
 
-<dcc-compute expression="p>=30" onload active connect="false:add-button:style/display/initial">
+<dcc-compute expression="p>=30" autorun active connect="false:add-button:style/display/initial">
 </dcc-compute>
 ~~~
 
 ~~~html
-<dcc-compute expression="p:=10" onload></dcc-compute>
+<dcc-compute expression="p:=10" autorun></dcc-compute>
 <p>Value of P: <dcc-expression expression="p" active></dcc-expression></p>
 
 <dcc-compute id="plus10" expression="p:=p+10"></dcc-compute>
@@ -662,7 +662,7 @@ Shows the value of a variable or the result of an expression.
 ~~~
 
 ~~~html
-<dcc-compute expression="p:=10" onload></dcc-compute>
+<dcc-compute expression="p:=10" autorun></dcc-compute>
 <p>Value of P: <dcc-expression expression="p" active></dcc-expression></p>
 
 <dcc-compute id="plus10" expression="p:=p+10"></dcc-compute>
