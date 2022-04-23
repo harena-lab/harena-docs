@@ -276,6 +276,8 @@ wwwwwwwwwwwwwwwwwwww
 ........u...........
 ....................
 ]]
+=type/#=> [cellular-space]
+=state/next|next=> [cellular-space]
 
 [cell-image][[
   * type: .
@@ -330,12 +332,14 @@ wwwwwwwwwwwwwwwwwwww
   sold:=sold+1
 ]]
 =icecream/sold|update=> [sold-increment]
+
 [~][[
   * condition: sold>=quantity
   * dependency: sold-reset
   * active
   stop:=1
 ]]
+
 Quantidade Vendida: ^sold^
 
 [timer|clock][[
@@ -346,10 +350,4 @@ Quantidade Vendida: ^sold^
 =timer/start|start=> [clock]
 =timer/stop|stop=> [clock]
 =var/set/stop|stop=> [clock]
-
-=type/#=> [cellular-space]
-=state/next|next=> [cellular-space]
-=state/save|save=> [cellular-space]
-=state/reset|reset=> [cellular-space]
-=input/changed/space_scale|scale=> [cellular-space]
 ~~~
