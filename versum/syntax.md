@@ -601,10 +601,15 @@ Defines a component (Digital Content Component - DCC). Besides the DCC type and 
 
 ~~~
 [type | id][[
-  * attribute
-  * attribute
+  * attribute: value
+  * attribute: value
+  ...
   content
 ]]
+~~~
+or
+~~~
+[type | id][["content";attribute:value;attribute:value;...]]
 ~~~
 
 * Expression: `\[[ \t]*([^|\]]+)(?:(?:\|[ \t]*([^\]]+))?[ \t]*\]\[\[((?:[^\]]*(?:\][^\]]+)*)+)\]\]|\|[ \t]*([^\]]+)[ \t]*\](?:\[\[((?:[^\]]*(?:\][^\]]+)*)+)\]\])?)`
@@ -613,10 +618,17 @@ Defines a component (Digital Content Component - DCC). Besides the DCC type and 
   * Group #3 or #5: attributes / content
 ![Component Expression](expressions/component.png)
 
-* Expression to recognize attributes and distinguish them from content: `^[ \t]*(?:[\+\*])[ \t]+([\w-]+)[ \t]*(?::[ \t]*([^\n\r\f]+))?$`
+Expression to recognize attributes and distinguish them from content.
+
+Vertical: `^[ \t]*[\+\*][ \t]+([\w-]+)[ \t]*(?::[ \t]*([^\n\r\f]+))?$`
   * Group #1: attribute name
   * Group #2: attribute value
-![Attributes Expression](expressions/component-attributes.png)
+![Attributes Vertical](expressions/component-attributes-vertical.png)
+
+Horizontal: `(?:^|;)[ \t]*([\w-]+)[ \t]*(?::[ \t]*(?:"([^"]*)"|([^"][^;]*)))?`
+  * Group #1: attribute name
+  * Group #2 or #3: attribute value
+![Attributes Horizontal](expressions/component-attributes-horizontal.png)
 
 * Object:
 ~~~
@@ -648,8 +660,12 @@ A connection between two components (DCCs), specifying which is the triggering e
 ~~~
 [id source] =trigger|topic=> [id target]
 ~~~
+or
+~~~
+=trigger|topic=> [id target]
+~~~
 
-* Expression: `\[([^\]]+)\][ \t]*=([^|]+)\|([^=]+)=>[ \t]*\[([^\]]+)\]`
+* Expression: `(?:\[([^\]]+)\])?[ \t]*=([^|=]+)(?:\|([^=]+))?=>[ \t]*\[([^\]]+)\]`
   * Group #1: source component, which triggers the operation through the connection
   * Group #2: triggering event in the source component
   * Group #3: the topic of the message sent to the target
@@ -662,16 +678,23 @@ A connection between two components (DCCs), specifying which is the triggering e
    type: "connection"
    from: <source component>
    trigger: <triggering event>
-   topic: <the topic of the message sent to the target>
+   map: <the topic of the message sent to the target>
    to: <target component>
-   content: <content not recognized as attribute>
 }
 ~~~
 
 ### Object to HTML
+
+* version with the source component (connection)
 ~~~
 <connect-dcc from="[from]" trigger="[trigger]" to="[to]" topic="[topic]">
 </connect-dcc>
+~~~
+
+* version without the source component (subscribe)
+~~~
+<subscribe-dcc target="[to]" topic="[trigger]" map="[topic]">
+</subscribe-dcc>
 ~~~
 
 <!-- Jekyll directive to avoid Liquid filters
