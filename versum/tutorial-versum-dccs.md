@@ -112,7 +112,7 @@ double:=p*2
 ~~~markdown
 ~ total:=0
 
-Digite a quantidade:
+Escolha a quantidade:
 [slider][[
   * variable: quantidade
   * index
@@ -243,6 +243,17 @@ Temperature: {{Knot_1.temperature}}.
 ~~~
 
 ~~~markdown
+Escolha a quantidade:
+[slider][[
+  * variable: quantity
+  * index
+]]
+
+[*|vender][[
+  * topic: timer/start
+  Vender
+]]
+
 [space-cellular-editor | cellular-space][[
   * rows: 14
   * cols: 20
@@ -252,23 +263,93 @@ Temperature: {{Knot_1.temperature}}.
   * grid
 wwwwwwwwwwwwwwwwwwww
 wwwwwwwwwwwwwwwwwwww
-gggggggggggggggggggg
-.v.......v..........
+22222222222222222222
+.u.......u..........
 ....................
-...v...v............
-...v................
-...............v....
-........h......v....
+...u...u............
+...u................
+...............u....
+........i......u....
 ....................
-...v.........v......
-..............v.....
-........v...........
+...u.........u......
+..............u.....
+........u...........
 ....................
 ]]
 
-[dcc-cell-image][[
+[cell-image][[
+  * type: .
+  * label: sand
+  * image: https://mc-unicamp.github.io/oficinas/simula/business/image/cell-yellow-green-black.png
+]]
+[cell-image][[
+  * type: i
+  * label: icecream
+  * image: https://mc-unicamp.github.io/oficinas/simula/business/image/icecream-cart-green.png
+]]
+[cell-image][[
+  * type: u
+  * label: umbrella
+  * image: https://mc-unicamp.github.io/oficinas/simula/business/image/beach-umbrella.png
+]]
+[cell-image][[
+  * type: 2
+  * label: waves2
+  * image: https://mc-unicamp.github.io/oficinas/simula/business/image/waves_espuma2.png
+]]
+[cell-image][[
   * type: w
-  * label: wave
+  * label: waves
   * image: https://mc-unicamp.github.io/oficinas/simula/contagion/harena/scripts/playground/images/cell/waves.svg
 ]]
+
+
+[rule-dcc-cell-pair][[
+  * label: icecream moves
+  * probability: 100
+  * transition: i.>.i
+  ***
+  *_*
+  ***
+]]
+[rule-dcc-cell-pair][[
+  * label: icecream sold
+  * probability: 80
+  * transition: ui>ui
+  * topic: icecream/sold
+  _*_
+  *_*
+  _*_
+]]
+
+[~|sold-reset][[
+  * autorun
+  sold:=0
+]]
+[~|sold-increment][[
+  sold:=sold+1
+]]
+=icecream/sold|update=> [sold-increment]
+[~][[
+  * condition: sold>=quantity
+  * dependency: sold-reset
+  * active
+  stop:=1
+]]
+Quantidade Vendida: ^sold^
+
+[timer|clock][[
+  * cycles: 100000
+  * interval: 125
+  * topic: state/next
+]]
+=timer/start|start=> [clock]
+=timer/stop|stop=> [clock]
+=var/set/stop|stop=> [clock]
+
+=type/#=> [cellular-space]
+=state/next|next=> [cellular-space]
+=state/save|save=> [cellular-space]
+=state/reset|reset=> [cellular-space]
+=input/changed/space_scale|scale=> [cellular-space]
 ~~~
