@@ -686,12 +686,14 @@ or
 ### Object to HTML
 
 * version with the source component (connection)
+
 ~~~
 <connect-dcc from="[from]" trigger="[trigger]" to="[to]" topic="[topic]">
 </connect-dcc>
 ~~~
 
 * version without the source component (subscribe)
+
 ~~~
 <subscribe-dcc target="[to]" topic="[trigger]" map="[topic]">
 </subscribe-dcc>
