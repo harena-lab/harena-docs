@@ -612,6 +612,8 @@ or
 [type | id][["content";attribute:value;attribute:value;...]]
 ~~~
 
+If the format is horizontal, the content must be between quotation marks.
+
 * Expression: `\[[ \t]*([^|\]]+)(?:(?:\|[ \t]*([^\]]+))?[ \t]*\]\[\[((?:[^\]]*(?:\][^\]]+)*)+)\]\]|\|[ \t]*([^\]]+)[ \t]*\](?:\[\[((?:[^\]]*(?:\][^\]]+)*)+)\]\])?)`
   * Group #1: component type
   * Group #2 or #4: component id
