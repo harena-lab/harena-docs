@@ -145,7 +145,18 @@ Embeds a data model.
 </dcc-dhtml>
 ~~~
 
-~~~
-<dcc-table-csv></dcc-table-csv>
+~~~html
+<dcc-table-csv view></dcc-table-csv>
 <dcc-decision-tree  subscribe="table/updated:ml/train"></dcc-decision-tree>
+~~~
+
+~~~html
+<dcc-chart subscribe="table/updated:update"></dcc-chart>
+<dcc-table-csv schema view></dcc-table-csv>
+~~~
+
+~~~html
+<dcc-table-csv schema="comp_price" content="15;17;21" subscribe="var/set/rodada:table/retrieve/comp_price">
+</dcc-table-csv>
+<dcc-compute active expression="rodada:=3"></dcc-compute>
 ~~~

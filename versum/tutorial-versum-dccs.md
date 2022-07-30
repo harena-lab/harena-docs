@@ -5,14 +5,25 @@ title: Versum-DCCs Tutorial
 
 # Combining Versus with Digital Content Components
 
+## From Versum to DCCs
+
+Versum sentence:
+
 ~~~markdown
 ~ temperature:=25+5
 Value of temperature: ^temperature^
 ~~~
 
+The equivalent using Versum DCCs maintaining aspects of the original syntax:
+
 ~~~markdown
 [~][["temperature:=25+5";autorun]]
 Value of temperature: [^][["temperature";active]]
+~~~
+
+~~~markdown
+[compute][[expression:"temperature:=25+5";autorun]]
+Value of temperature: [expression][[expression:"temperature";active]]
 ~~~
 
 ~~~markdown
@@ -350,4 +361,10 @@ Quantidade Vendida: ^sold^
 =timer/start|start=> [clock]
 =timer/stop|stop=> [clock]
 =var/set/stop|stop=> [clock]
+~~~
+
+~~~markdown
+[chart|chart1][[]]
+[table-csv][[schema;view]]
+=table/updated|update=>[chart1]
 ~~~
