@@ -95,7 +95,7 @@ The `dcc-button` publishes a topic `action/speech` and message `Talk` when the b
 The same procedure with the `<dcc-slider>`:
 
 <dcc-play>
-  <dcc-lively-talk speech="My age is " subscribe="var/age/changed:action/speech">
+  <dcc-lively-talk speech="My age is " subscribe="input/changed/age:action/speech">
   </dcc-lively-talk>
   <dcc-slider variable="age" index></dcc-slider>
 </dcc-play>
