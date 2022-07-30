@@ -364,7 +364,23 @@ Quantidade Vendida: ^sold^
 ~~~
 
 ~~~markdown
-[chart|chart1][[]]
-[table-csv][[schema;view]]
-=table/updated|update=>[chart1]
+[table-csv][[schema]]
+[table|tbl1][[]]
+=table/updated|update=>[tbl1]
+~~~
+
+~~~markdown
+[table-csv][[schema]]
+[chart|cht1][[]]
+=table/updated|update=>[cht1]
+~~~
+
+~~~markdown
+[table-csv][[schema]]
+[projection|prj1][[
+  * fields: height,weight
+]]
+=table/updated|update=>[prj1]
+[chart|cht1][[]]
+=table/projected|update=>[cht1]
 ~~~

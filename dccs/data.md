@@ -147,12 +147,24 @@ Embeds a data model.
 
 ~~~html
 <dcc-table-csv view></dcc-table-csv>
-<dcc-decision-tree  subscribe="table/updated:ml/train"></dcc-decision-tree>
+<dcc-decision-tree subscribe="table/updated:ml/train"></dcc-decision-tree>
 ~~~
 
 ~~~html
+<dcc-table-csv schema></dcc-table-csv>
+<dcc-table subscribe="table/updated:update"></dcc-table>
+~~~
+
+~~~html
+<dcc-table-csv schema></dcc-table-csv>
 <dcc-chart subscribe="table/updated:update"></dcc-chart>
-<dcc-table-csv schema view></dcc-table-csv>
+~~~
+
+~~~html
+<dcc-table-csv schema></dcc-table-csv>
+<dcc-projection fields="height,weight" subscribe="table/updated:update"></dcc-projection>
+<dcc-chart subscribe="table/projected:update"></dcc-chart>
+<dcc-table subscribe="table/projected:update"></dcc-table>
 ~~~
 
 ~~~html
