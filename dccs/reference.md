@@ -426,32 +426,88 @@ Aggregates items of messages, as RSS messages.
 
 ## CSV Table (`<dcc-table-csv>`)
 
-Loads a CSV table and dispatches it as a message.
+Loads a CSV table and dispatches it as a message with the '`table/updated`' topic.
+
+There are two methods to read the CSV: inside the element or a file dropdown. The default is the dropdown.
 
 ### Syntax
 
 ~~~html
-<dcc-button id="id"
-            label="label"
-            image="image"
-            topic="topic"
-            message="message"
-            divert="divert"
-            variable="variable"
-            inline>
-</dcc-button>
+<dcc-table-csv id="id"
+               schema>
+</dcc-table-csv>
 ~~~
 
-* `id` - unique id of the trigger;
-* `label`:
-  * textual button - textual label showed in the button;
-  * image trigger - the title of the image;
-* `image` (optional) - when the trigger is an image, it is the path of the image file;
-* `topic` (optional) - the topic of the message sent by the trigger; when the topic is not specified, the topic is built from the label ("button/<label>/clicked");
-* `message` (optional) - a value included in the message body that accompanies the topic;
-* `divert` (optional) - how the trigger diverts the course of action: forward, round, or enclosed;
-* `variable` (optional) - a variable that receives the label or value of the trigger; if the variable name is followed by colon, it can indicate which field will be attributed to the variable, e.g., `variable="diagnostics:label`;
-* `inline` (optional) - when true, the button will be inline, i.e., it will follow in the text flow.
+* `id` - (optional) unique id;
+* `schema` (optional) indicates that the table has a schema in the first line.
+
+### Example
+
+~~~html
+<dcc-table-csv schema></dcc-table-csv>
+~~~
+
+## Table (`<dcc-table>`)
+
+Displays a table received as a message. The message contains the '`table/update`' or '`update`' topic.
+
+### Syntax
+
+~~~html
+<dcc-table id="id">
+</dcc-table>
+~~~
+
+* `id` - (optional) unique id.
+
+### Example
+
+~~~html
+<dcc-table-csv schema></dcc-table-csv>
+<dcc-table subscribe="table/updated:update"></dcc-table>
+~~~
+
+## Chart (`<dcc-chart>`)
+
+Displays a chart received as a message. The message contains the '`table/update`' or '`update`' topic.
+
+### Syntax
+
+~~~html
+<dcc-chart id="id">
+</dcc-chart>
+~~~
+
+* `id` - (optional) unique id.
+
+### Example
+
+~~~html
+<dcc-table-csv schema></dcc-table-csv>
+<dcc-chart subscribe="table/updated:update"></dcc-chart>
+~~~
+
+## Projection (`<dcc-projection>`)
+
+Produces a projection of a table received by message and publishes a message with the projected table.  The received message contains the '`table/update`' or '`update`' topic. The produced message contains the '`table/projected`' topic.
+
+### Syntax
+
+~~~html
+<dcc-table id="id">
+</dcc-table>
+~~~
+
+* `id` - (optional) unique id.
+
+### Example
+
+~~~html
+<dcc-table-csv schema></dcc-table-csv>
+<dcc-projection fields="height,weight" subscribe="table/updated:update"></dcc-projection>
+<dcc-chart subscribe="table/projected:update"></dcc-chart>
+<dcc-table subscribe="table/projected:update"></dcc-table>
+~~~
 
 <hr>
 <h1>Under Construction</h1>
