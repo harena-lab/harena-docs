@@ -424,6 +424,35 @@ Aggregates items of messages, as RSS messages.
   </dcc-button>
 </dcc-play>
 
+## CSV Table (`<dcc-table-csv>`)
+
+Loads a CSV table and dispatches it as a message.
+
+### Syntax
+
+~~~html
+<dcc-button id="id"
+            label="label"
+            image="image"
+            topic="topic"
+            message="message"
+            divert="divert"
+            variable="variable"
+            inline>
+</dcc-button>
+~~~
+
+* `id` - unique id of the trigger;
+* `label`:
+  * textual button - textual label showed in the button;
+  * image trigger - the title of the image;
+* `image` (optional) - when the trigger is an image, it is the path of the image file;
+* `topic` (optional) - the topic of the message sent by the trigger; when the topic is not specified, the topic is built from the label ("button/<label>/clicked");
+* `message` (optional) - a value included in the message body that accompanies the topic;
+* `divert` (optional) - how the trigger diverts the course of action: forward, round, or enclosed;
+* `variable` (optional) - a variable that receives the label or value of the trigger; if the variable name is followed by colon, it can indicate which field will be attributed to the variable, e.g., `variable="diagnostics:label`;
+* `inline` (optional) - when true, the button will be inline, i.e., it will follow in the text flow.
+
 <hr>
 <h1>Under Construction</h1>
 <hr>

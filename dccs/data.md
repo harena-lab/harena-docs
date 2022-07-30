@@ -5,6 +5,18 @@ title: "Data DCCs"
 
 # Data-related Digital Content Components
 
+Loads a CSV table and dispatches it as a message.
+
+~~~html
+<dcc-table-csv schema></dcc-table-csv>
+~~~
+
+~~~html
+<dcc-table-csv schema></dcc-table-csv>
+<dcc-table subscribe="table/updated:update"></dcc-table>
+~~~
+
+
 The schemas specification follows the [JSON schema](https://json-schema.org/) format.
 
 Types supported by the schema:
