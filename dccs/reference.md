@@ -458,6 +458,8 @@ Displays a table received as a message. The message contains the '`table/update`
 </dcc-table>
 ~~~
 
+Download the files [Zombies Height and Weight](tutorial/zombies-height-weight.csv) and [Zombies Survey](tutorial/zombies-survey.csv) to test.
+
 * `id` - (optional) unique id.
 
 ### Example
