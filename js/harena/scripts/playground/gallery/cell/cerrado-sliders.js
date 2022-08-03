@@ -61,7 +61,7 @@
    ***
 </rule-dcc-cell-pair>
 
-<dcc-timer cycles="100000" interval="1000" publish="state/next">
+<dcc-timer cycles="100000" interval="1000" topic="state/next">
    <subscribe-dcc topic="timer/start" map="start"></subscribe-dcc>
    <subscribe-dcc topic="timer/stop" map="stop"></subscribe-dcc>
 </dcc-timer>
@@ -114,7 +114,7 @@ Selecione abaixo a chance de cada um dos eventos:
    <img src="images/cell/lobeira.svg" style="flex:10%; max-width:48px; max-height:48px">
    <img src="images/cell/lobeira.svg" style="flex:10%; max-width:48px; max-height:48px">
    <div style="flex:50%; max-height:48px; margin-right:10px">
-      <dcc-slider variable="alga_replicates" value="0" index></dcc-slider>
+      <dcc-slider variable="lobeira_replicates" value="0" index></dcc-slider>
    </div>
 </div>
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
@@ -123,7 +123,7 @@ Selecione abaixo a chance de cada um dos eventos:
            src="images/cell/lobeira-dies.svg">
    </div>
    <div style="flex:50%; max-height:48px; margin-right:10px">
-      <dcc-slider variable="alga_dies" value="0" index></dcc-slider>
+      <dcc-slider variable="lobeira_dies" value="0" index></dcc-slider>
    </div>
 </div>
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
@@ -159,9 +159,9 @@ Selecione abaixo a chance de cada um dos eventos:
    </div>
 </div>
 
-<subscribe-dcc target="alga-replicates" topic="input/changed/alga_replicates" map="probability">
+<subscribe-dcc target="alga-replicates" topic="input/changed/lobeira_replicates" map="probability">
 </subscribe-dcc>
-<subscribe-dcc target="alga-dies" topic="input/changed/alga_dies" map="probability"></subscribe-dcc>
+<subscribe-dcc target="alga-dies" topic="input/changed/lobeira_dies" map="probability"></subscribe-dcc>
 <subscribe-dcc target="nematode-replicates" topic="input/changed/herbivor_replicates" map="probability">
 </subscribe-dcc>
 <subscribe-dcc target="nematode-dies" topic="input/changed/herbivor_dies" map="probability">

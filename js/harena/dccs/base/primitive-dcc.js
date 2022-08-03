@@ -15,9 +15,13 @@ class PrimitiveDCC extends HTMLElement {
   }
 
   _findAggregator(agClass) {
-    let parent = this.parentNode
+    let parent = (this.parentNode != null)
+      ? this.parentNode
+      : ((this instanceof DocumentFragment) ? this.host : null)
     while (parent != null && !(parent instanceof agClass))
-      parent = parent.parentNode
+      parent = (parent.parentNode != null)
+        ? parent.parentNode
+        : ((parent instanceof DocumentFragment) ? parent.host : null)
     return parent
   }
 
@@ -51,6 +55,10 @@ class PrimitiveDCC extends HTMLElement {
 
   _provides (id, topic, service) {
     this._bus.provides(id, topic, service)
+  }
+
+  _withhold (id, topic) {
+    this._bus.withhold(id, topic)
   }
 
   _connect (id, topic, callback) {

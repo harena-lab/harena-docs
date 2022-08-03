@@ -38,7 +38,6 @@ class DCCLivelyTalk extends DCCVisual {
             this.character : 'images/character.png'
     this._speech = (this.speech != null) ? this.speech : ''
     this._buildVisual()
-    super.connectedCallback()
   }
 
   _buildVisual () {
@@ -165,7 +164,7 @@ class DCCLivelyTalk extends DCCVisual {
       topic = 'action/' + topic
     switch (topic.toLowerCase()) {
       case 'action/speech':
-        this._updateSpeech((message.value) ? message.value : (message.body) ? message.body : message)
+        this._updateSpeech((message.value != null) ? message.value : (message.body != null) ? message.body : message)
         break
       case 'action/clear':
         this._updateSpeech('')

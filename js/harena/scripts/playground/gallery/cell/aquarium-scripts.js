@@ -36,7 +36,7 @@
 <dcc-cell-image type="y" label="turtle1r" image="images/cell/turtle-01-right.png"></dcc-cell-image>
 <dcc-cell-image type="z" label="turtle1l" image="images/cell/turtle-01-left.png"></dcc-cell-image>
 
-<dcc-timer cycles="100000" interval="1000" publish="state/next">
+<dcc-timer cycles="100000" interval="1000" topic="state/next">
    <subscribe-dcc topic="timer/start" map="start"></subscribe-dcc>
    <subscribe-dcc topic="timer/stop" map="stop"></subscribe-dcc>
 </dcc-timer>

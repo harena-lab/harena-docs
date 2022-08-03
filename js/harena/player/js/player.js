@@ -20,10 +20,13 @@ class PlayerManager {
 
     // <TODO> temporary
     this.produceReport = this.produceReport.bind(this)
-    MessageBus.i.subscribe('/report/get', this.produceReport)
+    MessageBus.i.subscribe('report/get', this.produceReport)
 
     this.caseCompleted = this.caseCompleted.bind(this)
     MessageBus.i.subscribe('case/completed/+', this.caseCompleted)
+
+    this.sessionRound = this.sessionRound.bind(this)
+    MessageBus.i.subscribe('session/round', this.sessionRound)
 
     // tracking
     this.trackTyping = this.trackTyping.bind(this)
@@ -145,7 +148,7 @@ class PlayerManager {
             }
             this._state.historyRecord(target)
             // this._updateFlowKnot(target)
-            if (message.value) {
+            if (message && message.value) {
               this._state.parameter = message.value
               this.knotLoad(target, message.value)
             } else {
@@ -166,6 +169,10 @@ class PlayerManager {
   }
 
   _nextFlowKnot () {
+    if (this._branchRoot != null) {
+      this._currentKnot = this._branchRoot
+      this._branchRoot = null
+    }
     let next = null
     if (this._state.flow) {
       if (!this._currentKnot)
@@ -202,11 +209,27 @@ class PlayerManager {
   }
   */
 
+  async tryHalt () {
+    try {
+      const pPlay = this._state.pendingPlayCheck()
+      if (!this._previewCase && pPlay != null && pPlay.running)
+        this._tracker.caseTryHalt(pPlay.userid, pPlay.caseid, pPlay.running.runningId)
+    } catch (e) {
+      console.log('=== error on halt')
+      console.log(e)
+    }
+    return ''
+  }
+
   async startPlayer (caseid) {
+    this.tryHalt = this.tryHalt.bind(this)
+    window.onbeforeunload = this.tryHalt
+    /*
     window.onbeforeunload = function() {
       return "";
     }
-    const preCaseOff = true
+    */
+    const resumeActive = true  // activates and deactivates case resume
     this._mainPanel = document.querySelector('#player-panel')
 
     const parameters = window.location.search.substr(1)
@@ -227,14 +250,18 @@ class PlayerManager {
     } else { precase = null }
 
     let resume = false
-    if (!this._previewCase && this._state.pendingPlayCheck() && !preCaseOff) {
+    const pPlay = this._state.pendingPlayCheck()
+    if (!this._previewCase && pPlay != null && pPlay.running && resumeActive) {
+      this._tracker.caseHalt(pPlay.userid, pPlay.caseid, pPlay.running.runningId)
+
       // <TODO> adjust for name: (precase == null || this._state.pendingPlayId() == precase)) {
       const decision = await DCCNoticeInput.displayNotice(
         'You have an unfinished case. Do you want to continue?',
         'message', 'Yes', 'No')
       if (decision == 'Yes') {
         resume = true
-        this._state.pendingPlayRestore()
+        const currKnot = this._state.pendingPlayRestore()
+        this._tracker.pendingTrackRestore()
         DCCCommonServer.instance.token = this._state.token
 
         // <TODO> provisory deactivation
@@ -252,9 +279,9 @@ class PlayerManager {
         this._state.currentCase = this._state.currentCase
         await this._caseLoad(this._state.currentCase)
 
-        this._caseFlow()
-        MessageBus.i.publish('knot/navigate/<<', null, true)
-      } else { this._state.sessionCompleted() }
+        // this._caseFlow()
+        MessageBus.i.publish('knot/navigate/' + currKnot, null, true)
+      } // else { this._state.sessionCompleted() }
     }
 
     if (!resume) {
@@ -364,10 +391,17 @@ class PlayerManager {
       }
       if (flow != null && flow.length > 0)
         this._state.flow = flow
+      console.log('=== flow')
+      console.log(flow)
     }
   }
 
   async knotLoad (knotName, parameter) {
+    // MessageBus.i.showListeners()
+
+    if (this._knots[knotName].categories &&
+        this._knots[knotName].categories.includes('branch'))
+      this._branchRoot = this._currentKnot
     this._currentKnot = knotName
 
     // <TODO> Local Environment - Future
@@ -384,8 +418,9 @@ class PlayerManager {
       if (this._compiledCase.role && this._compiledCase.role == 'metacase' &&
              this._knots[knotName].categories &&
              this._knots[knotName].categories.includes('script')) { MetaPlayer.player.play(this._knots[knotName], this._state) } else {
-        const knot = await Translator.instance.generateHTML(
+        let knot = await Translator.instance.generateHTML(
           this._knots[knotName])
+        knot = '<scope-dcc id="player" externalize>' + knot + '</scope-dcc>'
         let note = false
         if (this._knots[knotName].categories && Translator.instance.themeSettings &&
             Translator.instance.themeSettings.note) {
@@ -413,6 +448,13 @@ class PlayerManager {
   async sessionClose (topic, message) {
     this._state.sessionCompleted()
     window.open('../home/category/cases/?id=podcast&clearance=1', '_self')
+  }
+
+  async sessionRound (topic, message) {
+    MessageBus.i.publish('session/round/' + this._state.runningCase.runningId,
+                         {userId: this._state.userid,
+                          caseId: Basic.service.currentCaseId,
+                          knotid: this._currentKnot}, true)
   }
 
   presentKnot (knot) {
@@ -527,6 +569,7 @@ class PlayerManager {
     * Start the tracking record of a case
     */
   startCase () {
+    this._branchRoot = null
     if (!PlayerManager.isCapsule) {
       // <TODO> this._runningCase is provisory
       const runningCase =
@@ -590,7 +633,7 @@ class PlayerManager {
       output.users[users.ids[u]] = profile
     }
 
-    MessageBus.i.publish('/report', {
+    MessageBus.i.publish('report', {
       caseobj: server.getPlayerObj(),
       result: output
     })

@@ -61,7 +61,7 @@
    ***
 </rule-dcc-cell-pair>
 
-<dcc-timer cycles="100000" interval="1000" publish="state/next">
+<dcc-timer cycles="100000" interval="1000" topic="state/next">
    <subscribe-dcc topic="timer/start" map="start"></subscribe-dcc>
    <subscribe-dcc topic="timer/stop" map="stop"></subscribe-dcc>
 </dcc-timer>

@@ -23,7 +23,8 @@ class PlayState {
       history: [],
       parameter: null,
       nextKnot: 1,
-      completed: false
+      completed: false,
+      flow: null
     }
 
     this._metastate = {}
@@ -35,6 +36,19 @@ class PlayState {
     MessageBus.i.subscribe('var/get/#', this.variableGet)
     this.variableSet = this.variableSet.bind(this)
     MessageBus.i.subscribe('var/set/#', this.variableSet)
+  }
+
+  /*
+   * Properties
+   */
+
+  // <TODO> Provisory - bring all flow dynamics to here
+  get flow() {
+    return this._state.flow
+  }
+
+  set flow(newFlow) {
+    this._state.flow = newFlow
   }
 
   /*
@@ -53,7 +67,7 @@ class PlayState {
 
   sessionRecord (topic) {
     this._state.userid = MessageBus.extractLevel(topic, 3)
-    this._stateStore()
+    // this._stateStore()
   }
 
   sessionCompleted () {
@@ -63,7 +77,7 @@ class PlayState {
 
   pendingPlayCheck () {
     const state = this._stateRetrieve()
-    return (state != null)
+    return (state != null && !state.completed) ? state : null
   }
 
   pendingPlayId () {
@@ -74,7 +88,8 @@ class PlayState {
   pendingPlayRestore () {
     let currentKnot = null
     this._state = this._stateRetrieve()
-    if (this._state.history.length > 0) { currentKnot = this._state.history[this._state.history.length - 1] }
+    if (this._state.history.length > 0) {
+      currentKnot = this._state.history[this._state.history.length - 1] }
     return currentKnot
   }
 
@@ -121,8 +136,8 @@ class PlayState {
     * Scenario Variables
     */
 
-  _extractEntityId (topic) {
-    return MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
+  _extractEntityId (topic, level) {
+    return MessageBus.extractLevelsSegment(topic, level).replace(/\//g, '.')
   }
 
   variableGet (topic, message, track) {
@@ -155,6 +170,15 @@ class PlayState {
           MessageBus.i.publishHasResponse (topic, message, result, track)
           break
         default:
+          // handles an array index
+          let aidx = -1
+          const brk = id.indexOf('[')
+          if (brk > -1) {
+            // starts from 1 not 0
+            aidx = parseInt(id.substring(brk+1, id.length-1)) - 1
+            id = id.substring(0, brk)
+          }
+
           // tries to give a scope to the variable
           if (this._state.variables[id] == null) {
             const currentKnot = this.historyCurrent()
@@ -162,8 +186,12 @@ class PlayState {
                 this._state.variables[currentKnot + '.' + id] != null)
               id = currentKnot + '.' + id
           }
+
           MessageBus.i.publishHasResponse (
-            topic, message, this._state.variables[id], track)
+            topic, message,
+            (aidx == -1 || this._state.variables[id] == null)
+              ? this._state.variables[id] : this._state.variables[id][aidx],
+            track)
       }
     }
   }

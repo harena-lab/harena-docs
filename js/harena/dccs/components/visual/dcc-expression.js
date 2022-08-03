@@ -6,6 +6,7 @@ class DCCExpression extends DCCVisual {
   }
 
   async connectedCallback () {
+    super.connectedCallback()
     // <TODO> provisory solution due to message ordering
     // this._updated = false
 
@@ -60,8 +61,6 @@ class DCCExpression extends DCCVisual {
 
     this._setPresentation(this)
     this._presentationIsReady()
-
-    super.connectedCallback()
   }
 
   async _showResult () {
@@ -143,8 +142,8 @@ class DCCExpression extends DCCVisual {
     if (id.startsWith(this._variable)) {
       const subid = id.substring(this._variable.length + 1)
 
-      if (message.state == '+') { this._stateValues[subid] = message.value } else
-      if (this._stateValues[subid] != null) { delete this._stateValues[subid] }
+      if (message.state == '+') { this._stateValues[subid] = message.value }
+      else if (this._stateValues[subid] != null) { delete this._stateValues[subid] }
 
       this.innerHTML = this._valuesToHTML(this._stateValues)
     }
