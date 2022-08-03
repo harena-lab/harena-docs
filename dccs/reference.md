@@ -443,9 +443,9 @@ There are two methods to read the CSV: inside the element or a file dropdown. Th
 
 ### Example
 
-~~~html
-<dcc-table-csv schema></dcc-table-csv>
-~~~
+<dcc-play>
+  <dcc-table-csv schema></dcc-table-csv>
+</dcc-play>
 
 ## Table (`<dcc-table>`)
 
@@ -464,10 +464,10 @@ Download the files [Zombies Height and Weight](tutorial/zombies-height-weight.cs
 
 ### Example
 
-~~~html
-<dcc-table-csv schema></dcc-table-csv>
-<dcc-table subscribe="table/updated:update"></dcc-table>
-~~~
+<dcc-play>
+  <dcc-table-csv schema></dcc-table-csv>
+  <dcc-table subscribe="table/updated:update"></dcc-table>
+</dcc-play>
 
 ## Chart (`<dcc-chart>`)
 
@@ -484,10 +484,10 @@ Displays a chart received as a message. The message contains the '`table/update`
 
 ### Example
 
-~~~html
-<dcc-table-csv schema></dcc-table-csv>
-<dcc-chart subscribe="table/updated:update"></dcc-chart>
-~~~
+<dcc-play>
+  <dcc-table-csv schema></dcc-table-csv>
+  <dcc-chart subscribe="table/updated:update"></dcc-chart>
+</dcc-play>
 
 ## Projection (`<dcc-projection>`)
 
@@ -496,20 +496,22 @@ Produces a projection of a table received by message and publishes a message wit
 ### Syntax
 
 ~~~html
-<dcc-table id="id">
-</dcc-table>
+<dcc-projection id="id"
+                fields="field1,field2">
+</dcc-projection>
 ~~~
 
 * `id` - (optional) unique id.
+* `fields` - fields to be projected, separated by commas.
 
 ### Example
 
-~~~html
-<dcc-table-csv schema></dcc-table-csv>
-<dcc-projection fields="height,weight" subscribe="table/updated:update"></dcc-projection>
-<dcc-chart subscribe="table/projected:update"></dcc-chart>
-<dcc-table subscribe="table/projected:update"></dcc-table>
-~~~
+<dcc-play>
+  <dcc-table-csv schema></dcc-table-csv>
+  <dcc-projection fields="height,weight" subscribe="table/updated:update"></dcc-projection>
+  <dcc-chart subscribe="table/projected:update"></dcc-chart>
+  <dcc-table subscribe="table/projected:update"></dcc-table>
+</dcc-play>
 
 <hr>
 <h1>Under Construction</h1>
