@@ -45,6 +45,14 @@ Embeds a data model.
 ### Harena Examples
 
 ~~~html
+<dcc-rest id="fastapi" bind="fastapi"></dcc-rest>
+<dcc-rest id="harena-roles" bind="harena-roles"></dcc-rest>
+<dcc-dhtml connect="retrieve:fastapi:service/request/get" autoupdate>
+  <p><strong>Message:</strong> {{message}}</p>
+</dcc-dhtml>
+~~~
+
+~~~html
 <form>
   <p>email: <input id="email"></p>
   <p>password: <input type='password' id="password"></p>
@@ -146,6 +154,40 @@ Embeds a data model.
 ~~~
 
 ~~~html
+<dcc-dhtml>
+<h1>Name: {{page_url.name}}</h1>
+<h2>Age: {{page_url.age}}</h2>
+</dcc-dhtml>
+~~~
+
+~~~html
+<dcc-space-cellular-editor id="cellular-space"
+  cell-width="16" cell-height="16" background-color="#d6f0ff" grid analysis>
+_###_
+#.__#
+#___#
+_###_
+</dcc-space-cellular-editor>
+<subscribe-dcc target="cellular-space" topic="state/next" map="next"></subscribe-dcc>
+<dcc-cell-color type="#" label="glass" color="green"></dcc-cell-color>
+<dcc-cell-color type="." label="bug" color="blue"></dcc-cell-color>
+<rule-dcc-cell-pair label="fall vertical" probability="100" transition="._>..">
+___
+__*
+_*_
+</rule-dcc-cell-pair>
+
+<dcc-button label="Next" topic="state/next"></dcc-button>
+
+<dcc-chart min="0,0" max="12,12" series="glass:green,bug:blue" subscribe="dcc/analysis/data:action/include"></dcc-chart>
+
+<dcc-dhtml subscribe="dcc/analysis/data:update">
+<span style="color:green">Glass: {{glass}}</span>,
+<span style="color:blue">Bug: {{bug}}</span>
+</dcc-dhtml>
+~~~
+
+~~~html
 <dcc-table-csv view></dcc-table-csv>
 <dcc-decision-tree subscribe="table/updated:ml/train"></dcc-decision-tree>
 ~~~
@@ -165,6 +207,11 @@ Embeds a data model.
 <dcc-projection fields="height,weight" subscribe="table/updated:update"></dcc-projection>
 <dcc-chart subscribe="table/projected:update"></dcc-chart>
 <dcc-table subscribe="table/projected:update"></dcc-table>
+~~~
+
+~~~html
+<dcc-slider variable="y" value="0" index></dcc-slider>
+<dcc-chart subscribe="input/changed/y:action/include"></dcc-chart>
 ~~~
 
 ~~~html

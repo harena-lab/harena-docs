@@ -140,6 +140,36 @@ Total: ^total^
 [vender] =click|update=> [total]
 ~~~
 
+~~~markdown
+[input-typed|dccinput][[
+  Fale <b>TUDO</b> que você sabe sobre doença pulmonar obstrutiva crônica. <b>TODAS</b> as informações que você souber são importantes.
+  * variable: Presentation.hypothesis
+  * rows: 25
+]]
+[markdown|faltam][[
+  <span style="background-color:blue;color:white">Faltam 30 segundos</span>
+  * display: none
+]]
+[markdown|esgotado][[
+  <span style="background-color:purple;color:white">Tempo esgotado</span>
+  * display: none
+]]
+[timer|clockf][[
+  * autostart
+  * interval: 1000
+  * cycles: 270
+]]
+[timer|clocke][[
+  * autostart
+  * interval: 1000
+  * cycles: 300
+]]
+[clockf] =end|style/display/initial=> [faltam]
+[clocke] =end|style/display/none=> [faltam]
+[clocke] =end|style/display/initial=> [esgotado]
+[clocke] =end|readonly/true=> [dccinput]
+~~~
+
 ~~~html
 # Presentation
 

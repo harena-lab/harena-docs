@@ -221,3 +221,16 @@ An Origin DCC can be connected to a Target DCC in such a way that, whenever an e
     B é maior que A
   {{@endif}}
 </dcc-dhtml>
+
+<dcc-timer cycles="5" interval="1000" autostart>
+  <connect-dcc trigger="end" to="bloqueio" topic="style/display/initial"></connect-dcc>
+  <connect-dcc trigger="end" to="meucampo" topic="readonly/true"></connect-dcc>
+</dcc-timer>
+<dcc-timer cycles="10" interval="1000" autostart>
+  <connect-dcc trigger="end" to="bloqueio" topic="style/display/none"></connect-dcc>
+  <connect-dcc trigger="end" to="desbloqueio" topic="style/display/initial"></connect-dcc>
+  <connect-dcc trigger="end" to="meucampo" topic="readonly/false"></connect-dcc>
+</dcc-timer>
+<dcc-markdown id="bloqueio" display="none">Bloqueio</dcc-markdown>
+<dcc-markdown id="desbloqueio" display="none">Desbloqueio</dcc-markdown>
+<dcc-input-typed id="meucampo" rows="5"></dcc-input-typed>

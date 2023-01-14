@@ -12,3 +12,4 @@ Here you will find the Harena documentation organized as follows:
 * [Digital Content Components](dccs/)
 * [Harena General Specifications](harena/)
 * [Harena Manager](manager/)
+* [Harena Metadata](metadata/)
