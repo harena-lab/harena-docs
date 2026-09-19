@@ -1886,7 +1886,7 @@ textarea.inspector-input { resize: vertical; font-family: var(--font-doc); line-
             <button class="tb-btn" @click="addImageLibraryFromInput"><i class="ti ti-plus"></i> Add library</button>
           </div>
           <div class="lib-add-hint">
-            A directory URL is fetched as <code>{{ defaultCatalogFilename }}</code> inside it (gnō's simple catalog format). A direct URL ending in <code>.yaml</code>/<code>.yml</code>/<code>.json</code> is fetched as-is and may also be an IIIF Collection or a schema.org ImageGallery.
+            A directory URL is fetched as <code>{{ defaultCatalogFilename }}</code> inside it (gnō's simple catalog format), falling back to <code>{{ defaultCatalogMdFilename }}</code> (the same list written as Markdown: <code>* ![id](path.svg)</code>) if that is not found. A direct URL ending in <code>.yaml</code>/<code>.yml</code>/<code>.json</code>/<code>.md</code> is fetched as-is; JSON may also be an IIIF Collection or a schema.org ImageGallery.
           </div>
 
           <div class="lib-list" v-if="imageLibraryIds.length">
@@ -3238,11 +3238,12 @@ function layoutGraphEdges(scenes, nodeMap) {
 }
 
 /* ── IMAGE LIBRARY CATALOG ADAPTER ──
-   Normalizes three catalog formats into one shape: { images: [{id, label, url,
+   Normalizes four catalog formats into one shape: { images: [{id, label, url,
    thumbnailUrl}], format }. Which format a URL points to is sniffed from its
-   content, not declared up front, so the same "Add library" input accepts any
-   of the three. */
+   content (or, for the Markdown variant, its .md extension), not declared up
+   front, so the same "Add library" input accepts any of them. */
 const DEFAULT_CATALOG_FILENAME = 'gno-catalog.yaml';
+const DEFAULT_CATALOG_MD_FILENAME = 'gno-catalog.md';
 
 function slugFromPath(p) {
   const base = p.split('/').pop() || p;
@@ -3275,6 +3276,26 @@ function parseGnoSimpleCatalog(text, catalogUrl) {
     return { id: id || ('image-' + i), label: id || slugFromPath(relPath), url, thumbnailUrl: url };
   }).filter(Boolean);
   return { images, format: 'gno-simple' };
+}
+
+// gnō's simple format, Markdown flavor (gno-catalog.md): a restricted
+// Markdown made only of a bullet list of images — `* ![id](relative/path.svg)`.
+// It carries the same information as the YAML list of {id: path} items, and
+// paths are likewise resolved against the catalog file's own URL. Any line
+// that is not such a list item (blank lines, headings, prose) is ignored.
+const MD_CATALOG_ITEM = /^\s*[*+-]\s+!\[([^\]]*)\]\(\s*([^)]*?)\s*\)\s*$/;
+
+function parseGnoMarkdownCatalog(text, catalogUrl) {
+  const images = [];
+  text.split(/\r?\n/).forEach(line => {
+    const m = MD_CATALOG_ITEM.exec(line);
+    if (!m || !m[2]) return;
+    const relPath = m[2];
+    const id = m[1].trim() || slugFromPath(relPath);
+    const url = new URL(relPath, catalogUrl).href;
+    images.push({ id, label: id, url, thumbnailUrl: url });
+  });
+  return { images, format: 'gno-simple-md' };
 }
 
 function iiifLabelToString(label) {
@@ -3329,19 +3350,21 @@ function parseSchemaOrgGallery(json, catalogUrl) {
   return { images, format: 'schema.org' };
 }
 
-// Given whatever the user typed, returns the actual catalog file URL to fetch:
-// a URL already ending in a recognized metadata extension is used as-is;
-// anything else is treated as a directory and gnō's default catalog filename
-// is appended (normalizing a missing trailing slash first, since new URL()
-// resolution — not plain concatenation — is what would otherwise silently
-// drop the last path segment).
-function resolveCatalogUrl(inputUrl) {
-  if (/\.(ya?ml|json)$/i.test(inputUrl)) return inputUrl;
+// Given whatever the user typed, returns the catalog file URLs to try, in
+// order: a URL already ending in a recognized metadata extension is used
+// as-is; anything else is treated as a directory and gnō's default catalog
+// filenames are appended — the YAML one first, the Markdown one as a fallback
+// (normalizing a missing trailing slash first, since new URL() resolution —
+// not plain concatenation — is what would otherwise silently drop the last
+// path segment).
+function resolveCatalogUrls(inputUrl) {
+  if (/\.(ya?ml|json|md)$/i.test(inputUrl)) return [inputUrl];
   const dir = inputUrl.endsWith('/') ? inputUrl : inputUrl + '/';
-  return dir + DEFAULT_CATALOG_FILENAME;
+  return [dir + DEFAULT_CATALOG_FILENAME, dir + DEFAULT_CATALOG_MD_FILENAME];
 }
 
 function detectAndParseCatalog(text, catalogUrl) {
+  if (/\.md$/i.test(catalogUrl)) return parseGnoMarkdownCatalog(text, catalogUrl);
   let json = null;
   try { json = JSON.parse(text); } catch (e) { /* not JSON — fall through to YAML */ }
   if (json) {
@@ -3855,10 +3878,21 @@ createApp({
       if (!url) return;
       libraryCatalogs[id] = { status: 'loading', images: [], error: '', format: '', visibleCount: IMAGES_PER_PAGE };
       try {
-        const catalogUrl = resolveCatalogUrl(url);
-        const res = await fetch(catalogUrl);
-        if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${catalogUrl}`);
-        const text = await res.text();
+        // First candidate that answers wins (gno-catalog.yaml, then
+        // gno-catalog.md); if none does, the first candidate's error is reported.
+        let catalogUrl, text, firstError;
+        for (const candidate of resolveCatalogUrls(url)) {
+          try {
+            const res = await fetch(candidate);
+            if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${candidate}`);
+            text = await res.text();
+            catalogUrl = candidate;
+            break;
+          } catch (err) {
+            firstError = firstError || err;
+          }
+        }
+        if (catalogUrl === undefined) throw firstError;
         const { images, format } = detectAndParseCatalog(text, catalogUrl);
         libraryCatalogs[id] = { status: 'loaded', images, error: '', format, visibleCount: IMAGES_PER_PAGE };
       } catch (err) {
@@ -5206,6 +5240,7 @@ Write your scene description here.
       demoMarker: DEMO_MARKER,
       presentationTab, newLibraryUrl, imageLibraries, imageLibraryIds, libraryCatalogs,
       defaultCatalogFilename: DEFAULT_CATALOG_FILENAME,
+      defaultCatalogMdFilename: DEFAULT_CATALOG_MD_FILENAME,
       addImageLibraryFromInput, removeImageLibrary, renameImageLibrary, loadLibraryCatalog, showMoreImages, brokenCount,
       entityAssociations, entityIdsForPresentation, allCatalogImages, openEntityImages, imagePickerEntity,
       newEntityId, addExtraEntity, removeExtraEntity, isDeclaredEntity,
