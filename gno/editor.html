@@ -608,6 +608,47 @@ html, body { height: 100%; font-family: var(--font-ui); background: var(--c-bg);
   font-style: italic;
 }
 .player-empty { padding: 40px 0; }
+#player-content.graphic { max-width: 1200px; }
+.player-mode-toggle {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+  margin-bottom: 14px;
+  font-family: var(--font-ui);
+}
+.player-mode-toggle button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border: 0.5px solid var(--c-border-strong);
+  background: var(--c-surface);
+  color: var(--c-muted);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.player-mode-toggle button:first-child { border-radius: 6px 0 0 6px; }
+.player-mode-toggle button:last-child { border-radius: 0 6px 6px 0; }
+.player-mode-toggle button.active { background: var(--c-accent-light); color: var(--c-accent); border-color: var(--c-accent); }
+.player-mode-toggle button:disabled { opacity: 0.45; cursor: not-allowed; }
+.player-stage-wrap { margin: 0 auto 1em; }
+.player-stage { display: block; width: 100%; height: auto; max-height: 72vh; margin: 0 auto; }
+.player-stage .stage-click { cursor: pointer; }
+.player-stage .stage-click:hover { opacity: 0.85; }
+.player-stage .stage-static { pointer-events: none; }
+.player-stage-text {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.player-stage-text.pre { white-space: pre-wrap; }
+#player-content .player-stage-text p { margin: 0 0 0.5em; }
+#player-content .player-stage-text p:last-child { margin-bottom: 0; }
+.player-stage-text .speaker { font-weight: 600; }
 .player-warning {
   background: var(--c-tag-state-bg);
   color: var(--c-tag-state);
@@ -694,10 +735,17 @@ html, body { height: 100%; font-family: var(--font-ui); background: var(--c-bg);
 /* ── Graph view ── */
 #graph-view {
   flex: 1;
-  overflow: auto;
+  overflow: hidden;
   position: relative;
-  padding: 24px;
+  display: flex;
 }
+.graph-canvas-viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+}
+.graph-canvas-viewport:active { cursor: grabbing; }
 #graph-canvas {
   position: relative;
   min-width: 600px;
@@ -712,11 +760,197 @@ html, body { height: 100%; font-family: var(--font-ui); background: var(--c-bg);
   overflow: visible;
 }
 
+/* floating zoom/layout toolbar over the graph canvas */
+.graph-toolbar {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--c-surface);
+  border: 0.5px solid var(--c-border-strong);
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+  z-index: 5;
+}
+.graph-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--c-muted);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.12s, color 0.12s;
+}
+.graph-btn:hover { background: var(--c-accent-light); color: var(--c-accent); }
+.graph-toolbar-sep { width: 0.5px; height: 18px; background: var(--c-border-strong); margin: 0 2px; }
+
+/* ── Graph node detail/edit side panel ── */
+#graph-node-panel {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-surface);
+  border-left: 0.5px solid var(--c-border-strong);
+  overflow: hidden;
+}
+.graph-panel-resize-handle {
+  /* Sits fully inside the panel (not straddling the edge) because the panel
+     has overflow:hidden to clip its body's absolutely-positioned editor
+     layers — a handle placed half outside that box would have its outer
+     half clipped, leaving too thin a hit target to grab reliably. */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 6;
+}
+.graph-panel-resize-handle:hover { background: var(--c-border-strong); }
+.graph-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 0.5px solid var(--c-border);
+  flex-shrink: 0;
+}
+.graph-panel-titles { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.graph-panel-scenario {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-muted);
+}
+.graph-panel-title {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.graph-panel-actions { display: flex; gap: 2px; flex-shrink: 0; }
+
+.graph-panel-style-row, .graph-panel-annotation-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-bottom: 0.5px solid var(--c-border);
+  flex-shrink: 0;
+}
+.graph-panel-style-label {
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  color: var(--c-muted);
+  margin-right: 2px;
+  flex-shrink: 0;
+}
+.color-swatch {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid var(--c-border-strong);
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.1s;
+}
+.color-swatch:hover { transform: scale(1.15); }
+.color-swatch.selected { box-shadow: 0 0 0 2px var(--c-surface), 0 0 0 3.5px var(--c-text); }
+.color-swatch-none, .color-swatch-custom-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-bg);
+  color: var(--c-muted);
+  font-size: 10px;
+}
+/* Distinct icon-button trigger (not a plain color-filled circle) so it reads
+   as "pick any color" rather than looking like just another preset swatch —
+   a solid custom swatch defaulting to the accent color was indistinguishable
+   from the accent preset next to it. Opens the actual <input type="color">,
+   which stays hidden since its native swatch face is what was confusing. */
+.color-swatch-custom-trigger { border-style: dashed; font-size: 11px; }
+.color-swatch-custom-trigger:hover { color: var(--c-accent); border-color: var(--c-accent); }
+.color-swatch-custom-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.graph-panel-annotation-input {
+  flex: 1;
+  min-height: 20px;
+  max-height: 70px;
+  resize: vertical;
+  border: 0.5px solid var(--c-border-strong);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-family: var(--font-doc);
+  font-size: 12px;
+  font-style: italic;
+  color: var(--c-text);
+  background: var(--c-bg);
+  line-height: 1.4;
+}
+.graph-panel-annotation-input:focus { outline: none; border-color: var(--c-accent); background: var(--c-surface); }
+.graph-panel-annotation-input::placeholder { color: var(--c-muted); font-style: italic; }
+
+.graph-panel-body { position: relative; flex: 1; overflow: hidden; }
+.gnp-highlight, .gnp-textarea {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 16px 18px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.65;
+  tab-size: 2;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow: auto;
+}
+.gnp-highlight {
+  color: var(--c-text);
+  background: var(--c-bg);
+  pointer-events: none;
+  scrollbar-width: none;
+}
+.gnp-highlight::-webkit-scrollbar { display: none; }
+.gnp-textarea {
+  width: 100%;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--c-text);
+}
+
 .graph-node {
   position: absolute;
   width: 220px;
   background: var(--c-scene-node);
   border: 1px solid var(--c-scene-border);
+  border-left-width: 4px; /* accent bar — colored per-node via inline style */
   border-radius: 8px;
   box-shadow: 0 1px 6px rgba(0,0,0,0.07);
   overflow: hidden;
@@ -784,6 +1018,25 @@ html, body { height: 100%; font-family: var(--font-ui); background: var(--c-bg);
   align-self: flex-start;
 }
 
+/* A node annotation reads as a marginal note, in keeping with the app's
+   manuscript-marginalia aesthetic — not narrative content, so it's set off
+   like the preview's blockquotes rather than folded into the excerpt. */
+.node-annotation {
+  margin: 0 11px 7px;
+  padding: 4px 8px;
+  border-left: 2px solid var(--c-bq-border);
+  background: var(--c-accent-light);
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  font-family: var(--font-doc);
+  font-size: 10.5px;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--c-muted);
+}
+.node-annotation i { flex-shrink: 0; margin-top: 1px; font-size: 11px; }
+
 /* ── Entity mentions in preview ── */
 .pill-entity, .pill-entity-inline {
   display: inline-flex;
@@ -832,14 +1085,439 @@ html, body { height: 100%; font-family: var(--font-ui); background: var(--c-bg);
 .flash { animation: flash-anim 1.1s ease-out; }
 
 /* ── Source editor syntax highlighting ── */
-#editor-highlight .hl-scene { color: var(--c-accent); }
-#editor-highlight .hl-scene-title { font-weight: 600; }
-#editor-highlight .hl-scene-scenario { color: var(--c-accent); opacity: 0.75; }
-#editor-highlight .hl-divert { color: var(--c-tag-trans); }
-#editor-highlight .hl-divert-arrow { font-weight: 600; }
-#editor-highlight .hl-entity { color: var(--c-tag-char); font-weight: 500; }
-#editor-highlight .hl-dialog-prefix { color: var(--c-muted); }
-#editor-highlight .hl-dialog-text { color: var(--c-muted); font-style: italic; }
+/* Shared by the main editor's highlight overlay (#editor-highlight) and the
+   graph side panel's (.gnp-highlight) — both render the same highlightGno()
+   span markup and must color it identically. */
+.gno-highlight .hl-scene { color: var(--c-accent); }
+.gno-highlight .hl-scene-title { font-weight: 600; }
+.gno-highlight .hl-scene-scenario { color: var(--c-accent); opacity: 0.75; }
+.gno-highlight .hl-divert { color: var(--c-tag-trans); }
+.gno-highlight .hl-divert-arrow { font-weight: 600; }
+.gno-highlight .hl-entity { color: var(--c-tag-char); font-weight: 500; }
+.gno-highlight .hl-dialog-prefix { color: var(--c-muted); }
+.gno-highlight .hl-dialog-text { color: var(--c-muted); font-style: italic; }
+
+/* ── Presentation view ── */
+#presentation-view {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.pres-subtabs {
+  display: flex;
+  gap: 2px;
+  padding: 10px 20px 0;
+  border-bottom: 0.5px solid var(--c-border);
+  flex-shrink: 0;
+}
+.pres-subtab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: none;
+  background: none;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--c-muted);
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s;
+}
+.pres-subtab.active { color: var(--c-accent); border-bottom-color: var(--c-accent); }
+.pres-subtab:hover:not(.active) { color: var(--c-text); }
+.pres-subtab-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px 40px;
+}
+.pres-subtab-placeholder {
+  max-width: 480px;
+  margin: 40px auto 0;
+  text-align: center;
+  color: var(--c-muted);
+  font-family: var(--font-doc);
+  font-style: italic;
+  font-size: 14px;
+}
+
+.lib-add-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  max-width: 780px;
+  margin-bottom: 22px;
+}
+.lib-add-input {
+  flex: 1;
+  padding: 7px 11px;
+  border: 0.5px solid var(--c-border-strong);
+  border-radius: 6px;
+  background: var(--c-surface);
+  color: var(--c-text);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+.lib-add-input:focus { outline: none; border-color: var(--c-accent); }
+.lib-add-hint {
+  max-width: 780px;
+  margin: -14px 0 22px;
+  font-size: 11.5px;
+  color: var(--c-muted);
+  font-family: var(--font-ui);
+}
+.lib-add-hint code { font-family: var(--font-mono); background: var(--c-accent-light); color: var(--c-accent); padding: 1px 5px; border-radius: 4px; }
+
+.lib-list { display: flex; flex-direction: column; gap: 14px; max-width: 900px; }
+.lib-card {
+  border: 0.5px solid var(--c-border-strong);
+  border-radius: 10px;
+  background: var(--c-surface);
+  overflow: hidden;
+}
+.lib-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 0.5px solid var(--c-border);
+  background: var(--c-accent-light);
+}
+.lib-id-input {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-accent);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 3px 6px;
+  width: 180px;
+  flex-shrink: 0;
+}
+.lib-id-input:hover { border-color: var(--c-border-strong); }
+.lib-id-input:focus { outline: none; border-color: var(--c-accent); background: var(--c-surface); }
+.lib-url {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--c-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lib-status {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--c-muted);
+  white-space: nowrap;
+}
+.lib-status.error { color: #a33; }
+.lib-status-broken {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 500;
+  color: #a33;
+  background: rgba(170,51,51,0.1);
+  padding: 1px 7px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+.lib-actions { display: flex; gap: 2px; flex-shrink: 0; }
+.lib-empty {
+  padding: 18px 14px;
+  font-family: var(--font-doc);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--c-muted);
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 8px;
+  padding: 14px;
+}
+.image-tile {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--c-bg);
+  border: 0.5px solid var(--c-border);
+}
+.image-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.image-tile-label {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 3px 6px 2px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.65));
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.image-tile.broken { background: rgba(170,51,51,0.08); border-color: rgba(170,51,51,0.35); }
+.image-tile-broken {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a33;
+  font-size: 22px;
+}
+.load-more-row { display: flex; justify-content: center; padding: 4px 14px 16px; }
+.image-tile.already-added { outline: 2px solid var(--c-accent); outline-offset: -2px; }
+.image-tile-check {
+  position: absolute;
+  top: 3px; right: 3px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--c-accent);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+}
+
+.ent-assoc-list { display: flex; flex-direction: column; gap: 12px; padding: 12px 14px; }
+.ent-assoc-row { display: flex; align-items: flex-start; gap: 10px; }
+.ent-assoc-thumb {
+  width: 56px; height: 56px; flex-shrink: 0;
+  border-radius: 6px; overflow: hidden;
+  background: var(--c-bg); border: 0.5px solid var(--c-border);
+  display: flex; align-items: center; justify-content: center;
+  color: #a33;
+}
+.ent-assoc-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ent-assoc-thumb.broken { background: rgba(170,51,51,0.08); border-color: rgba(170,51,51,0.35); }
+.ent-assoc-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; padding-top: 2px; }
+.ent-assoc-ref { font-family: var(--font-mono); font-size: 11px; color: var(--c-muted); }
+.ent-assoc-labels { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.ent-label-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-family: var(--font-mono); font-size: 10.5px;
+  color: var(--c-tag-state); background: var(--c-tag-state-bg);
+  padding: 1px 4px 1px 8px; border-radius: 3px 10px 10px 3px;
+}
+.ent-label-chip button {
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: none; color: inherit; cursor: pointer;
+  padding: 0; font-size: 10px; opacity: 0.7;
+}
+.ent-label-chip button:hover { opacity: 1; }
+.ent-label-input {
+  border: 0.5px dashed var(--c-border-strong);
+  border-radius: 10px;
+  background: none;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  padding: 2px 8px;
+  color: var(--c-text);
+  width: 90px;
+}
+.ent-label-input:focus { outline: none; border-color: var(--c-accent); border-style: solid; }
+.ent-card-picker { padding: 0 14px 14px; }
+
+.scenario-bg-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 0.5px solid var(--c-border);
+}
+.scenario-bg-thumb {
+  width: 40px; height: 40px; object-fit: cover;
+  border-radius: 5px; border: 0.5px solid var(--c-border-strong);
+}
+.scenario-mode-toggle { display: flex; gap: 4px; padding: 10px 14px 0; }
+.scenario-mode-btn {
+  padding: 5px 12px;
+  border: 0.5px solid var(--c-border-strong);
+  border-radius: 6px;
+  background: var(--c-surface);
+  color: var(--c-muted);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.scenario-mode-btn.active { background: var(--c-accent-light); color: var(--c-accent); border-color: var(--c-accent); }
+.scenario-editor { display: flex; gap: 14px; padding: 14px; align-items: flex-start; }
+.scenario-canvas-wrap {
+  flex: 1;
+  overflow: auto;
+  border: 0.5px solid var(--c-border-strong);
+  border-radius: 8px;
+  background:
+    repeating-conic-gradient(var(--c-bg) 0% 25%, var(--c-surface) 0% 50%) 0 0 / 20px 20px;
+  max-height: 560px;
+}
+.scenario-wide-btn { margin-left: auto; }
+.scenario-mode-toggle { align-items: center; }
+.scenario-wide-title { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--c-accent); }
+.inspector-convert { width: 100%; justify-content: center; margin-top: 12px; }
+
+/* Wide editor: the workspace (toolbar + canvas + sidebar) is lifted out of
+   the page and fills the window, so nothing but what editing a scenario
+   needs stays on screen. */
+.scenario-workspace.wide {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; flex-direction: column;
+  background: var(--c-bg);
+}
+.scenario-workspace.wide .scenario-toolbar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 22px;
+  flex-shrink: 0;
+  padding: 8px 14px;
+  background: var(--c-surface);
+  border-bottom: 0.5px solid var(--c-border-strong);
+}
+.scenario-workspace.wide .scenario-toolbar > * { padding: 0; border-bottom: none; }
+.scenario-workspace.wide .scenario-mode-toggle { flex: 1; }
+.scenario-workspace.wide .scenario-size-hint { display: none; }
+.scenario-workspace.wide .scenario-toolbar .image-grid { order: 10; flex-basis: 100%; max-height: 220px; overflow-y: auto; padding: 8px 0 0; }
+.scenario-workspace.wide .scenario-editor { flex: 1; min-height: 0; align-items: stretch; padding: 10px 14px 14px; }
+.scenario-workspace.wide .scenario-canvas-wrap { max-height: none; min-width: 0; }
+.scenario-workspace.wide .scenario-side { overflow-y: auto; }
+.scenario-workspace.wide .scenario-palette { max-height: none; overflow-y: visible; }
+
+.scenario-svg { display: block; }
+.scenario-svg.text-mode { cursor: crosshair; }
+.scenario-side { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; }
+.scenario-mode-hint { align-self: center; margin-left: 6px; font-family: var(--font-ui); font-size: 11.5px; color: var(--c-muted); font-style: italic; }
+
+.scenario-size-row {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 0.5px solid var(--c-border);
+  font-family: var(--font-ui); font-size: 12px; color: var(--c-muted);
+}
+.scenario-size-label { font-weight: 500; }
+.scenario-size-x { color: var(--c-muted); }
+.scenario-size-hint { font-size: 11.5px; font-style: italic; }
+.scenario-lock-btn {
+  padding: 3px 6px;
+  border: 0.5px solid var(--c-border-strong);
+  border-radius: 5px;
+  background: var(--c-surface);
+  color: var(--c-muted);
+  font-size: 14px; line-height: 1;
+  cursor: pointer;
+}
+.scenario-lock-btn.active { background: var(--c-accent-light); color: var(--c-accent); border-color: var(--c-accent); }
+
+/* canvas corner handle + text-area frames (design-time chrome, drawn inside the SVG) */
+.scenario-canvas-handle { cursor: nwse-resize; }
+.scenario-canvas-handle rect { fill: var(--c-surface); stroke: var(--c-accent); stroke-width: 1; opacity: 0.85; }
+.scenario-canvas-handle path { fill: none; stroke: var(--c-accent); stroke-width: 1.5; stroke-linecap: round; pointer-events: none; }
+.scenario-text-frame { fill: var(--c-accent-light); fill-opacity: 0.25; stroke: var(--c-accent); stroke-width: 1; stroke-dasharray: 4 3; cursor: move; }
+.scenario-text-frame.selected { stroke-width: 2; fill-opacity: 0.4; }
+.scenario-selection { fill: none; stroke: var(--c-accent); stroke-width: 2; stroke-dasharray: 4 3; pointer-events: none; }
+.scenario-resize-handle { fill: var(--c-accent); stroke: var(--c-surface); stroke-width: 1.5; cursor: nwse-resize; }
+.scenario-text-fo { pointer-events: none; overflow: hidden; }
+.scenario-text-body {
+  width: 100%; height: 100%; box-sizing: border-box; overflow: hidden;
+  line-height: 1.3; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+
+.scenario-inspector {
+  border: 0.5px solid var(--c-border-strong);
+  border-radius: 8px;
+  padding: 10px;
+  font-family: var(--font-ui);
+}
+.inspector-empty { font-size: 12px; color: var(--c-muted); font-style: italic; line-height: 1.45; }
+.inspector-kind { font-size: 11.5px; font-weight: 500; color: var(--c-accent); margin-bottom: 8px; text-transform: capitalize; }
+.inspector-label { display: block; margin: 8px 0 3px; font-size: 10.5px; font-weight: 500; color: var(--c-muted); }
+.inspector-input {
+  width: 100%; box-sizing: border-box;
+  padding: 4px 7px;
+  border: 0.5px solid var(--c-border-strong);
+  border-radius: 5px;
+  background: var(--c-surface);
+  color: var(--c-text);
+  font-family: var(--font-ui); font-size: 12.5px;
+}
+.inspector-input.mono { font-family: var(--font-mono); font-size: 12px; }
+.inspector-input.num { width: 64px; }
+.inspector-input:focus { outline: none; border-color: var(--c-accent); }
+.inspector-input.invalid { border-color: #a33; }
+textarea.inspector-input { resize: vertical; font-family: var(--font-doc); line-height: 1.4; }
+.inspector-error { margin-top: 4px; font-size: 11.5px; color: #a33; }
+.inspector-suggest { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; align-items: center; }
+.inspector-suggest-label { width: 100%; font-size: 10.5px; color: var(--c-muted); }
+.inspector-chip {
+  padding: 2px 7px;
+  border: 0.5px solid var(--c-border-strong);
+  border-radius: 10px;
+  background: var(--c-accent-light);
+  color: var(--c-accent);
+  font-family: var(--font-mono); font-size: 11px;
+  cursor: pointer;
+}
+.inspector-chip:hover { border-color: var(--c-accent); }
+.inspector-row { display: flex; gap: 10px; align-items: flex-end; }
+.inspector-row.compact { gap: 4px; align-items: center; }
+.inspector-row.compact .inspector-input.num { width: 100%; min-width: 0; padding: 4px 4px; -moz-appearance: textfield; }
+.inspector-row.compact .inspector-input.num::-webkit-inner-spin-button { display: none; }
+.inspector-color { width: 44px; height: 26px; padding: 0; border: 0.5px solid var(--c-border-strong); border-radius: 5px; background: var(--c-surface); cursor: pointer; }
+.inspector-hint { margin-top: 2px; font-size: 10px; color: var(--c-muted); }
+
+.scenario-palette {
+  width: auto;
+  flex-shrink: 0;
+  max-height: 560px;
+  overflow-y: auto;
+  border: 0.5px solid var(--c-border-strong);
+  border-radius: 8px;
+  padding: 10px;
+}
+.scenario-palette-title {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  margin-bottom: 8px;
+}
+.palette-entity { margin-bottom: 12px; }
+.palette-entity-id {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--c-tag-char);
+  margin-bottom: 4px;
+}
+.palette-entity-empty { font-size: 11px; color: var(--c-muted); font-style: italic; }
+.palette-tiles { display: flex; flex-wrap: wrap; gap: 6px; }
+.palette-tile { width: 52px; cursor: grab; text-align: center; }
+.palette-tile img, .palette-tile-broken {
+  width: 52px; height: 52px;
+  object-fit: cover;
+  border-radius: 5px;
+  border: 0.5px solid var(--c-border);
+  display: block;
+}
+.palette-tile-broken { display: flex; align-items: center; justify-content: center; color: #a33; background: var(--c-bg); }
+.palette-tile-label {
+  display: block;
+  font-size: 8.5px;
+  font-family: var(--font-mono);
+  color: var(--c-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 /* ── hidden file input ── */
 #file-input { display: none; }
@@ -863,7 +1541,7 @@ html, body { height: 100%; font-family: var(--font-ui); background: var(--c-bg);
     <button class="tb-btn ghost" @click="newNarrative" title="Start a new, empty narrative"><i class="ti ti-file-plus"></i> New</button>
     <button class="tb-btn" @click="triggerUpload"><i class="ti ti-upload"></i> Upload</button>
     <button class="tb-btn ghost" @click="downloadFile"><i class="ti ti-download"></i> Download</button>
-    <input type="file" id="file-input" ref="fileInput" accept=".md,.gno,.txt" @change="onFileUpload">
+    <input type="file" id="file-input" ref="fileInput" accept=".md,.gno,.txt,.zip" @change="onFileUpload">
     <input
       id="filename-display"
       type="text"
@@ -902,7 +1580,7 @@ html, body { height: 100%; font-family: var(--font-ui); background: var(--c-bg);
 
     <button
       class="tb-btn ghost icon-only"
-      v-if="view === 'editor'"
+      v-if="view === 'editor' || view === 'graph' || view === 'presentation'"
       :title="leftCollapsed ? 'Show scenes panel' : 'Hide scenes panel'"
       @click="leftCollapsed = !leftCollapsed"
     >
@@ -923,6 +1601,9 @@ html, body { height: 100%; font-family: var(--font-ui); background: var(--c-bg);
       </button>
       <button class="view-tab" :class="{active: view==='graph'}" @click="view='graph'">
         <i class="ti ti-hierarchy-2"></i> Graph
+      </button>
+      <button class="view-tab" :class="{active: view==='presentation'}" @click="view='presentation'">
+        <i class="ti ti-photo"></i> Presentation
       </button>
       <button class="view-tab" :class="{active: view==='player'}" @click="view='player'">
         <i class="ti ti-player-play"></i> Player
@@ -1032,7 +1713,7 @@ html, body { height: 100%; font-family: var(--font-ui); background: var(--c-bg);
     <div id="editor-view" v-show="view === 'editor'">
       <div id="editor-pane">
         <div class="editor-highlight-wrap">
-          <pre id="editor-highlight" ref="highlightPre" aria-hidden="true" v-html="highlightedSource"></pre>
+          <pre id="editor-highlight" class="gno-highlight" ref="highlightPre" aria-hidden="true" v-html="highlightedSource"></pre>
           <textarea
             ref="editorTextarea"
             v-model="source"
@@ -1050,62 +1731,590 @@ html, body { height: 100%; font-family: var(--font-ui); background: var(--c-bg);
 
     <!-- Graph view -->
     <div id="graph-view" v-show="view === 'graph'">
-      <div id="graph-canvas" :style="graphCanvasStyle" ref="graphCanvas">
-        <svg id="graph-svg" ref="graphSvg">
-          <defs>
-            <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
-              <path d="M0,0 L0,6 L8,3 z" :fill="arrowColor" />
-            </marker>
-          </defs>
-          <g v-for="edge in graphEdges" :key="edge.key">
-            <path
-              :d="edge.path"
-              fill="none"
-              :stroke="arrowColor"
-              stroke-width="1.5"
-              stroke-dasharray="5,3"
-              marker-end="url(#arrow)"
-              opacity="0.75"
-            />
-            <text
-              :x="edge.labelX"
-              :y="edge.labelY"
-              font-family="'Outfit', sans-serif"
-              font-size="10"
-              :fill="labelColor"
-              text-anchor="middle"
-              dominant-baseline="middle"
-            >{{ edge.label }}</text>
-          </g>
-        </svg>
-        <div
-          v-for="node in graphNodes"
-          :key="node.id"
-          class="graph-node"
-          :class="{'active-node': activeSceneId === node.id}"
-          :style="{left: node.x + 'px', top: node.y + 'px'}"
-          @click="activeSceneId = node.id; view = 'editor'; $nextTick(() => scrollToScene(node.id))"
-        >
-          <div class="node-header">
-            <div class="node-scenario">{{ node.scenario }}</div>
-            <div class="node-title">{{ node.title }}</div>
-          </div>
-          <div class="node-body">{{ node.excerpt }}</div>
-          <div class="node-diverts" v-if="node.diverts.length">
-            <span v-for="d in node.diverts" :key="d.target" class="node-divert-chip">→ {{ d.target }}</span>
+      <div
+        id="graph-viewport"
+        class="graph-canvas-viewport"
+        ref="graphViewportEl"
+        @wheel="onGraphWheel"
+        @mousedown="onCanvasMouseDown"
+      >
+        <div id="graph-canvas" :style="graphCanvasFullStyle" ref="graphCanvas">
+          <svg id="graph-svg" ref="graphSvg">
+            <defs>
+              <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" :fill="arrowColor" />
+              </marker>
+            </defs>
+            <g v-for="edge in graphEdges" :key="edge.key">
+              <path
+                :d="edge.path"
+                fill="none"
+                :stroke="arrowColor"
+                stroke-width="1.5"
+                stroke-dasharray="5,3"
+                marker-end="url(#arrow)"
+                opacity="0.75"
+              />
+              <text
+                :x="edge.labelX"
+                :y="edge.labelY"
+                font-family="'Outfit', sans-serif"
+                font-size="10"
+                :fill="labelColor"
+                text-anchor="middle"
+                dominant-baseline="middle"
+              >{{ edge.label }}</text>
+            </g>
+          </svg>
+          <div
+            v-for="(node, nodeIdx) in graphNodes"
+            :key="node.id"
+            class="graph-node"
+            :class="{'active-node': selectedNodeIndex === nodeIdx}"
+            :style="{left: node.x + 'px', top: node.y + 'px', borderLeftColor: node.color || 'var(--c-scene-border)'}"
+            @mousedown="onNodeMouseDown(nodeIdx, node, $event)"
+          >
+            <div class="node-header" :style="node.color ? {background: nodeTint(node.color)} : {}">
+              <div class="node-scenario">{{ node.scenario }}</div>
+              <div class="node-title">{{ node.title }}</div>
+            </div>
+            <div class="node-body">{{ node.excerpt }}</div>
+            <div class="node-annotation" v-if="node.annotation"><i class="ti ti-note"></i> {{ node.annotation }}</div>
+            <div class="node-diverts" v-if="node.diverts.length">
+              <span v-for="d in node.diverts" :key="d.target" class="node-divert-chip">→ {{ d.target }}</span>
+            </div>
           </div>
         </div>
+
+        <div class="graph-toolbar">
+          <button class="graph-btn" title="Zoom in" @click="zoomIn"><i class="ti ti-zoom-in"></i></button>
+          <button class="graph-btn" title="Zoom out" @click="zoomOut"><i class="ti ti-zoom-out"></i></button>
+          <button class="graph-btn" title="Reset view" @click="resetView"><i class="ti ti-focus-2"></i></button>
+          <div class="graph-toolbar-sep"></div>
+          <button class="graph-btn" title="Reset manual layout" @click="resetLayout"><i class="ti ti-layout-grid"></i></button>
+        </div>
+      </div>
+
+      <div id="graph-node-panel" v-if="panelScene" :style="{width: nodePanelWidth + 'px'}">
+        <div class="graph-panel-resize-handle" @mousedown="onPanelResizeDown"></div>
+        <div class="graph-panel-header">
+          <div class="graph-panel-titles">
+            <span class="graph-panel-scenario">{{ panelScene.scenario }}</span>
+            <span class="graph-panel-title">{{ panelScene.title }}</span>
+          </div>
+          <div class="graph-panel-actions">
+            <button class="nav-icon-btn" title="Open in Editor" @click="openPanelInEditor"><i class="ti ti-edit"></i></button>
+            <button class="nav-icon-btn" title="Close" @click="selectedNodeIndex = null"><i class="ti ti-x"></i></button>
+          </div>
+        </div>
+        <div class="graph-panel-style-row">
+          <span class="graph-panel-style-label">Color</span>
+          <button
+            v-for="c in paletteColors"
+            :key="c"
+            class="color-swatch"
+            :class="{selected: nodeColor === c}"
+            :style="{background: c}"
+            :title="c"
+            @click="nodeColor = c"
+          ></button>
+          <button
+            class="color-swatch color-swatch-custom-trigger"
+            :class="{selected: nodeColor && !paletteColors.includes(nodeColor)}"
+            :style="(nodeColor && !paletteColors.includes(nodeColor)) ? {background: nodeColor} : {}"
+            title="Pick a custom color"
+            @click="triggerCustomColorPicker"
+          ><i class="ti ti-palette" v-if="!nodeColor || paletteColors.includes(nodeColor)"></i></button>
+          <input
+            type="color"
+            class="color-swatch-custom-input"
+            ref="customColorInput"
+            :value="nodeColor || '#7a3e1a'"
+            @input="nodeColor = $event.target.value"
+          >
+          <button
+            class="color-swatch color-swatch-none"
+            :class="{selected: !nodeColor}"
+            title="No color"
+            @click="nodeColor = null"
+          ><i class="ti ti-x"></i></button>
+        </div>
+        <div class="graph-panel-annotation-row">
+          <textarea
+            class="graph-panel-annotation-input"
+            rows="1"
+            placeholder="Add an annotation about this scene… (saved in the layout YAML, not the script)"
+            v-model="nodeAnnotation"
+          ></textarea>
+        </div>
+        <div class="graph-panel-body">
+          <pre class="gnp-highlight gno-highlight" ref="panelHighlightPre" aria-hidden="true" v-html="panelHighlightedSource"></pre>
+          <textarea
+            class="gnp-textarea"
+            v-model="selectedNodeSource"
+            spellcheck="false"
+            @scroll="onPanelScroll"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Presentation view -->
+    <div id="presentation-view" v-show="view === 'presentation'">
+      <div class="pres-subtabs">
+        <button class="pres-subtab" :class="{active: presentationTab === 'images'}" @click="presentationTab = 'images'">
+          <i class="ti ti-photo"></i> Image Libraries
+        </button>
+        <button class="pres-subtab" :class="{active: presentationTab === 'entities'}" @click="presentationTab = 'entities'">
+          <i class="ti ti-users"></i> Entity
+        </button>
+        <button class="pres-subtab" :class="{active: presentationTab === 'scenarios'}" @click="presentationTab = 'scenarios'">
+          <i class="ti ti-map"></i> Scenarios
+        </button>
+      </div>
+
+      <div class="pres-subtab-body">
+        <template v-if="presentationTab === 'images'">
+          <div class="lib-add-row">
+            <input
+              class="lib-add-input"
+              type="text"
+              v-model="newLibraryUrl"
+              placeholder="Metadata file URL or images directory URL…"
+              @keydown.enter="addImageLibraryFromInput"
+            >
+            <button class="tb-btn" @click="addImageLibraryFromInput"><i class="ti ti-plus"></i> Add library</button>
+          </div>
+          <div class="lib-add-hint">
+            A directory URL is fetched as <code>{{ defaultCatalogFilename }}</code> inside it (gnō's simple catalog format). A direct URL ending in <code>.yaml</code>/<code>.yml</code>/<code>.json</code> is fetched as-is and may also be an IIIF Collection or a schema.org ImageGallery.
+          </div>
+
+          <div class="lib-list" v-if="imageLibraryIds.length">
+            <div class="lib-card" v-for="id in imageLibraryIds" :key="id">
+              <div class="lib-card-header">
+                <input
+                  class="lib-id-input"
+                  type="text"
+                  :value="id"
+                  spellcheck="false"
+                  @change="renameImageLibrary(id, $event.target.value)"
+                  title="Library id"
+                >
+                <span class="lib-url" :title="imageLibraries[id]">{{ imageLibraries[id] }}</span>
+                <span class="lib-status" :class="{error: libraryCatalogs[id] && libraryCatalogs[id].status === 'error'}">
+                  <template v-if="!libraryCatalogs[id] || libraryCatalogs[id].status === 'loading'">Loading…</template>
+                  <template v-else-if="libraryCatalogs[id].status === 'error'">{{ libraryCatalogs[id].error }}</template>
+                  <template v-else>{{ libraryCatalogs[id].images.length }} image(s) · {{ libraryCatalogs[id].format }}</template>
+                </span>
+                <span class="lib-status-broken" v-if="brokenCount(id) > 0" :title="'Path in the catalog does not resolve to a real file'">
+                  <i class="ti ti-alert-triangle"></i> {{ brokenCount(id) }} broken
+                </span>
+                <div class="lib-actions">
+                  <button class="nav-icon-btn" title="Reload" @click="loadLibraryCatalog(id)"><i class="ti ti-refresh"></i></button>
+                  <button class="nav-icon-btn" title="Delete library" @click="removeImageLibrary(id)"><i class="ti ti-trash"></i></button>
+                </div>
+              </div>
+              <div
+                class="lib-empty"
+                v-if="libraryCatalogs[id] && libraryCatalogs[id].status === 'loaded' && libraryCatalogs[id].images.length === 0"
+              >No images found in this catalog.</div>
+              <div class="image-grid" v-if="libraryCatalogs[id] && libraryCatalogs[id].images.length">
+                <div
+                  class="image-tile"
+                  :class="{broken: img.broken}"
+                  v-for="img in libraryCatalogs[id].images.slice(0, libraryCatalogs[id].visibleCount)"
+                  :key="img.id"
+                  :title="img.broken ? (img.label + ' — failed to load: ' + img.thumbnailUrl) : img.label"
+                >
+                  <img v-if="!img.broken" :src="img.thumbnailUrl" :alt="img.label" loading="lazy" @error="img.broken = true">
+                  <div class="image-tile-broken" v-else><i class="ti ti-photo-off"></i></div>
+                  <span class="image-tile-label">{{ img.label }}</span>
+                </div>
+              </div>
+              <div
+                class="load-more-row"
+                v-if="libraryCatalogs[id] && libraryCatalogs[id].images.length > libraryCatalogs[id].visibleCount"
+              >
+                <button class="tb-btn ghost" @click="showMoreImages(id)">
+                  Load more ({{ libraryCatalogs[id].images.length - libraryCatalogs[id].visibleCount }} remaining)
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="pres-subtab-placeholder" v-else>
+            No image libraries yet. Add one above by pasting a metadata file URL or an images directory URL.
+          </div>
+        </template>
+
+        <template v-else-if="presentationTab === 'entities'">
+          <div class="lib-add-row">
+            <input
+              class="lib-add-input"
+              type="text"
+              v-model="newEntityId"
+              placeholder="@name of an entity the narrative doesn't mention…"
+              spellcheck="false"
+              @keydown.enter="addExtraEntity"
+            >
+            <button class="tb-btn" @click="addExtraEntity"><i class="ti ti-plus"></i> Add entity</button>
+          </div>
+          <div class="lib-add-hint">
+            Entities written as <code>@name</code> in the narrative are listed automatically. Add one here for scenery or props (a throne, a tree) that only appear in the scenario designs.
+          </div>
+
+          <div class="lib-list" v-if="entityIdsForPresentation.length">
+            <div class="lib-card" v-for="entId in entityIdsForPresentation" :key="entId">
+              <div class="lib-card-header" style="cursor: pointer;" @click="toggleEntityImages(entId)">
+                <i class="ti" :class="openEntityImages.has(entId) ? 'ti-chevron-down' : 'ti-chevron-right'"></i>
+                <span class="lib-id-input" style="border-color: transparent; cursor: pointer;">{{ entId }}</span>
+                <span class="lib-url" v-if="isDeclaredEntity(entId)">not in the narrative</span>
+                <span class="lib-status">{{ (entityAssociations[entId] || []).length }} image(s)</span>
+                <div class="lib-actions" v-if="isDeclaredEntity(entId)">
+                  <button class="nav-icon-btn" title="Remove entity" @click.stop="removeExtraEntity(entId)"><i class="ti ti-trash"></i></button>
+                </div>
+              </div>
+              <template v-if="openEntityImages.has(entId)">
+                <div class="ent-assoc-list" v-if="(entityAssociations[entId] || []).length">
+                  <div class="ent-assoc-row" v-for="(assoc, idx) in entityAssociations[entId]" :key="assoc.library + '::' + assoc.image">
+                    <div class="ent-assoc-thumb" :class="{broken: !resolveAssocImage(assoc)}">
+                      <img v-if="resolveAssocImage(assoc)" :src="resolveAssocImage(assoc).thumbnailUrl" :alt="assoc.image">
+                      <i class="ti ti-photo-off" v-else></i>
+                    </div>
+                    <div class="ent-assoc-meta">
+                      <span class="ent-assoc-ref">{{ assoc.library }} / {{ assoc.image }}</span>
+                      <div class="ent-assoc-labels">
+                        <span class="ent-label-chip" v-for="lab in assoc.labels" :key="lab">
+                          {{ lab }}
+                          <button title="Remove label" @click="removeLabelFromAssociation(entId, idx, lab)"><i class="ti ti-x"></i></button>
+                        </span>
+                        <input
+                          class="ent-label-input"
+                          type="text"
+                          placeholder="+ label"
+                          spellcheck="false"
+                          @keydown.enter="onAddLabel(entId, idx, $event)"
+                        >
+                      </div>
+                    </div>
+                    <button class="nav-icon-btn" title="Remove image" @click="removeEntityImage(entId, idx)"><i class="ti ti-trash"></i></button>
+                  </div>
+                </div>
+                <div class="lib-empty" v-else>No images associated yet.</div>
+
+                <div class="ent-card-picker">
+                  <button class="tb-btn ghost" @click="togglePicker(entId)">
+                    <i class="ti ti-plus"></i> {{ imagePickerEntity === entId ? 'Close picker' : 'Add image' }}
+                  </button>
+                  <div class="image-grid" v-if="imagePickerEntity === entId">
+                    <div
+                      class="image-tile"
+                      :class="{'already-added': isImageAssociated(entId, img.library, img.id)}"
+                      v-for="img in allCatalogImages"
+                      :key="img.library + '::' + img.id"
+                      :title="img.library + ' / ' + img.label"
+                      @click="associateImage(entId, img.library, img.id)"
+                    >
+                      <img :src="img.thumbnailUrl" :alt="img.label" loading="lazy">
+                      <span class="image-tile-label">{{ img.label }}</span>
+                      <i class="ti ti-check image-tile-check" v-if="isImageAssociated(entId, img.library, img.id)"></i>
+                    </div>
+                    <div class="pres-subtab-placeholder" v-if="!allCatalogImages.length">
+                      No images loaded yet — add an image library first.
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div class="pres-subtab-placeholder" v-else>
+            No entities yet. Reference one in the narrative with <code>@name</code>, or add one above, then attach images to it.
+          </div>
+        </template>
+
+        <template v-else>
+          <div class="lib-list" v-if="scenarioIdsForPresentation.length">
+            <div class="lib-card" v-for="name in scenarioIdsForPresentation" :key="name">
+              <div class="lib-card-header" style="cursor: pointer;" @click="toggleScenario(name)">
+                <i class="ti" :class="openScenario === name ? 'ti-chevron-down' : 'ti-chevron-right'"></i>
+                <span class="lib-id-input" style="border-color: transparent;">{{ name }}</span>
+                <span class="lib-status">{{ (scenarioDesigns[name] && scenarioDesigns[name].items.length) || 0 }} item(s)</span>
+                <div class="lib-actions">
+                  <button class="nav-icon-btn" title="Reset scenario" @click.stop="resetScenario(name)"><i class="ti ti-refresh"></i></button>
+                </div>
+              </div>
+
+              <template v-if="openScenario === name">
+               <div class="scenario-workspace" :class="{wide: wideScenario}">
+                <div class="scenario-toolbar">
+                <span class="scenario-wide-title" v-if="wideScenario"><i class="ti ti-map"></i> {{ name }}</span>
+                <div class="scenario-bg-row">
+                  <template v-if="scenarioDesigns[name].background">
+                    <img class="scenario-bg-thumb" :src="scenarioDesigns[name].background.url" alt="background">
+                    <span class="lib-url">{{ scenarioDesigns[name].background.library }} / {{ scenarioDesigns[name].background.image }}</span>
+                    <button class="tb-btn ghost" @click="removeScenarioBackground(name)">Remove background</button>
+                  </template>
+                  <template v-else>
+                    <button class="tb-btn ghost" @click="toggleBgPicker(name)">
+                      <i class="ti ti-photo"></i> {{ bgPickerScenario === name ? 'Close picker' : 'Choose background' }}
+                    </button>
+                  </template>
+                </div>
+                <div class="scenario-size-row">
+                  <span class="scenario-size-label">Canvas size</span>
+                  <input class="inspector-input num" type="number" :min="100" :max="10000" step="1"
+                         :value="scenarioDesigns[name].width" @change="setScenarioSize(name, 'width', $event)" title="Width (px)">
+                  <span class="scenario-size-x">×</span>
+                  <input class="inspector-input num" type="number" :min="100" :max="10000" step="1"
+                         :value="scenarioDesigns[name].height" @change="setScenarioSize(name, 'height', $event)" title="Height (px)">
+                  <button class="scenario-lock-btn" :class="{active: lockCanvasRatio}" @click="lockCanvasRatio = !lockCanvasRatio"
+                          :title="lockCanvasRatio ? 'Proportion locked — click to unlock' : 'Lock the proportion (or hold Shift while dragging)'">
+                    <i class="ti" :class="lockCanvasRatio ? 'ti-lock' : 'ti-lock-open'"></i>
+                  </button>
+                  <span class="scenario-size-hint">px — the background fills the canvas; drag its bottom-right corner to resize (hold Shift to keep the proportion).</span>
+                </div>
+                <div class="image-grid" v-if="bgPickerScenario === name">
+                  <div
+                    class="image-tile"
+                    v-for="img in allCatalogImages"
+                    :key="img.library + '::' + img.id"
+                    :title="img.library + ' / ' + img.label"
+                    @click="setScenarioBackground(name, img.library, img.id); bgPickerScenario = null"
+                  >
+                    <img :src="img.thumbnailUrl" :alt="img.label" loading="lazy">
+                    <span class="image-tile-label">{{ img.label }}</span>
+                  </div>
+                  <div class="pres-subtab-placeholder" v-if="!allCatalogImages.length">
+                    No images loaded yet — add an image library first.
+                  </div>
+                </div>
+
+                <div class="scenario-mode-toggle">
+                  <button class="scenario-mode-btn" :class="{active: placeMode === 'entity'}" @click="placeMode = 'entity'">
+                    <i class="ti ti-user"></i> Place: Entity
+                  </button>
+                  <button class="scenario-mode-btn" :class="{active: placeMode === 'text'}" @click="placeMode = 'text'">
+                    <i class="ti ti-typography"></i> Place: Text
+                  </button>
+                  <span class="scenario-mode-hint" v-if="placeMode === 'text'">Drag over the canvas to draw the text area.</span>
+                  <button class="scenario-mode-btn scenario-wide-btn" @click="wideScenario = !wideScenario"
+                          :title="wideScenario ? 'Back to the normal layout (Esc)' : 'Widen the editor: hide everything around it'">
+                    <i class="ti" :class="wideScenario ? 'ti-arrows-minimize' : 'ti-arrows-maximize'"></i> {{ wideScenario ? 'Exit wide (Esc)' : 'Wide editor' }}
+                  </button>
+                </div>
+                </div>
+
+                <div class="scenario-editor">
+                  <div class="scenario-canvas-wrap">
+                    <svg
+                      class="scenario-svg"
+                      :class="{'text-mode': placeMode === 'text'}"
+                      :width="scenarioDesigns[name].width"
+                      :height="scenarioDesigns[name].height"
+                      :viewBox="'0 0 ' + scenarioDesigns[name].width + ' ' + scenarioDesigns[name].height"
+                      @dragover.prevent
+                      @drop="onCanvasDrop($event, name)"
+                      @mousedown="onScenarioCanvasMouseDown($event, name)"
+                    >
+                      <image
+                        v-if="scenarioDesigns[name].background"
+                        id="background"
+                        x="0" y="0"
+                        :width="scenarioDesigns[name].width" :height="scenarioDesigns[name].height"
+                        :href="scenarioDesigns[name].background.url"
+                        preserveAspectRatio="xMidYMid slice"
+                      />
+                      <template v-for="(item, idx) in scenarioDesigns[name].items" :key="item.svgId">
+                        <g v-if="item.kind === 'entity'">
+                          <image
+                            :id="item.svgId"
+                            :x="item.x" :y="item.y" :width="item.w" :height="item.h"
+                            :href="item.url" style="cursor: move;"
+                            @mousedown="onItemMouseDown(name, idx, item, $event)"
+                          />
+                          <rect v-if="selectedItemId === item.svgId" class="scenario-selection" :x="item.x" :y="item.y" :width="item.w" :height="item.h" />
+                          <rect
+                            v-if="selectedItemId === item.svgId"
+                            class="scenario-resize-handle"
+                            :x="item.x + item.w - 6" :y="item.y + item.h - 6" width="12" height="12"
+                            @mousedown="onItemResizeMouseDown(name, idx, item, $event)"
+                          />
+                          <text :x="item.x + item.w/2" :y="item.y + item.h + 11" text-anchor="middle" font-size="9" fill="var(--c-muted)" style="pointer-events:none;">{{ item.svgId }}</text>
+                          <text :x="item.x + item.w - 2" :y="item.y + 10" text-anchor="end" font-size="12" fill="#a33" style="cursor:pointer;" @mousedown.stop @click.stop="removeScenarioItem(name, idx)">✕</text>
+                        </g>
+                        <g v-else-if="item.kind === 'anchor'" :id="item.svgId" :transform="'translate(' + item.x + ',' + item.y + ')'">
+                          <ellipse :rx="item.w / 2" :ry="item.h / 2" fill="none" stroke="var(--c-accent)" :stroke-width="selectedItemId === item.svgId ? 3.5 : 2" stroke-dasharray="4,3" style="cursor: move;" @mousedown="onItemMouseDown(name, idx, item, $event)" />
+                          <rect v-if="selectedItemId === item.svgId" class="scenario-selection" :x="-item.w / 2" :y="-item.h / 2" :width="item.w" :height="item.h" />
+                          <text :y="item.h / 2 + 12" text-anchor="middle" font-size="9" fill="var(--c-accent)" style="pointer-events: none;">{{ item.svgId }}</text>
+                          <text :x="item.w / 2" :y="-item.h / 2 + 6" text-anchor="end" font-size="12" fill="#a33" style="cursor:pointer;" @mousedown.stop @click.stop="removeScenarioItem(name, idx)">✕</text>
+                          <rect
+                            v-if="selectedItemId === item.svgId"
+                            class="scenario-resize-handle"
+                            :x="item.w / 2 - 6" :y="item.h / 2 - 6" width="12" height="12"
+                            @mousedown="onItemResizeMouseDown(name, idx, item, $event)"
+                          />
+                        </g>
+                        <g v-else>
+                          <rect
+                            class="scenario-text-frame" :class="{selected: selectedItemId === item.svgId}"
+                            :x="item.x" :y="item.y" :width="item.w" :height="item.h"
+                            @mousedown="onItemMouseDown(name, idx, item, $event)"
+                          />
+                          <foreignObject class="scenario-text-fo" :x="item.x" :y="item.y" :width="item.w" :height="item.h">
+                            <div class="scenario-text-body" :style="{fontFamily: item.fontFamily, fontSize: item.fontSize + 'px', color: item.color}">{{ item.text }}</div>
+                          </foreignObject>
+                          <text :x="item.x" :y="item.y - 3" font-size="9" fill="var(--c-muted)" style="pointer-events:none;">{{ item.svgId }}</text>
+                          <text :x="item.x + item.w - 2" :y="item.y - 3" text-anchor="end" font-size="12" fill="#a33" style="cursor:pointer;" @mousedown.stop @click.stop="removeScenarioItem(name, idx)">✕</text>
+                          <rect
+                            v-if="selectedItemId === item.svgId"
+                            class="scenario-resize-handle"
+                            :x="item.x + item.w - 6" :y="item.y + item.h - 6" width="12" height="12"
+                            @mousedown="onItemResizeMouseDown(name, idx, item, $event)"
+                          />
+                        </g>
+                      </template>
+                      <rect
+                        v-if="textDraw && textDraw.name === name"
+                        class="scenario-text-frame selected" style="pointer-events: none;"
+                        :x="textDrawRect().x" :y="textDrawRect().y" :width="textDrawRect().w" :height="textDrawRect().h"
+                      />
+                      <!-- canvas (background) resize handle: design-time only, never exported -->
+                      <g :transform="'translate(' + (scenarioDesigns[name].width - 18) + ',' + (scenarioDesigns[name].height - 18) + ')'"
+                         class="scenario-canvas-handle" @mousedown="onBgResizeMouseDown(name, $event)">
+                        <title>Drag to resize the background</title>
+                        <rect width="18" height="18" rx="3" />
+                        <path d="M6 14 L14 6 M10 14 L14 10" />
+                      </g>
+                    </svg>
+                  </div>
+
+                  <div class="scenario-side">
+                  <div class="scenario-inspector">
+                    <div class="scenario-palette-title">Selected item</div>
+                    <div class="inspector-empty" v-if="!selectedItem">
+                      Click an entity, anchor or text area on the canvas to edit its ID and properties.
+                    </div>
+                    <template v-else>
+                      <div class="inspector-kind">
+                        <i class="ti" :class="{'ti-user': selectedItem.kind === 'entity', 'ti-map-pin': selectedItem.kind === 'anchor', 'ti-typography': selectedItem.kind === 'text'}"></i>
+                        {{ selectedItem.kind }}<template v-if="selectedItem.kind === 'entity'"> · {{ selectedItem.entityId }}</template>
+                      </div>
+
+                      <label class="inspector-label">ID</label>
+                      <input class="inspector-input mono" :class="{invalid: idError}" type="text" spellcheck="false"
+                             v-model="idDraft" @input="onIdDraftInput" @change="renameSelectedItem(idDraft)">
+                      <div class="inspector-error" v-if="idError">{{ idError }}</div>
+                      <div class="inspector-suggest" v-if="idSuggestions.length">
+                        <span class="inspector-suggest-label">Suggested IDs</span>
+                        <button class="inspector-chip" v-for="sid in idSuggestions" :key="sid"
+                                @mousedown.prevent @click="renameSelectedItem(sid)">{{ sid }}</button>
+                      </div>
+
+                      <label class="inspector-label">Width × height (px)</label>
+                      <div class="inspector-row compact">
+                        <input class="inspector-input num" type="number" title="Width" :value="selectedItem.w" @change="setItemSize(selectedItem, 'w', $event)">
+                        <span class="scenario-size-x">×</span>
+                        <input class="inspector-input num" type="number" title="Height" :value="selectedItem.h" @change="setItemSize(selectedItem, 'h', $event)">
+                        <button class="scenario-lock-btn" :class="{active: lockItemRatio}" @click="lockItemRatio = !lockItemRatio"
+                                :title="lockItemRatio ? 'Proportion locked — click to unlock' : 'Lock the proportion (or hold Shift while dragging the corner handle)'">
+                          <i class="ti" :class="lockItemRatio ? 'ti-lock' : 'ti-lock-open'"></i>
+                        </button>
+                      </div>
+
+                      <template v-if="selectedItem.kind === 'entity'">
+                        <button class="tb-btn ghost inspector-convert" @click="convertSelectedToAnchor">
+                          <i class="ti ti-map-pin"></i> Convert to anchor
+                        </button>
+                        <div class="inspector-hint">Removes the image and keeps the position and size, as a placeholder for the entity.</div>
+                      </template>
+
+                      <template v-if="selectedItem.kind === 'text'">
+                        <label class="inspector-label">Initial text</label>
+                        <textarea class="inspector-input" rows="4" v-model="selectedItem.text"></textarea>
+
+                        <label class="inspector-label">Font</label>
+                        <select class="inspector-input" v-model="selectedItem.fontFamily">
+                          <option v-if="!isKnownFont(selectedItem.fontFamily)" :value="selectedItem.fontFamily">{{ selectedItem.fontFamily }}</option>
+                          <option v-for="f in TEXT_FONTS" :key="f.value" :value="f.value">{{ f.label }}</option>
+                        </select>
+
+                        <div class="inspector-row">
+                          <div>
+                            <label class="inspector-label">Font size (px)</label>
+                            <input class="inspector-input num" type="number" min="6" max="300" step="1"
+                                   :value="selectedItem.fontSize" @change="setItemNumber(selectedItem, 'fontSize', $event, 6, 300)">
+                          </div>
+                          <div>
+                            <label class="inspector-label">Color</label>
+                            <input class="inspector-color" type="color" v-model="selectedItem.color">
+                          </div>
+                        </div>
+
+                        <label class="inspector-label">Position (px)</label>
+                        <div class="inspector-row compact">
+                          <input class="inspector-input num" type="number" title="X" :value="selectedItem.x" @change="setItemNumber(selectedItem, 'x', $event, -10000, 10000)">
+                          <span class="scenario-size-x">,</span>
+                          <input class="inspector-input num" type="number" title="Y" :value="selectedItem.y" @change="setItemNumber(selectedItem, 'y', $event, -10000, 10000)">
+                        </div>
+                      </template>
+                    </template>
+                  </div>
+
+                  <div class="scenario-palette">
+                    <div class="scenario-palette-title">Available entities</div>
+                    <div class="palette-entity" v-for="entId in entityIdsForPresentation" :key="entId">
+                      <div class="palette-entity-id">{{ entId }}</div>
+                      <div class="palette-tiles" v-if="(entityAssociations[entId] || []).length">
+                        <div
+                          class="palette-tile"
+                          v-for="(assoc, ai) in entityAssociations[entId]"
+                          :key="ai"
+                          draggable="true"
+                          @dragstart="onPaletteDragStart($event, entId, assoc)"
+                          :title="entId + (assoc.labels.length ? ' (' + assoc.labels.join(', ') + ')' : '')"
+                        >
+                          <img v-if="resolveAssocImage(assoc)" :src="resolveAssocImage(assoc).thumbnailUrl" :alt="entId">
+                          <div class="palette-tile-broken" v-else><i class="ti ti-photo-off"></i></div>
+                          <span class="palette-tile-label" v-if="assoc.labels.length">{{ assoc.labels.join(', ') }}</span>
+                        </div>
+                      </div>
+                      <div class="palette-entity-empty" v-else>No images</div>
+                    </div>
+                    <div class="pres-subtab-placeholder" v-if="!entityIdsForPresentation.length">
+                      No entities yet.
+                    </div>
+                  </div>
+                  </div>
+                </div>
+               </div>
+              </template>
+            </div>
+          </div>
+          <div class="pres-subtab-placeholder" v-else>
+            No scenarios yet. Group scenes under a scenario in the narrative (<code># Scene: Scenario Name</code>), then come back here to design its background.
+          </div>
+        </template>
       </div>
     </div>
 
     <!-- Player view -->
     <div id="player-view" v-show="view === 'player'">
       <div id="player-scroll">
-        <div id="player-content">
+        <div id="player-content" :class="{graphic: playerUseGraphic}">
           <div v-if="!playerCurrentScene" class="player-empty">
             No scenes to play yet.
           </div>
           <template v-else>
+            <div class="player-mode-toggle">
+              <button
+                :class="{active: playerUseGraphic}"
+                :disabled="!playerDesign"
+                :title="playerDesign ? 'Play on the scenario\'s graphic presentation' : 'This scenario has no presentation set up (Presentation → Scenarios)'"
+                @click="playerGraphic = true"
+              ><i class="ti ti-photo"></i> Graphic</button>
+              <button :class="{active: !playerUseGraphic}" title="Play as text" @click="playerGraphic = false">
+                <i class="ti ti-align-left"></i> Text
+              </button>
+            </div>
             <div class="player-warning" v-if="!hasExplicitStart">
               No scene marked <code>(Start)</code> was found — beginning at the first scene instead.
             </div>
@@ -1118,26 +2327,56 @@ html, body { height: 100%; font-family: var(--font-ui); background: var(--c-bg);
               <span class="scene-scenario">Scenario: {{ playerCurrentScene.scenario }}</span>
             </div>
 
-            <div :key="playerCurrentScene.id + ':' + playerRevealCount" v-html="playerCurrentBeat"></div>
+            <div v-if="playerStage" class="player-stage-wrap" :style="{maxWidth: playerStage.width + 'px'}">
+              <svg
+                class="player-stage"
+                xmlns="http://www.w3.org/2000/svg"
+                v-bind="{viewBox: '0 0 ' + playerStage.width + ' ' + playerStage.height}"
+              ><!-- v-bind object: this template is parsed as HTML, which would lowercase a :viewBox attribute name -->
+                <image
+                  v-if="playerStage.background"
+                  x="0" y="0" :width="playerStage.width" :height="playerStage.height"
+                  :href="playerStage.background" preserveAspectRatio="xMidYMid slice"
+                />
+                <template v-for="layer in playerStage.layers" :key="layer.key">
+                  <image
+                    v-if="layer.type === 'image'"
+                    :x="layer.x" :y="layer.y" :width="layer.w" :height="layer.h"
+                    :href="layer.url" preserveAspectRatio="xMidYMid meet"
+                    :class="{'stage-click': layer.click}"
+                    @click="onStageClick(layer.click)"
+                  />
+                  <foreignObject
+                    v-else
+                    :x="layer.x" :y="layer.y" :width="layer.w" :height="layer.h"
+                    :class="{'stage-click': layer.click, 'stage-static': !layer.click && !layer.live}"
+                    @click="onStageClick(layer.click)"
+                  >
+                    <div class="player-stage-text" :class="{pre: layer.pre}" :style="layer.style" v-html="layer.html"></div>
+                  </foreignObject>
+                </template>
+              </svg>
+            </div>
+            <div v-else :key="playerCurrentScene.id + ':' + playerRevealCount" v-html="playerCurrentBeat"></div>
 
             <div class="player-controls">
               <button
-                v-if="!playerShowMenu"
+                v-if="playerShowContinueButton"
                 class="player-continue-btn"
                 title="Continue (Space)"
                 @click="playerAdvance"
               >
                 <i class="ti ti-player-play"></i>
               </button>
-              <template v-else-if="playerCurrentScene.marker === 'end'">
+              <template v-else-if="playerShowMenu && playerCurrentScene.marker === 'end'">
                 <div class="player-end-panel">
                   <div class="player-end-title">— The End —</div>
                   <button class="tb-btn ghost" @click="playerRestart"><i class="ti ti-refresh"></i> Restart</button>
                 </div>
               </template>
-              <div class="player-choices" v-else-if="playerCurrentScene.diverts.length">
+              <div class="player-choices" v-else-if="playerShowMenu && playerCurrentScene.diverts.length">
                 <button
-                  v-for="d in playerCurrentScene.diverts"
+                  v-for="d in playerMenuDiverts"
                   :key="d.target"
                   class="player-choice-btn"
                   @click="playerChoose(d.target)"
@@ -1145,7 +2384,7 @@ html, body { height: 100%; font-family: var(--font-ui); background: var(--c-bg);
                   {{ d.label }} <i class="ti ti-arrow-right"></i>
                 </button>
               </div>
-              <div class="player-end-panel" v-else>
+              <div class="player-end-panel" v-else-if="playerShowMenu">
                 <div class="player-end-title">No diverts lead out of this scene.</div>
                 <button class="tb-btn ghost" @click="playerRestart"><i class="ti ti-refresh"></i> Restart</button>
               </div>
@@ -1155,7 +2394,7 @@ html, body { height: 100%; font-family: var(--font-ui); background: var(--c-bg);
       </div>
 
       <!-- Entities on stage: separate from the narrative text, scoped to the current scene -->
-      <aside id="player-entities-panel" v-if="playerCurrentScene">
+      <aside id="player-entities-panel" v-if="playerCurrentScene && !playerUseGraphic">
         <div class="nav-section-label">In this scene</div>
         <div v-if="playerEntityRoster.length === 0" class="player-entities-empty">No entities on stage yet.</div>
         <div v-for="e in playerEntityRoster" :key="e.id" class="player-entity-row">
@@ -1170,11 +2409,17 @@ html, body { height: 100%; font-family: var(--font-ui); background: var(--c-bg);
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <script>
 const { createApp, ref, reactive, computed, watch, nextTick } = Vue;
 
-const STORAGE_PREFIX = 'gno-narrative:';
+// v2: a JSON bundle (source + graph layout + presentation setup), replacing
+// v1's bare narrative text. Deliberately a new prefix rather than sniffing
+// the stored value's shape — old saves are left untouched under their old
+// key, not silently reinterpreted; see the migration note in gno/README.md.
+const STORAGE_PREFIX = 'gno-narrative-v2:';
 const CURRENT_KEY = 'gno-current-draft';
 // Sentinel stored in loadedNarrativeName while the bundled demo is loaded —
 // it isn't a real localStorage entry, so it can never collide with a saved name.
@@ -1184,7 +2429,7 @@ const DEMO_MARKER = '__demo__';
 // never shown automatically, so a blank editor always starts truly empty.
 // Demonstrates every construct documented in README.md: scenarios/scenes,
 // diverts, all three entity forms (standalone+state, dialog, inline), the
-// (Start)/(End) markers, the Player's pause triggers ("---" and a dialog or
+// (Start)/(End) markers, the Player's pause triggers ("--" and a dialog or
 // dialog set), and an entity leaving the scene (`@guard ->`) partway through,
 // so it drops out of the entities-on-stage panel.
 const DEMO_SOURCE = `# The Council Chamber: Castle (Start)
@@ -1505,7 +2750,7 @@ function restIsOnlyDiverts(lines, fromIdx, toIdx) {
 
 /* ── PLAYER: splits a scene's body into pause-delimited "beats" ── */
 // A new beat starts after:
-//   - a lone "---" line (the line itself is dropped, not shown), or
+//   - a lone "--" line (the line itself is dropped, not shown), or
 //   - the last line of a dialog (or an unbroken run of dialog lines) —
 //     *unless* nothing but the scene's diverts follow it, since presenting
 //     the diverts is already a wait and doesn't need a pause of its own.
@@ -1518,6 +2763,14 @@ function restIsOnlyDiverts(lines, fromIdx, toIdx) {
 // present — carrying its most recently given state — until either the scene
 // ends or a standalone "@entity ->" line (state text of exactly "->") marks
 // it as having exited.
+//
+// For the graphic Player, each beat additionally carries:
+//   - events: the entity mentions made in that beat, in order, as
+//     { entityId, labels, exit } — the raw material `foldStageFrames` replays;
+//   - speech: what is spoken/narrated in that beat, in source order, as
+//     { kind: 'free', html } (prose outside any dialog) or
+//     { kind: 'dialog', entityId, html } — routed to text areas by
+//     `routeSpeech`.
 function buildScenePlayback(scene, bodyEnd, source, entities) {
   const lines = source.split('\n');
   const bodyStart = scene.lineStart + 1;
@@ -1536,12 +2789,18 @@ function buildScenePlayback(scene, bodyEnd, source, entities) {
 
   const beats = [];
   const rosters = [];
+  const events = [];
+  const speeches = [];
   let current = [];
+  let currentEvents = [];
+  let currentSpeech = [];
+  let freeLines = []; // raw prose lines since the last dialog / beat boundary
   const roster = new Map(); // entityId -> latest known state ('' = present, no known state)
 
   function applyEntityOccurrence(occ) {
     if (occ.type === 'state' && occ.state.trim() === '->') {
       roster.delete(occ.entityId);
+      currentEvents.push({ entityId: occ.entityId, labels: [], exit: true });
       return;
     }
     if (occ.state) {
@@ -1549,25 +2808,45 @@ function buildScenePlayback(scene, bodyEnd, source, entities) {
     } else if (!roster.has(occ.entityId)) {
       roster.set(occ.entityId, '');
     }
+    currentEvents.push({ entityId: occ.entityId, labels: occ.state.split(/\s+/).filter(Boolean), exit: false });
+  }
+
+  // Prose becomes one speech item per uninterrupted run, so its position
+  // relative to the dialogs around it survives (they may share a text area).
+  function flushFree() {
+    const md = freeLines.join('\n').trim();
+    if (md) currentSpeech.push({ kind: 'free', html: marked.parse(md, { gfm: true, breaks: false }).trim() });
+    freeLines = [];
   }
 
   function flushBeat() {
+    flushFree();
     beats.push(current);
     rosters.push([...roster.entries()].map(([id, state]) => ({ id, state })));
+    events.push(currentEvents);
+    speeches.push(currentSpeech);
     current = [];
+    currentEvents = [];
+    currentSpeech = [];
   }
 
   for (let idx = bodyStart; idx <= bodyEnd; idx++) {
     const line = lines[idx];
     const trimmed = line.trim();
 
-    if (trimmed === '---') { flushBeat(); continue; }
+    if (trimmed === '--') { flushBeat(); continue; }
     if (DIVERT_RE.test(trimmed)) continue; // diverts are presented separately, not as beat content
 
     if (blockByLine.has(idx)) {
       const occ = blockByLine.get(idx);
       current.push('', entityBlockHtml(occ), '');
       applyEntityOccurrence(occ);
+      if (occ.type === 'dialog') {
+        flushFree();
+        currentSpeech.push({ kind: 'dialog', entityId: occ.entityId, html: marked.parseInline(occ.dialogLines.join(' ')).trim() });
+      } else {
+        freeLines.push(''); // a standalone entity line still separates the prose around it
+      }
       idx = occ.lineEnd;
       if (occ.type === 'dialog') {
         const nextIsDialog = blockByLine.has(idx + 1) && blockByLine.get(idx + 1).type === 'dialog';
@@ -1579,16 +2858,200 @@ function buildScenePlayback(scene, bodyEnd, source, entities) {
       const occs = mentionsByLine.get(idx);
       occs.forEach(applyEntityOccurrence);
       current.push(substituteMentions(line, occs));
+      freeLines.push(line.replace(MENTION_RE, (_, id) => entityDisplayName(id)));
       continue;
     }
     current.push(line);
+    freeLines.push(line);
   }
   flushBeat();
 
   return {
     beatsHtml: beats.map(ls => marked.parse(ls.join('\n'), { gfm: true, breaks: false }).trim()),
     rosters,
+    events,
+    speeches,
   };
+}
+
+/* ── PLAYER (graphic): what goes where on the scenario SVG ── */
+// The graphic Player replays a scene on the scenario's designed SVG instead of
+// printing it: entities appear at anchors, speech fills text areas, and a few
+// specially-named items act as buttons. Everything below is pure — it turns a
+// scene's playback, the entity/image associations and a scenario design into
+// a flat list of layers to draw — so it can be reasoned about (and tested)
+// without the Vue app.
+const MENTION_RE = /@([\p{L}\p{N}_'-]+)/gu;
+
+// "Dra_Sandra" -> "Dra Sandra": how an entity id reads in prose or as a speaker.
+function entityDisplayName(id) {
+  return String(id).replace(/^@/, '').replace(/_/g, ' ');
+}
+
+// Labels, anchor IDs and text-area IDs are all typed by hand in different
+// places, so they are compared case- and accent-insensitively.
+function idKey(s) {
+  return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+}
+
+// Index in `tokens` where `phrase` occurs as a contiguous run, or -1.
+function findPhrase(tokens, phrase) {
+  for (let i = 0; i + phrase.length <= tokens.length; i++) {
+    if (phrase.every((w, k) => tokens[i + k] === w)) return i;
+  }
+  return -1;
+}
+
+// Chooses which of an entity's images fits the labels written after it: the
+// association sharing the most labels wins (a label may be several words, and
+// must then appear as such), and on a tie the first one defined. `used` holds
+// the indices of the entity's labels the winner accounted for as state, so
+// whatever is left can be read as an anchor name. Returns null without images.
+function pickEntityImage(assocs, labels) {
+  const tokens = labels.map(idKey);
+  let best = null;
+  assocs.forEach(assoc => {
+    let score = 0;
+    const used = new Set();
+    assoc.labels.forEach(l => {
+      const phrase = l.trim().split(/\s+/).filter(Boolean).map(idKey);
+      const at = phrase.length ? findPhrase(tokens, phrase) : -1;
+      if (at < 0) return;
+      score++;
+      phrase.forEach((_, k) => used.add(at + k));
+    });
+    if (!best || score > best.score) best = { assoc, score, used };
+  });
+  return best;
+}
+
+// Replays a scene's entity events beat by beat and returns, for each beat, who
+// is on stage: [{ entityId, assoc, anchorId }] in order of entry. An entity's
+// labels are read as a state first (its image) and, of what remains, the first
+// one naming an anchor of the SVG says where it stands. A later mention that
+// says nothing about one of the two keeps what it had — `@king left` after
+// `@king sad` moves the king without cheering him up.
+function foldStageFrames(eventsByBeat, associations, anchorKeys) {
+  const onStage = new Map();
+  return eventsByBeat.map(events => {
+    events.forEach(ev => {
+      if (ev.exit) { onStage.delete(ev.entityId); return; }
+      const prev = onStage.get(ev.entityId) || { entityId: ev.entityId, assoc: null, anchorId: null };
+      const pick = pickEntityImage(associations[ev.entityId] || [], ev.labels);
+      const restate = !!pick && (pick.score > 0 || !prev.assoc);
+      const rest = ev.labels.filter((_, i) => !(restate && pick.used.has(i)));
+      const anchorKey = rest.map(idKey).find(k => anchorKeys.has(k));
+      onStage.set(ev.entityId, {
+        entityId: ev.entityId,
+        assoc: restate ? pick.assoc : prev.assoc,
+        anchorId: anchorKey ? anchorKeys.get(anchorKey) : prev.anchorId,
+      });
+    });
+    return [...onStage.values()];
+  });
+}
+
+// Which special role, if any, a scenario item plays. Entities named
+// `action_proceed` / `action_regress` / `action_N` are buttons; text areas named
+// `action_N_label` (or `_text`) carry the label of choice N.
+function actionRole(item) {
+  const key = idKey(item.svgId);
+  if (item.kind === 'entity') {
+    if (key === 'action_proceed') return { kind: 'proceed' };
+    if (key === 'action_regress') return { kind: 'regress' };
+    const m = /^action_(\d+)$/.exec(key);
+    if (m) return { kind: 'choice', n: parseInt(m[1], 10) };
+  } else if (item.kind === 'text') {
+    const m = /^action_(\d+)_(?:label|text)$/.exec(key);
+    if (m) return { kind: 'choice', n: parseInt(m[1], 10) };
+  }
+  return null;
+}
+
+// Which of the graphic controls a design actually provides, so the Player can
+// fall back to its plain buttons for the ones it lacks (a design without
+// `action_proceed` would otherwise leave nothing to click).
+function scenarioActionSlots(design) {
+  const slots = { proceed: false, regress: false, choices: new Set() };
+  design.items.forEach(item => {
+    const role = actionRole(item);
+    if (!role) return;
+    if (role.kind === 'choice') slots.choices.add(role.n);
+    else slots[role.kind] = true;
+  });
+  return slots;
+}
+
+const isSpeechArea = item => item.kind === 'text' && /(^|\.)speech$/.test(idKey(item.svgId));
+
+// Sends each piece of a beat's speech to a text area: prose to `_.speech`,
+// a character's dialog to `<entity>.speech`, either falling back to `speech`.
+// Where several pieces share an area they stay in source order, and a shared
+// `speech` area names the speaker since the area itself no longer does.
+// Speech with no area to go to isn't shown. Returns Map(svgId -> html).
+function routeSpeech(items, design) {
+  const areas = new Map(design.items.filter(isSpeechArea).map(it => [idKey(it.svgId), it.svgId]));
+  const out = new Map();
+  items.forEach(it => {
+    let key, html;
+    if (it.kind === 'free') {
+      key = ['_.speech', 'speech'].find(k => areas.has(k));
+      html = it.html;
+    } else {
+      const own = idKey(it.entityId.replace(/^@/, '')) + '.speech';
+      key = areas.has(own) ? own : (areas.has('speech') ? 'speech' : undefined);
+      html = `<p>${key === 'speech' ? `<strong class="speaker">${escH(entityDisplayName(it.entityId))}:</strong> ` : ''}${it.html}</p>`;
+    }
+    if (key === undefined) return;
+    const id = areas.get(key);
+    out.set(id, (out.get(id) || '') + html);
+  });
+  return out;
+}
+
+// Draws one moment of a scene onto a scenario design, as layers in the
+// design's own z-order. An entity image is drawn where its anchor sits, so it
+// stacks like the anchor does. `ctx`:
+//   frame    [{ entityId, anchorId, url }] — who is on stage now
+//   speech   Map(svgId -> html) from routeSpeech
+//   diverts  [{ label, target }] — offered choices, once `atMenu`
+//   canProceed / canRegress / atMenu — which controls are live right now
+// A layer is { key, type: 'image'|'text', x, y, w, h, ... } with `click`
+// ({ type: 'proceed'|'regress'|'choose', target? }) when it is a button.
+function buildPlayerStage(design, ctx) {
+  const layers = [];
+  design.items.forEach(item => {
+    if (item.kind === 'anchor') {
+      ctx.frame.filter(f => f.anchorId === item.svgId && f.url).forEach(f => {
+        layers.push({ key: 'stage:' + f.entityId, type: 'image', url: f.url,
+          x: item.x - item.w / 2, y: item.y - item.h / 2, w: item.w, h: item.h });
+      });
+      return;
+    }
+    const box = { x: item.x, y: item.y, w: item.w, h: item.h };
+    const role = actionRole(item);
+    let click = null, choice = null;
+    if (role) {
+      if (role.kind === 'proceed') { if (!ctx.canProceed) return; click = { type: 'proceed' }; }
+      else if (role.kind === 'regress') { if (!ctx.canRegress) return; click = { type: 'regress' }; }
+      else {
+        choice = ctx.atMenu ? ctx.diverts[role.n - 1] : null;
+        if (!choice) return;
+        click = { type: 'choose', target: choice.target };
+      }
+    }
+    if (item.kind === 'entity') {
+      layers.push({ key: item.svgId, type: 'image', url: item.url, click, ...box });
+    } else {
+      const style = `font-family:${item.fontFamily};font-size:${item.fontSize}px;color:${item.color};`;
+      let html, pre = false, live = false;
+      if (choice) html = escH(choice.label);
+      else if (isSpeechArea(item)) { html = ctx.speech.get(item.svgId) || ''; live = true; }
+      else { html = escH(item.text); pre = true; }
+      layers.push({ key: item.svgId, type: 'text', style, html, pre, live, click, ...box });
+    }
+  });
+  return layers;
 }
 
 /* ── SOURCE EDITOR SYNTAX HIGHLIGHTING ── */
@@ -1660,8 +3123,11 @@ const NODE_H = 140; // approx — actual height may vary
 const H_GAP  = 80;
 const V_GAP  = 36;
 
-function layoutGraph(scenes) {
-  if (!scenes.length) return { nodes: [], edges: [] };
+// Auto-arranges scenes into left-to-right topological columns. Positions
+// here are the *default* layout; a scene with a manual (dragged) position
+// overrides its x/y downstream without touching this function.
+function layoutGraphNodes(scenes) {
+  if (!scenes.length) return [];
 
   // Build adjacency: title -> scene
   const byTitle = {};
@@ -1720,7 +3186,7 @@ function layoutGraph(scenes) {
   });
 
   // Compute positions
-  const nodes = scenes.map(s => {
+  return scenes.map(s => {
     const c = col[s.id] ?? 0;
     const r = row[s.id] ?? 0;
     const x = c * (NODE_W + H_GAP) + 24;
@@ -1733,11 +3199,15 @@ function layoutGraph(scenes) {
       .slice(0, 140);
     return { id: s.id, title: s.title, scenario: s.scenario, x, y, excerpt, diverts: s.diverts };
   });
+}
 
-  const nodeMap = {};
-  nodes.forEach(n => { nodeMap[n.id] = n; });
+// Builds divert edges from a supplied node map (id -> {x,y,...}) rather than
+// recomputing positions itself, so edges always follow a node's *final*
+// on-screen position — including one overridden by a manual drag.
+function layoutGraphEdges(scenes, nodeMap) {
+  const byTitle = {};
+  scenes.forEach(s => { byTitle[s.title.toLowerCase()] = s; });
 
-  // Edges
   const edges = [];
   scenes.forEach(s => {
     const src = nodeMap[s.id];
@@ -1764,7 +3234,388 @@ function layoutGraph(scenes) {
     });
   });
 
-  return { nodes, edges };
+  return edges;
+}
+
+/* ── IMAGE LIBRARY CATALOG ADAPTER ──
+   Normalizes three catalog formats into one shape: { images: [{id, label, url,
+   thumbnailUrl}], format }. Which format a URL points to is sniffed from its
+   content, not declared up front, so the same "Add library" input accepts any
+   of the three. */
+const DEFAULT_CATALOG_FILENAME = 'gno-catalog.yaml';
+
+function slugFromPath(p) {
+  const base = p.split('/').pop() || p;
+  return slugify(base.replace(/\.[^.]+$/, '')) || base;
+}
+
+// gnō's own simple format: a YAML list where each item is either a bare
+// relative path, or a single-key {id: relative_path} mapping. Paths are
+// resolved against the catalog file's own URL, so plain string concatenation
+// never has to happen — new URL() does the right thing for "dir/catalog.yaml"
+// + "sub/img.png" as long as the catalog URL doesn't have a trailing slash
+// swallowed beforehand.
+function parseGnoSimpleCatalog(text, catalogUrl) {
+  const data = jsyaml.load(text);
+  const list = Array.isArray(data) ? data : [];
+  const images = list.map((entry, i) => {
+    let id, relPath;
+    if (typeof entry === 'string') {
+      relPath = entry;
+      id = slugFromPath(entry);
+    } else if (entry && typeof entry === 'object') {
+      const keys = Object.keys(entry);
+      id = keys[0];
+      relPath = entry[keys[0]];
+    } else {
+      return null;
+    }
+    if (!relPath) return null;
+    const url = new URL(relPath, catalogUrl).href;
+    return { id: id || ('image-' + i), label: id || slugFromPath(relPath), url, thumbnailUrl: url };
+  }).filter(Boolean);
+  return { images, format: 'gno-simple' };
+}
+
+function iiifLabelToString(label) {
+  if (!label) return '';
+  if (typeof label === 'string') return label;
+  const firstLang = Object.values(label)[0];
+  return Array.isArray(firstLang) ? firstLang.join(' ') : String(firstLang || '');
+}
+
+// Walks a Manifest's first Canvas -> AnnotationPage -> (painting) Annotation
+// to find the actual image body, and prefers the Manifest's own `thumbnail`
+// when present so large paintings don't have to be downloaded just to render
+// a preview tile.
+function iiifManifestImage(manifest) {
+  const thumb = manifest.thumbnail && manifest.thumbnail[0] && manifest.thumbnail[0].id;
+  let full = null;
+  const canvas = manifest.items && manifest.items[0];
+  const page = canvas && canvas.items && canvas.items[0];
+  const anno = page && page.items && page.items.find(a => a.motivation === 'painting') || (page && page.items && page.items[0]);
+  if (anno && anno.body) full = anno.body.id || (Array.isArray(anno.body) && anno.body[0] && anno.body[0].id);
+  return { full: full || thumb, thumb: thumb || full };
+}
+
+function parseIiifCollection(json, catalogUrl) {
+  const items = Array.isArray(json.items) ? json.items : [];
+  const images = items.filter(it => it.type === 'Manifest' || it.type === 'Canvas').map((it, i) => {
+    const label = iiifLabelToString(it.label) || slugFromPath(it.id || String(i));
+    if (it.type === 'Manifest') {
+      const { full, thumb } = iiifManifestImage(it);
+      if (!full) return null;
+      return { id: it.id || label, label, url: new URL(full, catalogUrl).href, thumbnailUrl: new URL(thumb || full, catalogUrl).href };
+    }
+    return null;
+  }).filter(Boolean);
+  return { images, format: 'iiif' };
+}
+
+function parseSchemaOrgGallery(json, catalogUrl) {
+  const list = Array.isArray(json.image) ? json.image : (json.image ? [json.image] : []);
+  const images = list.map((it, i) => {
+    if (typeof it === 'string') {
+      const url = new URL(it, catalogUrl).href;
+      return { id: slugFromPath(it), label: slugFromPath(it), url, thumbnailUrl: url };
+    }
+    const url = it.contentUrl || it.url;
+    if (!url) return null;
+    const fullUrl = new URL(url, catalogUrl).href;
+    const thumbUrl = it.thumbnailUrl ? new URL(it.thumbnailUrl, catalogUrl).href : fullUrl;
+    const id = it.identifier || slugFromPath(url);
+    return { id, label: it.name || id, url: fullUrl, thumbnailUrl: thumbUrl };
+  }).filter(Boolean);
+  return { images, format: 'schema.org' };
+}
+
+// Given whatever the user typed, returns the actual catalog file URL to fetch:
+// a URL already ending in a recognized metadata extension is used as-is;
+// anything else is treated as a directory and gnō's default catalog filename
+// is appended (normalizing a missing trailing slash first, since new URL()
+// resolution — not plain concatenation — is what would otherwise silently
+// drop the last path segment).
+function resolveCatalogUrl(inputUrl) {
+  if (/\.(ya?ml|json)$/i.test(inputUrl)) return inputUrl;
+  const dir = inputUrl.endsWith('/') ? inputUrl : inputUrl + '/';
+  return dir + DEFAULT_CATALOG_FILENAME;
+}
+
+function detectAndParseCatalog(text, catalogUrl) {
+  let json = null;
+  try { json = JSON.parse(text); } catch (e) { /* not JSON — fall through to YAML */ }
+  if (json) {
+    const ctx = JSON.stringify(json['@context'] || '');
+    if (json.type === 'Collection' || ctx.includes('iiif.io')) return parseIiifCollection(json, catalogUrl);
+    if (json['@type'] === 'ImageGallery' || ctx.includes('schema.org')) return parseSchemaOrgGallery(json, catalogUrl);
+    throw new Error('Unrecognized JSON catalog format');
+  }
+  return parseGnoSimpleCatalog(text, catalogUrl);
+}
+
+/* ── SCENARIO SVG BUILD / PARSE ──
+   A scenario's editable model — { background, width, height, items } — is
+   serialized to a standalone SVG file on download (scene/<slug>.svg) and
+   reparsed back out of that same file on upload; `_presentation.yaml` itself
+   only ever stores the id -> filename mapping, per spec, so the SVG is the
+   single source of truth for a scenario's content. data-gno-* attributes
+   carry the bookkeeping (which entity/library/image a placement came from)
+   needed to reconstruct the model; an anchor's <g> gets only its id and
+   data-gno-anchor marker (holding the same id) — no image — since the entity
+   shown while dragging was only a design-time aid, never meant to be shed
+   here. Its size travels as data-gno-width/height (its x/y is its center). A text area is a <foreignObject> (data-gno-text marker) wrapping an
+   XHTML <div>, since SVG <text> can't wrap long lines by itself; its font,
+   size and color are written both inline (so any viewer honors them) and as
+   data-gno-* attributes (so the model round-trips without parsing CSS).
+   Both href and xlink:href are written for viewers that only understand the
+   older SVG 1.1 external-reference syntax. */
+function normalizeToSlug(s) {
+  return (s || '')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '') || 'item';
+}
+
+function svgEscape(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Fonts offered for text areas: the app's own three (with fallbacks, since an
+// exported SVG opened elsewhere won't have the Google Fonts) plus common
+// system faces. `value` is the CSS font-family stack stored on the item.
+const TEXT_FONTS = [
+  { label: 'Lora',           value: "Lora, Georgia, serif" },
+  { label: 'Outfit',         value: "Outfit, Arial, sans-serif" },
+  { label: 'JetBrains Mono', value: "'JetBrains Mono', 'Courier New', monospace" },
+  { label: 'Georgia',        value: "Georgia, serif" },
+  { label: 'Times New Roman', value: "'Times New Roman', Times, serif" },
+  { label: 'Arial',          value: "Arial, Helvetica, sans-serif" },
+  { label: 'Verdana',        value: "Verdana, Geneva, sans-serif" },
+  { label: 'Courier New',    value: "'Courier New', monospace" },
+];
+// An anchor's default footprint (the diameter of the circle it was before
+// anchors could be resized). Its x/y is the center of this box.
+const ANCHOR_SIZE = 36;
+const TEXT_DEFAULTS = { text: 'Text', fontFamily: TEXT_FONTS[0].value, fontSize: 18, color: '#1a1610' };
+
+// Font family and color end up inside an inline style attribute, and can
+// arrive from an uploaded file, so anything outside a conservative
+// character set falls back to the default rather than being trusted.
+function cleanFontFamily(v) {
+  return typeof v === 'string' && /^[\w\s,'"-]{1,120}$/.test(v) ? v : TEXT_DEFAULTS.fontFamily;
+}
+function cleanColor(v) {
+  return typeof v === 'string' && /^#[0-9a-fA-F]{6}$/.test(v) ? v.toLowerCase() : TEXT_DEFAULTS.color;
+}
+function cleanFontSize(v) {
+  const n = parseFloat(v);
+  return Number.isFinite(n) ? Math.min(300, Math.max(6, n)) : TEXT_DEFAULTS.fontSize;
+}
+
+function buildScenarioSvg(design) {
+  const w = design.width || 960;
+  const h = design.height || 540;
+  const parts = [];
+  parts.push(`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`);
+  if (design.background && design.background.url) {
+    const b = design.background;
+    parts.push(`  <image id="background" x="0" y="0" width="${w}" height="${h}" href="${svgEscape(b.url)}" xlink:href="${svgEscape(b.url)}" preserveAspectRatio="xMidYMid slice" data-gno-library="${svgEscape(b.library)}" data-gno-image="${svgEscape(b.image)}" />`);
+  }
+  (design.items || []).forEach(item => {
+    if (item.kind === 'entity') {
+      parts.push(`  <image id="${svgEscape(item.svgId)}" x="${item.x}" y="${item.y}" width="${item.w}" height="${item.h}" href="${svgEscape(item.url)}" xlink:href="${svgEscape(item.url)}" data-gno-entity="${svgEscape(item.entityId)}" data-gno-library="${svgEscape(item.library)}" data-gno-image="${svgEscape(item.image)}" />`);
+    } else if (item.kind === 'anchor') {
+      parts.push(`  <g id="${svgEscape(item.svgId)}" data-gno-anchor="${svgEscape(item.svgId)}" data-gno-width="${item.w}" data-gno-height="${item.h}" transform="translate(${item.x},${item.y})"></g>`);
+    } else if (item.kind === 'text') {
+      const style = `font-family:${item.fontFamily};font-size:${item.fontSize}px;color:${item.color};`
+        + 'width:100%;height:100%;box-sizing:border-box;overflow:hidden;line-height:1.3;white-space:pre-wrap;overflow-wrap:anywhere;';
+      parts.push(`  <foreignObject id="${svgEscape(item.svgId)}" x="${item.x}" y="${item.y}" width="${item.w}" height="${item.h}" data-gno-text="" data-gno-font="${svgEscape(item.fontFamily)}" data-gno-font-size="${item.fontSize}" data-gno-color="${svgEscape(item.color)}">`);
+      parts.push(`    <div xmlns="http://www.w3.org/1999/xhtml" style="${svgEscape(style)}">${svgEscape(item.text)}</div>`);
+      parts.push('  </foreignObject>');
+    }
+  });
+  parts.push('</svg>');
+  return parts.join('\n');
+}
+
+function parseScenarioSvg(svgText) {
+  const doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
+  const root = doc.documentElement;
+  const width = parseFloat(root.getAttribute('width')) || 960;
+  const height = parseFloat(root.getAttribute('height')) || 540;
+  let background = null;
+  const items = [];
+  Array.from(root.children).forEach(el => {
+    const tag = el.tagName;
+    if (tag === 'image' && el.getAttribute('id') === 'background') {
+      background = {
+        library: el.getAttribute('data-gno-library') || '',
+        image: el.getAttribute('data-gno-image') || '',
+        url: el.getAttribute('href') || '',
+      };
+    } else if (tag === 'image') {
+      items.push({
+        kind: 'entity',
+        svgId: el.getAttribute('id') || '',
+        entityId: el.getAttribute('data-gno-entity') || '',
+        library: el.getAttribute('data-gno-library') || '',
+        image: el.getAttribute('data-gno-image') || '',
+        url: el.getAttribute('href') || '',
+        x: parseFloat(el.getAttribute('x')) || 0,
+        y: parseFloat(el.getAttribute('y')) || 0,
+        w: parseFloat(el.getAttribute('width')) || 80,
+        h: parseFloat(el.getAttribute('height')) || 80,
+      });
+    } else if (tag === 'g') {
+      const marker = el.getAttribute('data-gno-anchor');
+      if (marker != null) {
+        const t = el.getAttribute('transform') || '';
+        const m = /translate\(\s*([-\d.]+)[ ,]+([-\d.]+)\s*\)/.exec(t);
+        items.push({
+          kind: 'anchor',
+          // Files written before anchors had a separate id carried the
+          // user's label in the marker and a slug of it in id; id wins.
+          svgId: el.getAttribute('id') || marker,
+          x: m ? parseFloat(m[1]) : 0,
+          y: m ? parseFloat(m[2]) : 0,
+          w: parseFloat(el.getAttribute('data-gno-width')) || ANCHOR_SIZE,
+          h: parseFloat(el.getAttribute('data-gno-height')) || ANCHOR_SIZE,
+        });
+      }
+    } else if (tag === 'foreignObject' && el.getAttribute('data-gno-text') != null) {
+      const body = el.firstElementChild;
+      items.push({
+        kind: 'text',
+        svgId: el.getAttribute('id') || '',
+        text: body ? body.textContent : '',
+        fontFamily: cleanFontFamily(el.getAttribute('data-gno-font')),
+        fontSize: cleanFontSize(el.getAttribute('data-gno-font-size')),
+        color: cleanColor(el.getAttribute('data-gno-color')),
+        x: parseFloat(el.getAttribute('x')) || 0,
+        y: parseFloat(el.getAttribute('y')) || 0,
+        w: parseFloat(el.getAttribute('width')) || 200,
+        h: parseFloat(el.getAttribute('height')) || 80,
+      });
+    }
+  });
+  return { background, width, height, items };
+}
+
+/* ── PERSISTED-SHAPE SANITIZERS ──
+   Shared by every path that turns untrusted-ish stored data (a YAML side
+   file, a browser-storage save, the autosave draft) back into live state:
+   the zip-upload YAML parsers, the named Save/Load bundle below, and the
+   startup draft-restore all accept the same four shapes, so validating them
+   once here keeps that logic from drifting three separate ways. */
+function sanitizeNodeMeta(raw) {
+  const out = {};
+  if (raw && typeof raw === 'object') {
+    Object.keys(raw).forEach(title => {
+      const n = raw[title];
+      if (!n || typeof n !== 'object') return;
+      const entry = {};
+      if (typeof n.x === 'number' && typeof n.y === 'number') {
+        entry.x = n.x;
+        entry.y = n.y;
+      }
+      if (typeof n.color === 'string') entry.color = n.color;
+      if (typeof n.annotation === 'string') entry.annotation = n.annotation;
+      if (Object.keys(entry).length) out[title] = entry;
+    });
+  }
+  return out;
+}
+
+function sanitizeImageLibraries(raw) {
+  const out = {};
+  if (raw && typeof raw === 'object') {
+    Object.entries(raw).forEach(([id, url]) => {
+      if (typeof url === 'string') out[id] = url;
+    });
+  }
+  return out;
+}
+
+function sanitizeEntityAssociations(raw) {
+  const out = {};
+  if (raw && typeof raw === 'object') {
+    Object.entries(raw).forEach(([entId, list]) => {
+      if (!Array.isArray(list)) return;
+      const clean = list
+        .filter(a => a && typeof a.library === 'string' && typeof a.image === 'string')
+        .map(a => ({
+          library: a.library,
+          image: a.image,
+          labels: Array.isArray(a.labels) ? a.labels.filter(l => typeof l === 'string') : [],
+        }));
+      if (clean.length) out[entId] = clean;
+    });
+  }
+  return out;
+}
+
+// "throne" / "@throne" -> "@throne" (the form narrative entity ids take), or
+// null when it isn't a valid identifier — same character set as ID_RE in
+// analyzeEntities, so a declared entity can later be written as @id in the text.
+function normalizeEntityId(raw) {
+  const id = String(raw == null ? '' : raw).trim().replace(/^@/, '');
+  return /^[\p{L}\p{N}_'-]+$/u.test(id) ? '@' + id : null;
+}
+
+// Entities declared in Presentation without being mentioned in the narrative.
+function sanitizeExtraEntities(raw) {
+  const out = [];
+  if (Array.isArray(raw)) {
+    raw.forEach(v => {
+      const id = normalizeEntityId(v);
+      if (id && !out.includes(id)) out.push(id);
+    });
+  }
+  return out;
+}
+
+// Rebuilds one placed item from stored data, or returns null to drop it.
+// Anchors from older saves carried a separate `label`; their svgId (a slug of
+// that label) is now the only identifier, so the label is simply not carried on.
+function sanitizeScenarioItem(it) {
+  if (!it || typeof it !== 'object') return null;
+  const num = (v, d) => (typeof v === 'number' && Number.isFinite(v) ? v : d);
+  if (it.kind === 'entity') return it;
+  if (it.kind === 'anchor') {
+    return { kind: 'anchor', svgId: String(it.svgId || it.label || ''), x: num(it.x, 0), y: num(it.y, 0), w: num(it.w, ANCHOR_SIZE), h: num(it.h, ANCHOR_SIZE) };
+  }
+  if (it.kind === 'text') {
+    return {
+      kind: 'text',
+      svgId: String(it.svgId || ''),
+      text: typeof it.text === 'string' ? it.text : '',
+      fontFamily: cleanFontFamily(it.fontFamily),
+      fontSize: cleanFontSize(it.fontSize),
+      color: cleanColor(it.color),
+      x: num(it.x, 0), y: num(it.y, 0), w: num(it.w, 200), h: num(it.h, 80),
+    };
+  }
+  return null;
+}
+
+function sanitizeScenarioDesigns(raw) {
+  const out = {};
+  if (raw && typeof raw === 'object') {
+    Object.entries(raw).forEach(([name, design]) => {
+      if (!design || typeof design !== 'object') return;
+      const items = Array.isArray(design.items)
+        ? design.items.map(sanitizeScenarioItem).filter(Boolean)
+        : [];
+      out[name] = {
+        background: design.background && typeof design.background === 'object' ? design.background : null,
+        width: typeof design.width === 'number' ? design.width : 960,
+        height: typeof design.height === 'number' ? design.height : 540,
+        items,
+      };
+    });
+  }
+  return out;
 }
 
 /* ── VUE APP ── */
@@ -1791,6 +3642,42 @@ createApp({
     const loadedNarrativeName = ref(draft ? draft.loadedNarrativeName || null : null);
     const loadMenuOpen = ref(false);
     const storageVersion = ref(0);
+
+    // Manual graph-view node metadata — position (from dragging), color, and
+    // a free-text annotation — keyed by scene title (the same identity
+    // diverts already resolve by). Each entry only carries the keys actually
+    // set ({x,y} and/or color and/or annotation), so an untouched node has no
+    // entry at all. Survives in the session autosave draft and in the downloadable
+    // layout YAML; NOT in named browser-storage saves (nor the .gno file
+    // itself), which stay plain narrative text for backward compatibility.
+    const nodeMeta = reactive(sanitizeNodeMeta(draft && draft.layout));
+
+    function ensureNodeMeta(title) {
+      if (!nodeMeta[title]) nodeMeta[title] = {};
+      return nodeMeta[title];
+    }
+    function pruneNodeMetaIfEmpty(title) {
+      const m = nodeMeta[title];
+      if (m && m.x === undefined && m.y === undefined && !m.color && !m.annotation) {
+        delete nodeMeta[title];
+      }
+    }
+    function setNodeColor(title, color) {
+      if (color) {
+        ensureNodeMeta(title).color = color;
+      } else if (nodeMeta[title]) {
+        delete nodeMeta[title].color;
+        pruneNodeMetaIfEmpty(title);
+      }
+    }
+    function setNodeAnnotation(title, text) {
+      if (text) {
+        ensureNodeMeta(title).annotation = text;
+      } else if (nodeMeta[title]) {
+        delete nodeMeta[title].annotation;
+        pruneNodeMetaIfEmpty(title);
+      }
+    }
 
     const narrativeName = computed(() => filename.value.replace(/\.(gno|md|txt)$/i, '').trim() || 'untitled');
     const savedNarratives = computed(() => {
@@ -1843,9 +3730,29 @@ createApp({
     const renderedHtml = computed(() => renderGno(source.value, scenes.value, entities.value));
     const highlightedSource = computed(() => highlightGno(source.value, entities.value));
 
-    const graphLayout = computed(() => layoutGraph(scenes.value));
-    const graphNodes  = computed(() => graphLayout.value.nodes);
-    const graphEdges  = computed(() => graphLayout.value.edges);
+    const autoGraphNodes = computed(() => layoutGraphNodes(scenes.value));
+    // A manual drag position (by title) overrides the auto-layout position;
+    // color/annotation are always taken from meta when present, independent
+    // of whether the node has also been manually positioned.
+    const graphNodes = computed(() => autoGraphNodes.value.map(n => {
+      const meta = nodeMeta[n.title];
+      if (!meta) return { ...n, color: null, annotation: '' };
+      const hasPos = typeof meta.x === 'number' && typeof meta.y === 'number';
+      return {
+        ...n,
+        x: hasPos ? meta.x : n.x,
+        y: hasPos ? meta.y : n.y,
+        color: meta.color || null,
+        annotation: meta.annotation || '',
+      };
+    }));
+    // Edges are derived from nodes' *final* positions, so a dragged node's
+    // divert arrows follow it instead of staying anchored to the auto layout.
+    const graphEdges = computed(() => {
+      const nodeMap = {};
+      graphNodes.value.forEach(n => { nodeMap[n.id] = n; });
+      return layoutGraphEdges(scenes.value, nodeMap);
+    });
 
     const graphCanvasStyle = computed(() => {
       if (!graphNodes.value.length) return {};
@@ -1853,6 +3760,928 @@ createApp({
       const maxY = Math.max(...graphNodes.value.map(n => n.y + NODE_H)) + 40;
       return { width: maxX + 'px', height: maxY + 'px' };
     });
+
+    /* ── Graph zoom / pan ── */
+    const graphZoom = ref(1);
+    const graphPan = reactive({ x: 0, y: 0 });
+    const graphViewportEl = ref(null);
+    const ZOOM_MIN = 0.25;
+    const ZOOM_MAX = 2.5;
+
+    const graphCanvasFullStyle = computed(() => ({
+      ...graphCanvasStyle.value,
+      transform: `translate(${graphPan.x}px, ${graphPan.y}px) scale(${graphZoom.value})`,
+      transformOrigin: '0 0',
+    }));
+
+    function zoomAt(mouseX, mouseY, factor) {
+      const cx = (mouseX - graphPan.x) / graphZoom.value;
+      const cy = (mouseY - graphPan.y) / graphZoom.value;
+      const newZoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, graphZoom.value * factor));
+      graphPan.x = mouseX - cx * newZoom;
+      graphPan.y = mouseY - cy * newZoom;
+      graphZoom.value = newZoom;
+    }
+
+    function onGraphWheel(e) {
+      e.preventDefault();
+      const rect = e.currentTarget.getBoundingClientRect();
+      const factor = Math.exp(-e.deltaY * 0.0015);
+      zoomAt(e.clientX - rect.left, e.clientY - rect.top, factor);
+    }
+
+    function zoomButtonCenter() {
+      const el = graphViewportEl.value;
+      if (!el) return { x: 300, y: 200 };
+      const rect = el.getBoundingClientRect();
+      return { x: rect.width / 2, y: rect.height / 2 };
+    }
+
+    function zoomIn() { const c = zoomButtonCenter(); zoomAt(c.x, c.y, 1.25); }
+    function zoomOut() { const c = zoomButtonCenter(); zoomAt(c.x, c.y, 1 / 1.25); }
+    function resetView() { graphZoom.value = 1; graphPan.x = 0; graphPan.y = 0; }
+    // "Reset manual layout" only clears dragged positions, not color/annotation —
+    // a user re-arranging the graph shouldn't lose their color-coding or notes.
+    function resetLayout() {
+      Object.keys(nodeMeta).forEach(title => {
+        const m = nodeMeta[title];
+        delete m.x;
+        delete m.y;
+        pruneNodeMetaIfEmpty(title);
+      });
+    }
+    // Used when swapping in an entirely different narrative, where none of
+    // the previous positions/colors/annotations (keyed by title) still apply.
+    function clearNodeMeta() {
+      Object.keys(nodeMeta).forEach(k => delete nodeMeta[k]);
+    }
+
+    /* ── Presentation: image libraries ──
+       imageLibraries is the persisted { id: url } map (the `_presentation.yaml`
+       side-file, mirroring how nodeMeta mirrors `_graph.yaml`). libraryCatalogs
+       holds the *fetched* contents per library id — never persisted, since the
+       whole point is that the images live elsewhere and are re-fetched live. */
+    const presentationTab = ref('images');
+    const newLibraryUrl = ref('');
+    const imageLibraries = reactive(sanitizeImageLibraries(draft && draft.presentation && draft.presentation.image_libraries));
+    const libraryCatalogs = reactive({});
+    const IMAGES_PER_PAGE = 48;
+
+    // entityAssociations: { entityId: [{ library, image, labels: [] }] } — which
+    // catalog image(s) an entity (a narrative @id) is shown with. Persisted
+    // under `entities:` in the same `_presentation.yaml`.
+    const entityAssociations = reactive(sanitizeEntityAssociations(draft && draft.presentation && draft.presentation.entities));
+    const openEntityImages = reactive(new Set());
+    const imagePickerEntity = ref(null);
+
+    // extraEntities: ids ("@throne") declared here for scenery or props the
+    // narrative never mentions. They have no occurrences, so unlike narrative
+    // entities they must be stored themselves — an entity with no images yet
+    // would otherwise vanish on reload. Persisted as `extra_entities:`.
+    const extraEntities = reactive(sanitizeExtraEntities(draft && draft.presentation && draft.presentation.extra_entities));
+    const newEntityId = ref('');
+
+    const imageLibraryIds = computed(() => Object.keys(imageLibraries));
+
+    function uniqueLibraryId(base) {
+      let id = base || 'library';
+      let n = 2;
+      while (imageLibraries[id] !== undefined) { id = `${base}-${n}`; n++; }
+      return id;
+    }
+
+    async function loadLibraryCatalog(id) {
+      const url = imageLibraries[id];
+      if (!url) return;
+      libraryCatalogs[id] = { status: 'loading', images: [], error: '', format: '', visibleCount: IMAGES_PER_PAGE };
+      try {
+        const catalogUrl = resolveCatalogUrl(url);
+        const res = await fetch(catalogUrl);
+        if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${catalogUrl}`);
+        const text = await res.text();
+        const { images, format } = detectAndParseCatalog(text, catalogUrl);
+        libraryCatalogs[id] = { status: 'loaded', images, error: '', format, visibleCount: IMAGES_PER_PAGE };
+      } catch (err) {
+        libraryCatalogs[id] = { status: 'error', images: [], error: err.message, format: '', visibleCount: IMAGES_PER_PAGE };
+      }
+    }
+
+    function showMoreImages(id) {
+      const cat = libraryCatalogs[id];
+      if (cat) cat.visibleCount += IMAGES_PER_PAGE;
+    }
+
+    // Counts images whose <img> failed to load (img.broken, set by the grid's
+    // @error handler) — a live, per-tile signal that a catalog's relative
+    // path doesn't actually resolve to a file, without any extra requests
+    // beyond the thumbnail fetch the grid was already making.
+    function brokenCount(id) {
+      const cat = libraryCatalogs[id];
+      return cat ? cat.images.reduce((n, img) => n + (img.broken ? 1 : 0), 0) : 0;
+    }
+
+    function addImageLibrary(url, id) {
+      url = (url || '').trim();
+      if (!url) return;
+      const libId = uniqueLibraryId(id || slugFromPath(url.replace(/\/+$/, '')) || 'library');
+      imageLibraries[libId] = url;
+      loadLibraryCatalog(libId);
+    }
+
+    function addImageLibraryFromInput() {
+      addImageLibrary(newLibraryUrl.value);
+      newLibraryUrl.value = '';
+    }
+
+    function removeImageLibrary(id) {
+      delete imageLibraries[id];
+      delete libraryCatalogs[id];
+    }
+
+    function renameImageLibrary(oldId, newId) {
+      newId = (newId || '').trim();
+      if (!newId || newId === oldId) return;
+      if (imageLibraries[newId] !== undefined) {
+        alert(`A library named "${newId}" already exists.`);
+        return;
+      }
+      imageLibraries[newId] = imageLibraries[oldId];
+      delete imageLibraries[oldId];
+      if (libraryCatalogs[oldId]) {
+        libraryCatalogs[newId] = libraryCatalogs[oldId];
+        delete libraryCatalogs[oldId];
+      }
+    }
+
+    function clearImageLibraries() {
+      Object.keys(imageLibraries).forEach(k => delete imageLibraries[k]);
+      Object.keys(libraryCatalogs).forEach(k => delete libraryCatalogs[k]);
+    }
+
+    /* ── Entity <-> image associations ──
+       An entity may have several images, but only when each carries at least
+       one label — enforced as a single rule ("no two images of the same
+       entity may share the same label set") rather than as a separate
+       mandatory-labels check: two images with no labels both have the empty
+       set, which already collides under that rule, so the single-image case
+       (empty labels allowed) and the multi-image case (labels required) fall
+       out of the same comparison. */
+    function labelSetEqual(a, b) {
+      if (a.length !== b.length) return false;
+      const as = [...a].sort();
+      const bs = [...b].sort();
+      return as.every((v, i) => v === bs[i]);
+    }
+
+    function isImageAssociated(entityId, libraryId, imageId) {
+      const list = entityAssociations[entityId];
+      return !!list && list.some(a => a.library === libraryId && a.image === imageId);
+    }
+
+    function associateImage(entityId, libraryId, imageId) {
+      if (isImageAssociated(entityId, libraryId, imageId)) return;
+      const list = entityAssociations[entityId] || (entityAssociations[entityId] = []);
+      if (list.some(a => a.labels.length === 0)) {
+        alert('This entity already has an image with no labels. Give it at least one label before adding another image.');
+        return;
+      }
+      list.push({ library: libraryId, image: imageId, labels: [] });
+    }
+
+    function removeEntityImage(entityId, idx) {
+      const list = entityAssociations[entityId];
+      if (!list) return;
+      list.splice(idx, 1);
+      if (list.length === 0) delete entityAssociations[entityId];
+    }
+
+    function addLabelToAssociation(entityId, idx, rawLabel) {
+      const label = (rawLabel || '').trim();
+      if (!label) return;
+      const list = entityAssociations[entityId];
+      if (!list || !list[idx]) return;
+      const assoc = list[idx];
+      if (assoc.labels.includes(label)) {
+        alert('This image already has that label.');
+        return;
+      }
+      const newSet = [...assoc.labels, label];
+      const collides = list.some((a, i) => i !== idx && labelSetEqual(a.labels, newSet));
+      if (collides) {
+        alert('Another image for this entity already uses that exact set of labels.');
+        return;
+      }
+      assoc.labels.push(label);
+    }
+
+    function onAddLabel(entityId, idx, e) {
+      addLabelToAssociation(entityId, idx, e.target.value);
+      e.target.value = '';
+    }
+
+    function removeLabelFromAssociation(entityId, idx, label) {
+      const list = entityAssociations[entityId];
+      if (!list || !list[idx]) return;
+      const assoc = list[idx];
+      const newSet = assoc.labels.filter(l => l !== label);
+      const collides = list.some((a, i) => i !== idx && labelSetEqual(a.labels, newSet));
+      if (collides) {
+        alert("Removing this label would duplicate another image's label set for this entity.");
+        return;
+      }
+      assoc.labels = newSet;
+    }
+
+    function findCatalogImage(libraryId, imageId) {
+      const cat = libraryCatalogs[libraryId];
+      if (!cat || cat.status !== 'loaded') return null;
+      return cat.images.find(img => img.id === imageId) || null;
+    }
+
+    function resolveAssocImage(assoc) {
+      return findCatalogImage(assoc.library, assoc.image);
+    }
+
+    function toggleEntityImages(id) {
+      if (openEntityImages.has(id)) openEntityImages.delete(id);
+      else openEntityImages.add(id);
+    }
+
+    function togglePicker(entityId) {
+      imagePickerEntity.value = imagePickerEntity.value === entityId ? null : entityId;
+    }
+
+    function clearEntitySetup() {
+      Object.keys(entityAssociations).forEach(k => delete entityAssociations[k]);
+      extraEntities.length = 0;
+    }
+
+    // Declared entities the narrative doesn't mention — the only ones that can
+    // be removed from here, since the others are defined by the text itself.
+    function isDeclaredEntity(id) {
+      return extraEntities.includes(id) && !entities.value.entityIndex.has(id);
+    }
+
+    function addExtraEntity() {
+      const raw = newEntityId.value.trim();
+      if (!raw) return;
+      const id = normalizeEntityId(raw);
+      if (!id) {
+        alert('An entity name may only contain letters, numbers, "_", "\'" and "-".');
+        return;
+      }
+      // Already known (in the narrative, declared, or carrying images): just
+      // show it rather than creating a duplicate.
+      if (!entityIdsForPresentation.value.includes(id)) extraEntities.push(id);
+      openEntityImages.add(id);
+      newEntityId.value = '';
+    }
+
+    function removeExtraEntity(id) {
+      const count = (entityAssociations[id] || []).length;
+      if (count && !window.confirm(`Remove ${id} and its ${count} image association(s)?`)) return;
+      delete entityAssociations[id];
+      const i = extraEntities.indexOf(id);
+      if (i >= 0) extraEntities.splice(i, 1);
+      openEntityImages.delete(id);
+      if (imagePickerEntity.value === id) imagePickerEntity.value = null;
+    }
+
+    // Every image currently loaded across all libraries, tagged with its
+    // library id — the flat pool the "Add image" picker browses.
+    const allCatalogImages = computed(() => {
+      const out = [];
+      Object.keys(libraryCatalogs).forEach(libId => {
+        const cat = libraryCatalogs[libId];
+        if (cat && cat.status === 'loaded') {
+          cat.images.forEach(img => out.push({ ...img, library: libId }));
+        }
+      });
+      return out;
+    });
+
+    // Union of narrative entity ids, declared ones, and any entity ids already
+    // carrying associations — an association isn't dropped just because its @id
+    // was since removed from the narrative text.
+    const entityIdsForPresentation = computed(() => {
+      const ids = new Set(entityList.value.map(e => e.id));
+      extraEntities.forEach(id => ids.add(id));
+      Object.keys(entityAssociations).forEach(id => ids.add(id));
+      return [...ids].sort();
+    });
+
+    /* ── Scenario designs ──
+       scenarioDesigns: { scenarioName: { background, width, height, items } }
+       keyed by the narrative's own scenario names (the grouping already used
+       for scene headings, `scenarios` below) — mirrors how entityAssociations
+       is keyed by narrative @ids rather than a separately-invented name.
+       Content is built into/read back from a standalone SVG per scenario on
+       download/upload; only the autosave draft keeps this full model
+       directly (there's no accompanying SVG file to reparse mid-session). */
+    const scenarioDesigns = reactive(sanitizeScenarioDesigns(draft && draft.presentation && draft.presentation.scenario_designs));
+    const openScenario = ref(null);
+    const bgPickerScenario = ref(null);
+    const placeMode = ref('entity'); // 'entity' | 'text'
+    let dragPayload = null; // {entityId, library, image} — set on palette dragstart, consumed on canvas drop
+    const itemDragState = ref(null);
+    const bgResizeState = ref(null);   // dragging the canvas corner handle
+    const itemResizeState = ref(null); // dragging an item's corner handle (entity, anchor or text area)
+    const textDraw = ref(null);        // rubber-band rectangle while placing a text area
+    const selectedItemId = ref(null);  // svgId of the item shown in the inspector (openScenario only)
+    const wideScenario = ref(false);   // wide editor: the workspace covers the whole window
+    const idDraft = ref('');
+    const idError = ref('');
+
+    const lockCanvasRatio = ref(false); // keep the canvas proportion when resizing it (Shift does the same, per drag)
+    const lockItemRatio = ref(false);   // same, for resizing placed items
+    const MIN_CANVAS = 100, MAX_CANVAS = 10000;
+    const MIN_ITEM_SIDE = 10;
+    const MIN_TEXT_SIDE = 20; // smaller drags are treated as accidental clicks in text mode
+
+    const scenarioIdsForPresentation = computed(() => {
+      const ids = new Set(scenarios.value.map(s => s.name));
+      Object.keys(scenarioDesigns).forEach(id => ids.add(id));
+      return [...ids].sort();
+    });
+
+    function ensureScenarioDesign(name) {
+      if (!scenarioDesigns[name]) {
+        scenarioDesigns[name] = { background: null, width: 960, height: 540, items: [] };
+      }
+      return scenarioDesigns[name];
+    }
+
+    function toggleScenario(name) {
+      openScenario.value = openScenario.value === name ? null : name;
+      selectedItemId.value = null;
+      wideScenario.value = false;
+      if (openScenario.value) ensureScenarioDesign(name);
+    }
+
+    function resetScenario(name) {
+      if (!window.confirm(`Clear the background and all placed items for "${name}"?`)) return;
+      delete scenarioDesigns[name];
+      selectedItemId.value = null;
+    }
+
+    const clampInt = (v, lo, hi) => Math.min(hi, Math.max(lo, Math.round(v)));
+
+    // Typed width/height for the canvas (and so its background, which always
+    // fills it). Empty/garbage input is ignored; the bound :value snaps back.
+    // With the proportion locked, typing one side rescales both from the
+    // canvas's current size instead.
+    function setScenarioSize(name, key, e) {
+      const design = scenarioDesigns[name];
+      if (!design) return;
+      const n = parseFloat(e.target.value);
+      if (Number.isFinite(n)) {
+        if (lockCanvasRatio.value) Object.assign(design, scaledCanvas(design.width, design.height, n / design[key]));
+        else design[key] = clampInt(n, MIN_CANVAS, MAX_CANVAS);
+      }
+      e.target.value = design[key];
+    }
+
+    // Scales w0 x h0 by s, clamping s (not each side) so both stay within
+    // [min, max] and the proportion survives the clamp.
+    function scaledSize(w0, h0, s, min, max) {
+      const lo = Math.max(min / w0, min / h0);
+      const hi = Math.min(max / w0, max / h0);
+      const c = Math.min(hi, Math.max(lo, s));
+      return { w: Math.round(w0 * c), h: Math.round(h0 * c) };
+    }
+
+    function scaledCanvas(w0, h0, s) {
+      const r = scaledSize(w0, h0, s, MIN_CANVAS, MAX_CANVAS);
+      return { width: r.w, height: r.h };
+    }
+
+    // Typed width/height of the selected item — same lock behavior as the canvas.
+    function setItemSize(item, key, e) {
+      const n = parseFloat(e.target.value);
+      if (Number.isFinite(n)) {
+        if (lockItemRatio.value) Object.assign(item, scaledSize(item.w, item.h, n / item[key], MIN_ITEM_SIDE, MAX_CANVAS));
+        else item[key] = clampInt(n, MIN_ITEM_SIDE, MAX_CANVAS);
+      }
+      e.target.value = item[key];
+    }
+
+    function onBgResizeMouseDown(name, e) {
+      e.stopPropagation();
+      e.preventDefault();
+      const design = scenarioDesigns[name];
+      bgResizeState.value = { name, startX: e.clientX, startY: e.clientY, origW: design.width, origH: design.height };
+    }
+
+    function toggleBgPicker(name) {
+      bgPickerScenario.value = bgPickerScenario.value === name ? null : name;
+    }
+
+    function setScenarioBackground(name, libraryId, imageId) {
+      const img = findCatalogImage(libraryId, imageId);
+      if (!img) return;
+      const design = ensureScenarioDesign(name);
+      design.background = { library: libraryId, image: imageId, url: img.url };
+      // Probe the real image for its natural size so the canvas isn't stuck
+      // at the 960x540 default; harmless if it never loads (CORS, 404, …) —
+      // the default just stays in place.
+      const probe = new Image();
+      probe.onload = () => {
+        if (probe.naturalWidth) design.width = probe.naturalWidth;
+        if (probe.naturalHeight) design.height = probe.naturalHeight;
+      };
+      probe.src = img.url;
+    }
+
+    function removeScenarioBackground(name) {
+      const design = scenarioDesigns[name];
+      if (design) design.background = null;
+    }
+
+    function onPaletteDragStart(e, entityId, assoc) {
+      dragPayload = { entityId, library: assoc.library, image: assoc.image };
+      e.dataTransfer.effectAllowed = 'copy';
+      e.dataTransfer.setData('text/plain', entityId);
+    }
+
+    // Smallest n >= 1 such that `${prefix}${n}${suffix}` is free. Filling the
+    // lowest gap (rather than max+1) keeps the numbering dense after deletions.
+    function nextSeqId(used, prefix, suffix = '') {
+      let n = 1;
+      while (used.has(`${prefix}${n}${suffix}`)) n++;
+      return `${prefix}${n}${suffix}`;
+    }
+
+    // IDs are shared by every kind of item and by the reserved "background".
+    function usedItemIds(design) {
+      const used = new Set(design.items.map(it => it.svgId));
+      used.add('background');
+      return used;
+    }
+
+    function onCanvasDrop(e, name) {
+      if (!dragPayload) return;
+      const payload = dragPayload;
+      dragPayload = null;
+      const img = findCatalogImage(payload.library, payload.image);
+      if (!img) return;
+
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const design = ensureScenarioDesign(name);
+      const usedIds = usedItemIds(design);
+
+      const base = normalizeToSlug(payload.entityId.replace(/^@/, ''));
+      let svgId = base, n = 1;
+      while (usedIds.has(svgId)) { svgId = `${base}_${n}`; n++; }
+      const size = 80;
+      design.items.push({
+        kind: 'entity', svgId, entityId: payload.entityId, library: payload.library, image: payload.image, url: img.url,
+        x: Math.round(x - size / 2), y: Math.round(y - size / 2), w: size, h: size,
+      });
+      selectedItemId.value = svgId;
+    }
+
+    // Anchors are made from entities: place the entity, size it while its image
+    // is still visible, then turn it into an anchor — the image goes away, the
+    // footprint stays. x/y switches from the entity's top-left to the anchor's
+    // center. The ID becomes the next anchor_n unless the user already chose
+    // one (i.e. it's no longer the auto-generated one derived from the entity).
+    function convertSelectedToAnchor() {
+      const item = selectedItem.value;
+      const design = scenarioDesigns[openScenario.value];
+      if (!item || !design || item.kind !== 'entity') return;
+      const idx = design.items.findIndex(it => it.svgId === item.svgId);
+      const auto = normalizeToSlug(String(item.entityId).replace(/^@/, ''));
+      const isAutoId = item.svgId === auto || new RegExp('^' + auto + '_\\d+$').test(item.svgId);
+      const svgId = isAutoId ? nextSeqId(usedItemIds(design), 'anchor_') : item.svgId;
+      design.items.splice(idx, 1, {
+        kind: 'anchor', svgId,
+        x: Math.round(item.x + item.w / 2), y: Math.round(item.y + item.h / 2), w: item.w, h: item.h,
+      });
+      selectedItemId.value = svgId;
+    }
+
+    function removeScenarioItem(name, idx) {
+      const design = scenarioDesigns[name];
+      if (!design) return;
+      const [gone] = design.items.splice(idx, 1);
+      if (gone && gone.svgId === selectedItemId.value) selectedItemId.value = null;
+    }
+
+    /* ── Selection, and the ID-rename procedure shared by every item kind ── */
+    const selectedItem = computed(() => {
+      const design = openScenario.value && scenarioDesigns[openScenario.value];
+      return design ? design.items.find(it => it.svgId === selectedItemId.value) || null : null;
+    });
+
+    // Re-seed the ID field whenever the selection (or the selected item's own
+    // ID) changes, discarding any half-typed draft and its error.
+    watch(() => selectedItem.value && selectedItem.value.svgId, id => {
+      idDraft.value = id || '';
+      idError.value = '';
+    });
+
+    function scenarioItemIdError(design, item, id) {
+      if (!id) return 'The ID cannot be empty.';
+      if (!/^[\p{L}_][\p{L}\p{N}_.\-]*$/u.test(id)) return 'Use letters, digits, "_", "." or "-", and don\'t start with a digit.';
+      if (id !== item.svgId && usedItemIds(design).has(id)) return 'That ID is already used in this scenario.';
+      return '';
+    }
+
+    function onIdDraftInput() {
+      const item = selectedItem.value;
+      const design = scenarioDesigns[openScenario.value];
+      idError.value = item && design ? scenarioItemIdError(design, item, idDraft.value.trim()) : '';
+    }
+
+    function renameSelectedItem(raw) {
+      const item = selectedItem.value;
+      const design = scenarioDesigns[openScenario.value];
+      if (!item || !design) return;
+      const id = String(raw).trim();
+      const err = scenarioItemIdError(design, item, id);
+      idError.value = err;
+      if (err) return;
+      idDraft.value = id;
+      item.svgId = id;
+      selectedItemId.value = id;
+    }
+
+    // Suggested IDs, offered for every kind of item; text areas get a few
+    // more, since they're where dialog lines end up being shown. Only IDs
+    // still free in the scenario are offered.
+    const idSuggestions = computed(() => {
+      const item = selectedItem.value;
+      const design = scenarioDesigns[openScenario.value];
+      if (!item || !design) return [];
+      const used = usedItemIds(design);
+      const list = [
+        nextSeqId(used, 'action_'),
+        nextSeqId(used, 'action_', '_label'),
+        'action_proceed',
+        'action_regress',
+      ];
+      if (item.kind === 'text') list.push('speech', '_.speech', 'entity.speech');
+      return list.filter(id => !used.has(id));
+    });
+
+    // Numeric fields of the selected item (position/size/font size): blank or
+    // non-numeric input is ignored and the field snaps back to the real value.
+    function setItemNumber(item, key, e, lo, hi) {
+      const n = parseFloat(e.target.value);
+      if (Number.isFinite(n)) item[key] = clampInt(n, lo, hi);
+      e.target.value = item[key];
+    }
+
+    function isKnownFont(value) {
+      return TEXT_FONTS.some(f => f.value === value);
+    }
+
+    /* ── Moving items, drawing text areas, and the two corner-handle resizes
+       (canvas, text area) — all driven by the shared window listeners below ── */
+    function onItemMouseDown(name, idx, item, e) {
+      e.stopPropagation();
+      selectedItemId.value = item.svgId;
+      itemDragState.value = { name, idx, startX: e.clientX, startY: e.clientY, origX: item.x, origY: item.y };
+    }
+
+    function onItemResizeMouseDown(name, idx, item, e) {
+      e.stopPropagation();
+      e.preventDefault();
+      itemResizeState.value = { name, idx, startX: e.clientX, startY: e.clientY, origW: item.w, origH: item.h };
+    }
+
+    // Mousedown on empty canvas: in text mode it starts drawing a text area;
+    // otherwise it just clears the selection. Items stop propagation, so this
+    // only sees clicks that missed them.
+    function onScenarioCanvasMouseDown(e, name) {
+      if (e.button !== 0) return;
+      if (placeMode.value !== 'text') { selectedItemId.value = null; return; }
+      e.preventDefault(); // no text selection while dragging
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left, y = e.clientY - rect.top;
+      textDraw.value = { name, left: rect.left, top: rect.top, x0: x, y0: y, x, y };
+    }
+
+    function textDrawRect() {
+      const d = textDraw.value;
+      if (!d) return null;
+      return { x: Math.min(d.x0, d.x), y: Math.min(d.y0, d.y), w: Math.abs(d.x - d.x0), h: Math.abs(d.y - d.y0) };
+    }
+
+    function finishTextDraw() {
+      const d = textDraw.value;
+      const r = textDrawRect();
+      textDraw.value = null;
+      if (!d || r.w < MIN_TEXT_SIDE || r.h < MIN_TEXT_SIDE) return;
+      const design = scenarioDesigns[d.name];
+      if (!design) return;
+      const svgId = nextSeqId(usedItemIds(design), 'text_');
+      design.items.push({
+        kind: 'text', svgId, ...TEXT_DEFAULTS,
+        x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.w), h: Math.round(r.h),
+      });
+      selectedItemId.value = svgId;
+    }
+
+    function onScenarioWindowMouseMove(e) {
+      const d = itemDragState.value;
+      if (d) {
+        const design = scenarioDesigns[d.name];
+        const item = design && design.items[d.idx];
+        if (item) {
+          item.x = Math.round(d.origX + (e.clientX - d.startX));
+          item.y = Math.round(d.origY + (e.clientY - d.startY));
+        }
+      }
+      const b = bgResizeState.value;
+      if (b && scenarioDesigns[b.name]) {
+        const design = scenarioDesigns[b.name];
+        const dw = b.origW + (e.clientX - b.startX), dh = b.origH + (e.clientY - b.startY);
+        if (e.shiftKey || lockCanvasRatio.value) {
+          // Follow whichever axis the pointer has moved further (relatively).
+          const sx = dw / b.origW, sy = dh / b.origH;
+          Object.assign(design, scaledCanvas(b.origW, b.origH, Math.abs(sx - 1) >= Math.abs(sy - 1) ? sx : sy));
+        } else {
+          design.width = clampInt(dw, MIN_CANVAS, MAX_CANVAS);
+          design.height = clampInt(dh, MIN_CANVAS, MAX_CANVAS);
+        }
+      }
+      const t = itemResizeState.value;
+      if (t) {
+        const item = scenarioDesigns[t.name] && scenarioDesigns[t.name].items[t.idx];
+        if (item) {
+          // An anchor's x/y is its center and stays put, so it grows on both
+          // sides and the handle (at its corner) follows the pointer at 2x.
+          const k = item.kind === 'anchor' ? 2 : 1;
+          const dw = t.origW + k * (e.clientX - t.startX), dh = t.origH + k * (e.clientY - t.startY);
+          if (e.shiftKey || lockItemRatio.value) {
+            const sx = dw / t.origW, sy = dh / t.origH;
+            Object.assign(item, scaledSize(t.origW, t.origH, Math.abs(sx - 1) >= Math.abs(sy - 1) ? sx : sy, MIN_ITEM_SIDE, MAX_CANVAS));
+          } else {
+            item.w = clampInt(dw, MIN_ITEM_SIDE, MAX_CANVAS);
+            item.h = clampInt(dh, MIN_ITEM_SIDE, MAX_CANVAS);
+          }
+        }
+      }
+      const w = textDraw.value;
+      if (w && scenarioDesigns[w.name]) {
+        const design = scenarioDesigns[w.name];
+        w.x = Math.min(design.width, Math.max(0, e.clientX - w.left));
+        w.y = Math.min(design.height, Math.max(0, e.clientY - w.top));
+      }
+    }
+    function onScenarioWindowMouseUp() {
+      itemDragState.value = null;
+      bgResizeState.value = null;
+      itemResizeState.value = null;
+      if (textDraw.value) finishTextDraw();
+    }
+    // Esc leaves the wide editor; inside a form field it only blurs the field
+    // first, so cancelling an edit doesn't also throw away the layout.
+    window.addEventListener('keydown', e => {
+      if (e.key !== 'Escape' || !wideScenario.value) return;
+      const el = document.activeElement;
+      if (el && /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) el.blur();
+      else wideScenario.value = false;
+    });
+    window.addEventListener('mousemove', onScenarioWindowMouseMove);
+    window.addEventListener('mouseup', onScenarioWindowMouseUp);
+
+    function clearScenarioDesigns() {
+      Object.keys(scenarioDesigns).forEach(k => delete scenarioDesigns[k]);
+    }
+
+    // The zip filename each scenario design is written to / read from —
+    // computed once and reused by both the download zip and the YAML's
+    // `scenarios:` map so the two always agree, with a numeric suffix in the
+    // rare case two scenario names normalize to the same slug.
+    function scenarioFileMap() {
+      const used = new Set();
+      const map = {};
+      Object.keys(scenarioDesigns).forEach(name => {
+        const base = normalizeToSlug(name);
+        let slug = base, n = 2;
+        while (used.has(slug)) { slug = `${base}_${n}`; n++; }
+        used.add(slug);
+        map[name] = 'scene/' + slug + '.svg';
+      });
+      return map;
+    }
+
+    function presentationToYaml() {
+      return jsyaml.dump({
+        version: 1,
+        image_libraries: { ...imageLibraries },
+        entities: { ...entityAssociations },
+        extra_entities: [...extraEntities],
+        scenarios: scenarioFileMap(),
+      }, { lineWidth: -1 });
+    }
+
+    // zip is optional: passed only when applying a just-uploaded zip's
+    // _presentation.yaml, so any scenarios: {id: path} entries can be
+    // resolved against that same zip's other files and reparsed.
+    async function applyPresentationYaml(text, zip) {
+      clearImageLibraries();
+      clearEntitySetup();
+      clearScenarioDesigns();
+      let data;
+      try {
+        data = jsyaml.load(text);
+      } catch (err) {
+        alert('Could not parse presentation YAML: ' + err.message);
+        return;
+      }
+      Object.entries(sanitizeImageLibraries(data && data.image_libraries)).forEach(([id, url]) => {
+        imageLibraries[id] = url;
+        loadLibraryCatalog(id);
+      });
+      Object.assign(entityAssociations, sanitizeEntityAssociations(data && data.entities));
+      extraEntities.push(...sanitizeExtraEntities(data && data.extra_entities));
+      if (data && data.scenarios && typeof data.scenarios === 'object' && zip) {
+        for (const [scenarioId, path] of Object.entries(data.scenarios)) {
+          if (typeof path !== 'string') continue;
+          const entry = zip.file(path);
+          if (!entry) continue;
+          try {
+            const svgText = await entry.async('string');
+            scenarioDesigns[scenarioId] = parseScenarioSvg(svgText);
+          } catch (e) { /* unreadable scenario file — skip, rest of the load still succeeds */ }
+        }
+      }
+    }
+
+    // Restore-from-draft only stores the id->url map (fetched content is
+    // never persisted), so libraries carried over from the autosaved draft
+    // need their catalogs (re-)fetched once on startup.
+    Object.keys(imageLibraries).forEach(id => loadLibraryCatalog(id));
+
+    /* ── Node dragging, canvas panning, and panel resizing share one pair of
+       window-level mouse handlers (mirrors the single keydown listener
+       pattern used for the Player below) ── */
+    const nodeDragState = ref(null);
+    const canvasPanState = ref(null);
+    const panelResizeState = ref(null);
+
+    function onNodeMouseDown(idx, node, e) {
+      e.stopPropagation();
+      nodeDragState.value = {
+        idx, title: node.title,
+        startX: e.clientX, startY: e.clientY,
+        origX: node.x, origY: node.y,
+        moved: false,
+      };
+    }
+
+    function onCanvasMouseDown(e) {
+      if (e.target.closest('.graph-node') || e.target.closest('.graph-toolbar')) return;
+      canvasPanState.value = {
+        startX: e.clientX, startY: e.clientY,
+        origX: graphPan.x, origY: graphPan.y,
+      };
+    }
+
+    function onPanelResizeDown(e) {
+      panelResizeState.value = { startX: e.clientX, startWidth: nodePanelWidth.value };
+    }
+
+    function onGraphWindowMouseMove(e) {
+      if (nodeDragState.value) {
+        const d = nodeDragState.value;
+        const dx = (e.clientX - d.startX) / graphZoom.value;
+        const dy = (e.clientY - d.startY) / graphZoom.value;
+        if (!d.moved && Math.hypot(e.clientX - d.startX, e.clientY - d.startY) > 4) d.moved = true;
+        const meta = ensureNodeMeta(d.title);
+        meta.x = Math.max(0, d.origX + dx);
+        meta.y = Math.max(0, d.origY + dy);
+        return;
+      }
+      if (canvasPanState.value) {
+        const p = canvasPanState.value;
+        graphPan.x = p.origX + (e.clientX - p.startX);
+        graphPan.y = p.origY + (e.clientY - p.startY);
+        return;
+      }
+      if (panelResizeState.value) {
+        const r = panelResizeState.value;
+        nodePanelWidth.value = Math.min(720, Math.max(260, r.startWidth + (r.startX - e.clientX)));
+      }
+    }
+
+    function onGraphWindowMouseUp() {
+      if (nodeDragState.value) {
+        if (!nodeDragState.value.moved) selectedNodeIndex.value = nodeDragState.value.idx;
+        nodeDragState.value = null;
+      }
+      canvasPanState.value = null;
+      panelResizeState.value = null;
+    }
+
+    window.addEventListener('mousemove', onGraphWindowMouseMove);
+    window.addEventListener('mouseup', onGraphWindowMouseUp);
+
+    /* ── Graph node detail/edit side panel ── */
+    const selectedNodeIndex = ref(null);
+    const nodePanelWidth = ref(380);
+    const panelHighlightPre = ref(null);
+    const customColorInput = ref(null);
+    function triggerCustomColorPicker() {
+      if (customColorInput.value) customColorInput.value.click();
+    }
+
+    // graphNodes / scenesWithBounds share the same array order as scenes.value,
+    // so an index picked in one lines up with the other.
+    const panelScene = computed(() =>
+      selectedNodeIndex.value != null ? (scenesWithBounds.value[selectedNodeIndex.value] || null) : null
+    );
+
+    // Preset swatches read from the app's own design tokens (so they're
+    // already dark-mode aware and stay "in family" with the rest of the UI)
+    // plus a native color input for anything else. Recomputed once per
+    // panel-open since these don't change without a page reload.
+    const PALETTE_TOKENS = ['--c-accent', '--c-tag-char', '--c-tag-place', '--c-tag-trans', '--c-tag-text', '--c-tag-state', '--c-bq-border'];
+    const paletteColors = computed(() => {
+      if (!panelScene.value) return [];
+      const style = getComputedStyle(document.documentElement);
+      return PALETTE_TOKENS.map(v => style.getPropertyValue(v).trim()).filter(Boolean);
+    });
+
+    const nodeColor = computed({
+      get() {
+        const scene = panelScene.value;
+        if (!scene) return null;
+        const meta = nodeMeta[scene.title];
+        return (meta && meta.color) || null;
+      },
+      set(color) {
+        const scene = panelScene.value;
+        if (scene) setNodeColor(scene.title, color);
+      },
+    });
+
+    const nodeAnnotation = computed({
+      get() {
+        const scene = panelScene.value;
+        if (!scene) return '';
+        const meta = nodeMeta[scene.title];
+        return (meta && meta.annotation) || '';
+      },
+      set(text) {
+        const scene = panelScene.value;
+        if (scene) setNodeAnnotation(scene.title, text);
+      },
+    });
+
+    function hexToRgba(hex, alpha) {
+      const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
+      if (!m) return null;
+      const r = parseInt(m[1], 16), g = parseInt(m[2], 16), b = parseInt(m[3], 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+    // Soft tint for a node's header background — the color itself reads as
+    // the left accent bar, this just echoes it faintly behind the title.
+    function nodeTint(color) {
+      return hexToRgba(color, 0.16) || null;
+    }
+
+    const selectedNodeSource = computed({
+      get() {
+        const scene = panelScene.value;
+        if (!scene) return '';
+        const lines = source.value.split('\n');
+        return lines.slice(scene.lineStart, scene.bodyEnd + 1).join('\n');
+      },
+      set(newText) {
+        const scene = panelScene.value;
+        if (!scene) return;
+        const lines = source.value.split('\n');
+        const newLines = newText.split('\n');
+        lines.splice(scene.lineStart, scene.bodyEnd - scene.lineStart + 1, ...newLines);
+        source.value = lines.join('\n');
+      },
+    });
+
+    const panelHighlightedSource = computed(() => {
+      const snippet = selectedNodeSource.value;
+      return snippet ? highlightGno(snippet, analyzeEntities(snippet)) : '';
+    });
+
+    function onPanelScroll(e) {
+      const ta = e.target;
+      if (panelHighlightPre.value) {
+        panelHighlightPre.value.scrollTop = ta.scrollTop;
+        panelHighlightPre.value.scrollLeft = ta.scrollLeft;
+      }
+    }
+
+    function openPanelInEditor() {
+      const scene = panelScene.value;
+      if (!scene) return;
+      view.value = 'editor';
+      nextTick(() => scrollToScene(scene.id));
+    }
 
     const arrowColor  = ref('var(--c-divert)');
     const labelColor  = ref('var(--c-muted)');
@@ -1900,6 +4729,63 @@ createApp({
     // so no separate advance is needed to reveal them.
     const playerShowMenu = computed(() => playerRevealCount.value >= playerBeats.value.length);
 
+    /* ── Player: graphic mode ──
+       Playing on the scenario's designed SVG is the default whenever the
+       current scene's scenario has a design; `playerGraphic` is only the
+       reader's preference for it (the Text button turns it off). A scenario
+       with no design always plays as text, whatever the preference. */
+    const playerGraphic = ref(true);
+
+    const playerDesign = computed(() => {
+      const scene = playerCurrentScene.value;
+      const design = scene && scenarioDesigns[scene.scenario];
+      return design && (design.background || design.items.length) ? design : null;
+    });
+    const playerUseGraphic = computed(() => playerGraphic.value && !!playerDesign.value);
+    const playerActionSlots = computed(() => playerDesign.value ? scenarioActionSlots(playerDesign.value) : null);
+
+    // Who is on stage at each beat and where — depends on the design (anchors)
+    // and the Entity associations, so it recomputes when either is edited.
+    const playerStageFrames = computed(() => {
+      const design = playerDesign.value;
+      if (!design) return [];
+      const anchorKeys = new Map(design.items.filter(it => it.kind === 'anchor').map(it => [idKey(it.svgId), it.svgId]));
+      return foldStageFrames(playerPlayback.value.events, entityAssociations, anchorKeys);
+    });
+
+    const playerStage = computed(() => {
+      const design = playerDesign.value;
+      if (!design || !playerUseGraphic.value) return null;
+      const beat = playerRevealCount.value - 1;
+      const frame = (playerStageFrames.value[beat] || []).map(f => {
+        const img = f.assoc && findCatalogImage(f.assoc.library, f.assoc.image);
+        return { ...f, url: img ? img.url : '' };
+      });
+      return {
+        width: design.width,
+        height: design.height,
+        background: design.background && design.background.url ? design.background.url : '',
+        layers: buildPlayerStage(design, {
+          frame,
+          speech: routeSpeech(playerPlayback.value.speeches[beat] || [], design),
+          diverts: playerCurrentScene.value.diverts,
+          atMenu: playerShowMenu.value,
+          canProceed: !playerShowMenu.value,
+          canRegress: playerRevealCount.value > 1,
+        }),
+      };
+    });
+
+    // Plain-button fallbacks for whatever the design has no graphic control for.
+    const playerShowContinueButton = computed(() =>
+      !playerShowMenu.value && !(playerUseGraphic.value && playerActionSlots.value.proceed)
+    );
+    const playerMenuDiverts = computed(() => {
+      const diverts = playerCurrentScene.value ? playerCurrentScene.value.diverts : [];
+      if (!playerUseGraphic.value) return diverts;
+      return diverts.filter((_, i) => !playerActionSlots.value.choices.has(i + 1));
+    });
+
     function initPlayer() {
       const s = startScene.value;
       playerSceneId.value = s ? s.id : null;
@@ -1910,6 +4796,18 @@ createApp({
       if (playerRevealCount.value < playerBeats.value.length) {
         playerRevealCount.value++;
       }
+    }
+
+    // Back to the beat before the last pause (the reverse of advancing).
+    function playerRegress() {
+      if (playerRevealCount.value > 1) playerRevealCount.value--;
+    }
+
+    function onStageClick(click) {
+      if (!click) return;
+      if (click.type === 'proceed') playerAdvance();
+      else if (click.type === 'regress') playerRegress();
+      else if (click.type === 'choose') playerChoose(click.target);
     }
 
     function playerChoose(targetTitle) {
@@ -2040,28 +4938,121 @@ Write your scene description here.
       fileInput.value.click();
     }
 
-    function onFileUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      filename.value = file.name;
-      loadedNarrativeName.value = null; // came from disk, not from browser storage
-      const reader = new FileReader();
-      reader.onload = ev => { source.value = ev.target.result; };
-      reader.readAsText(file, 'UTF-8');
-      e.target.value = '';
-      resetPlayerProgress();
+    // Layout YAML: { version: 1, nodes: { "<scene title>": { x, y, color, annotation } } }.
+    // Keyed by scene title — the same identity diverts already resolve by —
+    // so the file stays readable and round-trips even if scenes are reordered.
+    // Each entry only includes the keys actually set on that node.
+    function layoutToYaml() {
+      const nodes = {};
+      Object.keys(nodeMeta).forEach(title => {
+        const m = nodeMeta[title];
+        const entry = {};
+        if (typeof m.x === 'number' && typeof m.y === 'number') {
+          entry.x = Math.round(m.x);
+          entry.y = Math.round(m.y);
+        }
+        if (m.color) entry.color = m.color;
+        if (m.annotation) entry.annotation = m.annotation;
+        if (Object.keys(entry).length) nodes[title] = entry;
+      });
+      return jsyaml.dump({ version: 1, nodes }, { lineWidth: -1 });
     }
 
-    function downloadFile() {
-      const blob = new Blob([source.value], { type: 'text/markdown;charset=utf-8' });
+    function applyLayoutYaml(text) {
+      clearNodeMeta();
+      let data;
+      try {
+        data = jsyaml.load(text);
+      } catch (err) {
+        alert('Could not parse layout YAML: ' + err.message);
+        return;
+      }
+      Object.assign(nodeMeta, sanitizeNodeMeta(data && data.nodes));
+    }
+
+    async function onFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (/\.zip$/i.test(file.name)) {
+        try {
+          const zip = await JSZip.loadAsync(file);
+          const gnoEntries = zip.file(/\.(gno|md|txt)$/i);
+          if (!gnoEntries.length) throw new Error('No .gno/.md/.txt file found inside the zip.');
+          source.value = await gnoEntries[0].async('string');
+          filename.value = gnoEntries[0].name.split('/').pop();
+
+          const presentationEntries = zip.file(/_presentation\.ya?ml$/i);
+          if (presentationEntries.length) {
+            await applyPresentationYaml(await presentationEntries[0].async('string'), zip);
+          } else {
+            clearImageLibraries();
+            clearEntitySetup();
+            clearScenarioDesigns();
+          }
+
+          // "_graph.yaml" is the current name; a bare "<name>.yaml" (not
+          // "_presentation.yaml") is the pre-rename graph-layout file, kept
+          // readable for zips downloaded before this split existed.
+          let graphEntries = zip.file(/_graph\.ya?ml$/i);
+          if (!graphEntries.length) {
+            graphEntries = zip.file(/\.ya?ml$/i).filter(f => !/_presentation\.ya?ml$/i.test(f.name));
+          }
+          if (graphEntries.length) {
+            applyLayoutYaml(await graphEntries[0].async('string'));
+          } else {
+            clearNodeMeta();
+          }
+
+          loadedNarrativeName.value = null; // came from disk, not from browser storage
+          resetPlayerProgress();
+        } catch (err) {
+          alert('Could not read zip file: ' + err.message);
+        }
+      } else {
+        filename.value = file.name;
+        loadedNarrativeName.value = null;
+        clearNodeMeta();
+        clearImageLibraries();
+        clearEntitySetup();
+        clearScenarioDesigns();
+        const reader = new FileReader();
+        reader.onload = ev => { source.value = ev.target.result; };
+        reader.readAsText(file, 'UTF-8');
+        resetPlayerProgress();
+      }
+      e.target.value = '';
+    }
+
+    // Downloads the narrative together with its graph layout, presentation
+    // setup, and one SVG per scenario design as a zip:
+    // <name>.gno + <name>_graph.yaml + <name>_presentation.yaml + scene/*.svg.
+    async function downloadFile() {
+      const base = filename.value.replace(/\.(gno|md|txt|zip)$/i, '').trim() || 'untitled';
+      const zip = new JSZip();
+      zip.file(base + '.gno', source.value);
+      zip.file(base + '_graph.yaml', layoutToYaml());
+      zip.file(base + '_presentation.yaml', presentationToYaml());
+      const scenarioFiles = scenarioFileMap();
+      Object.keys(scenarioDesigns).forEach(name => {
+        zip.file(scenarioFiles[name], buildScenarioSvg(scenarioDesigns[name]));
+      });
+      const blob = await zip.generateAsync({ type: 'blob' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = filename.value.match(/\.(md|gno|txt)$/) ? filename.value : filename.value + '.gno';
+      a.download = base + '.zip';
       a.click();
       URL.revokeObjectURL(url);
     }
 
+    // A named save is the same bundle a downloaded zip carries — narrative
+    // text, graph layout, and presentation setup (image libraries, entity
+    // associations, scenario designs) — just kept as one JSON blob instead of
+    // separate files, since there's no zip to unpack from browser storage.
+    // Scenario SVGs specifically aren't serialized here: scenario_designs is
+    // the exact data buildScenarioSvg() renders them from, so keeping the
+    // live model is sufficient and avoids two encodings of the same content
+    // drifting apart.
     function saveNarrative() {
       const name = narrativeName.value;
       const exists = localStorage.getItem(STORAGE_PREFIX + name) !== null;
@@ -2069,7 +5060,18 @@ Write your scene description here.
         const ok = window.confirm(`A narrative named "${name}" already exists. Overwrite it?`);
         if (!ok) return;
       }
-      localStorage.setItem(STORAGE_PREFIX + name, source.value);
+      localStorage.setItem(STORAGE_PREFIX + name, JSON.stringify({
+        version: 2,
+        source: source.value,
+        layout: { ...nodeMeta },
+        presentation: {
+          image_libraries: { ...imageLibraries },
+          entities: { ...entityAssociations },
+          extra_entities: [...extraEntities],
+          scenario_designs: { ...scenarioDesigns },
+        },
+        savedAt: Date.now(),
+      }));
       loadedNarrativeName.value = name;
       storageVersion.value++;
     }
@@ -2083,12 +5085,34 @@ Write your scene description here.
     }
 
     function loadNarrative(name) {
-      const content = localStorage.getItem(STORAGE_PREFIX + name);
-      if (content === null) return;
-      source.value = content;
+      const raw = localStorage.getItem(STORAGE_PREFIX + name);
+      if (raw === null) return;
+      let bundle = null;
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object' && typeof parsed.source === 'string') bundle = parsed;
+      } catch (e) { /* not a v2 bundle — shouldn't happen under the v2 prefix, but fall back to raw text */ }
+
+      source.value = bundle ? bundle.source : raw;
       filename.value = name + '.gno';
       loadedNarrativeName.value = name;
       loadMenuOpen.value = false;
+      clearNodeMeta();
+      clearImageLibraries();
+      clearEntitySetup();
+      clearScenarioDesigns();
+
+      if (bundle) {
+        Object.assign(nodeMeta, sanitizeNodeMeta(bundle.layout));
+        const p = bundle.presentation || {};
+        Object.entries(sanitizeImageLibraries(p.image_libraries)).forEach(([id, url]) => {
+          imageLibraries[id] = url;
+          loadLibraryCatalog(id);
+        });
+        Object.assign(entityAssociations, sanitizeEntityAssociations(p.entities));
+        extraEntities.push(...sanitizeExtraEntities(p.extra_entities));
+        Object.assign(scenarioDesigns, sanitizeScenarioDesigns(p.scenario_designs));
+      }
       resetPlayerProgress();
     }
 
@@ -2097,6 +5121,10 @@ Write your scene description here.
       filename.value = 'council-chamber-demo.gno';
       loadedNarrativeName.value = DEMO_MARKER;
       loadMenuOpen.value = false;
+      clearNodeMeta();
+      clearImageLibraries();
+      clearEntitySetup();
+      clearScenarioDesigns();
       resetPlayerProgress();
     }
 
@@ -2112,6 +5140,10 @@ Write your scene description here.
       filename.value = 'untitled.gno';
       loadedNarrativeName.value = null;
       activeSceneId.value = '';
+      clearNodeMeta();
+      clearImageLibraries();
+      clearEntitySetup();
+      clearScenarioDesigns();
       resetPlayerProgress();
     }
 
@@ -2125,12 +5157,19 @@ Write your scene description here.
           source: source.value,
           filename: filename.value,
           loadedNarrativeName: loadedNarrativeName.value,
+          layout: { ...nodeMeta },
+          presentation: {
+            image_libraries: { ...imageLibraries },
+            entities: { ...entityAssociations },
+            extra_entities: [...extraEntities],
+            scenario_designs: { ...scenarioDesigns },
+          },
           savedAt: Date.now(),
         }));
       } catch (e) { /* storage unavailable/full — draft recovery is best-effort */ }
     }
     let autosaveTimer = null;
-    watch([source, filename, loadedNarrativeName], () => {
+    watch([source, filename, loadedNarrativeName, nodeMeta, imageLibraries, entityAssociations, extraEntities, scenarioDesigns], () => {
       if (autosaveTimer) clearTimeout(autosaveTimer);
       autosaveTimer = setTimeout(saveCurrentDraft, 600);
     });
@@ -2147,10 +5186,17 @@ Write your scene description here.
       fileInput, editorTextarea, previewPane, highlightPre,
       scenes, scenarios, entities, entityList, renderedHtml, highlightedSource,
       entitiesInScene, firstOccInScene,
-      graphNodes, graphEdges, graphCanvasStyle,
+      graphNodes, graphEdges, graphCanvasStyle, graphCanvasFullStyle,
+      graphViewportEl, onGraphWheel, onCanvasMouseDown, onNodeMouseDown,
+      zoomIn, zoomOut, resetView, resetLayout,
+      selectedNodeIndex, panelScene, selectedNodeSource, panelHighlightedSource,
+      panelHighlightPre, nodePanelWidth, onPanelResizeDown, onPanelScroll, openPanelInEditor,
+      paletteColors, nodeColor, nodeAnnotation, nodeTint, customColorInput, triggerCustomColorPicker,
       arrowColor, labelColor, placeholder,
       hasExplicitStart, playerCurrentScene, playerCurrentBeat, playerRevealCount, playerShowMenu,
       playerEntityRoster,
+      playerGraphic, playerDesign, playerUseGraphic, playerStage, playerShowContinueButton, playerMenuDiverts,
+      onStageClick,
       playerAdvance, playerChoose, playerRestart,
       scrollToScene, newScene, renameScene,
       onEditorScroll, onEditorInput,
@@ -2158,6 +5204,19 @@ Write your scene description here.
       triggerUpload, onFileUpload, downloadFile,
       saveNarrative, loadNarrative, loadDemoNarrative, newNarrative,
       demoMarker: DEMO_MARKER,
+      presentationTab, newLibraryUrl, imageLibraries, imageLibraryIds, libraryCatalogs,
+      defaultCatalogFilename: DEFAULT_CATALOG_FILENAME,
+      addImageLibraryFromInput, removeImageLibrary, renameImageLibrary, loadLibraryCatalog, showMoreImages, brokenCount,
+      entityAssociations, entityIdsForPresentation, allCatalogImages, openEntityImages, imagePickerEntity,
+      newEntityId, addExtraEntity, removeExtraEntity, isDeclaredEntity,
+      isImageAssociated, associateImage, removeEntityImage, addLabelToAssociation, onAddLabel,
+      removeLabelFromAssociation, resolveAssocImage, toggleEntityImages, togglePicker,
+      scenarioDesigns, scenarioIdsForPresentation, openScenario, bgPickerScenario, placeMode,
+      toggleScenario, resetScenario, toggleBgPicker, setScenarioBackground, removeScenarioBackground,
+      onPaletteDragStart, onCanvasDrop, removeScenarioItem, onItemMouseDown,
+      setScenarioSize, lockCanvasRatio, lockItemRatio, setItemSize, convertSelectedToAnchor, wideScenario, onBgResizeMouseDown, onItemResizeMouseDown, onScenarioCanvasMouseDown, textDraw, textDrawRect,
+      selectedItemId, selectedItem, idDraft, idError, idSuggestions, onIdDraftInput, renameSelectedItem,
+      setItemNumber, isKnownFont, TEXT_FONTS,
     };
   }
 }).mount('#vue-mount');
